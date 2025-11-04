@@ -2,11 +2,12 @@ import { style, styleVariants } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
 
 export const baseButton = style({
-  padding: vars.spacing.md,
+  padding: `${vars.spacing.sm} ${vars.spacing.md}`,
   border: `1px solid ${vars.color.line}`,
   borderRadius: vars.borderRadius.sm,
   cursor: "pointer",
   // transition: "all 0.2s ease-in-out",
+  backgroundColor: vars.color.white,
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -19,8 +20,8 @@ export const baseButton = style({
     },
 
     "&:active": {
-      backgroundColor: vars.color.sub,
       border: `1px solid ${vars.color.line}`,
+      opacity: 0.8,
     },
 
     "&:disabled": {
