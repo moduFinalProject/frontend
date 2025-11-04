@@ -1,3 +1,6 @@
+@import "normalize.css";
+
+/* 폰트 선언 */
 @font-face {
   font-family: "Pretendard";
   src: url("/fonts/PretendardVariable.woff2") format("woff2");
@@ -6,6 +9,7 @@
   font-display: swap;
 }
 
+/* 전역 스타일 */
 body {
   font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
     sans-serif;
