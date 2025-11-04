@@ -5,19 +5,20 @@
 export const colors = {
   // 메인 색상
   main: "#0088FF", // --MainColor
+  white: "#FFFFFF", // --WhiteColor
 
   // 배경 색상
-  mainBg: "#FFFFFF", // --MainBgColor
-  formBg: "#F3F8FD", // --FormBGColor
-  sub: "#F8FAFC", // --SubColor
+  mainBg: "#F8FAFC", // --MainBgColor
+  formBg: "#F3F3F5", // --FormBGColor
+  sub: "#F3F8FD", // --SubColor
 
   // 텍스트 색상
   defaultText: "#0A0A0A", // --DefaultColor
-  subText: "#818189", // --SubTextColor
+  subText: "#45556C", // --SubTextColor
 
   // 상태 색상
-  disabled: "#D4183D", // --DisabledColor
-  delete: "#F3F3F5", // --DeleteColor
+  disabled: "#818189", // --DisabledColor
+  delete: "#D4183D", // --DeleteColor
 
   // 구분선 색상
   line: "#C4C4C4", // --LineColor

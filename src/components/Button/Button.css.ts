@@ -3,38 +3,54 @@ import { vars } from "@/design-system";
 
 export const baseButton = style({
   padding: vars.spacing.md,
-  border: "none",
+  border: `1px solid ${vars.color.line}`,
   borderRadius: vars.borderRadius.sm,
   cursor: "pointer",
-  transition: "all 0.2s ease-in-out",
+  // transition: "all 0.2s ease-in-out",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: vars.spacing.sm,
 
-  ":hover": {
-    transform: "translateY(-1px)",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-  },
+  selectors: {
+    "&:hover": {
+      border: `1px solid ${vars.color.line}`,
+      opacity: 0.7,
+    },
 
-  ":active": {
-    transform: "translateY(0px)",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-  },
+    "&:active": {
+      backgroundColor: vars.color.sub,
+      border: `1px solid ${vars.color.line}`,
+    },
 
-  ":disabled": {
-    cursor: "not-allowed",
-    opacity: "0.6",
-    transform: "none",
-    boxShadow: "none",
+    "&:disabled": {
+      cursor: "not-allowed",
+      backgroundColor: vars.color.disabled,
+      color: vars.color.white,
+      border: `1px solid ${vars.color.disabled}`,
+    },
   },
 });
 
 export const buttonColor = styleVariants({
+  none: {
+    backgroundColor: vars.color.white,
+    color: vars.color.defaultText,
+    border: `1px solid ${vars.color.white}`,
+    fontWeight: vars.typography.fontWeight.normal,
+  },
   red: {
-    backgroundColor: "#D4183D",
-    color: "#FFFFFF",
+    backgroundColor: vars.color.delete,
+    color: vars.color.mainBg,
+    border: `1px solid ${vars.color.delete}`,
+    fontWeight: vars.typography.fontWeight.bold,
   },
   blue: {
-    backgroundColor: "#0088FF",
+    backgroundColor: vars.color.main,
+    color: vars.color.mainBg,
+    border: `1px solid ${vars.color.main}`,
+    fontWeight: vars.typography.fontWeight.bold,
   },
-  gray: { backgroundColor: "#F3F3F5", color: "#0A0A0A" },
 });
 
 export const buttonWidth = styleVariants({
