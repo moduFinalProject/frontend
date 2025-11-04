@@ -1,9 +1,5 @@
 function App() {
-  return (
-    <div>
-      <h1>개취 개발중</h1>
-    </div>
-  );
+  return <div>개취개취중입니다</div>;
 }
 
 export default App;

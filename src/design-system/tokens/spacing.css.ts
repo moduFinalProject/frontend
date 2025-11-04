@@ -4,12 +4,10 @@
  * 나중에 피그마에서 추가될 수 있음
  */
 export const spacing = {
-  xs: '4px',
-  sm: '8px',
-  md: '16px',
-  lg: '24px',
-  xl: '32px',
-  '2xl': '48px',
-  '3xl': '64px',
+  xs: "4px",
+  sm: "8px",
+  md: "16px",
+  lg: "24px",
+  xl: "36px",
+  "2xl": "40px",
 } as const;
-

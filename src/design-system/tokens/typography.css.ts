@@ -1,32 +1,23 @@
 /**
- * 2단계: 코드 친화적으로 재구조화
- *
- * 피그마 변수 매핑:
- * - pretendard_40p_SB → typography.heading.large
- * - pretendard_16p_M → typography.body.medium
- */
-
-/**
- * 타이포그래피 토큰 정의 (의미있는 이름으로 재구조화)
+ * 타이포그래피 토큰 정의
+ * 폰트 크기: 12px, 14px, 16px, 20px, 24px
+ * 기본 font-weight: 400, 700
  */
 export const typography = {
-  // 제목 스타일
-  heading: {
-    large: {
-      fontFamily: "Pretendard",
-      fontSize: "40px", // 피그마: pretendard_40p_SB
-      fontWeight: "600", // SemiBold
-      lineHeight: "56px",
-    },
+  fontFamily: "Pretendard",
+
+  // 폰트 크기
+  fontSize: {
+    xs: "12px",
+    sm: "14px",
+    md: "16px",
+    lg: "20px",
+    xl: "24px",
   },
 
-  // 본문 스타일
-  body: {
-    medium: {
-      fontFamily: "Pretendard",
-      fontSize: "16px", // 피그마: pretendard_16p_M
-      fontWeight: "500", // Medium
-      lineHeight: "22px",
-    },
+  // 기본 font-weight
+  fontWeight: {
+    normal: "400",
+    bold: "700",
   },
 } as const;
