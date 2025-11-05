@@ -12,6 +12,8 @@ import study from "@/assets/icons/Icon-study.svg";
 import profile from "@/assets/icons/Icon-profile.svg";
 import logout from "@/assets/icons/Icon-logout.svg";
 import alam from "@/assets/icons/icon-alarm.svg";
+import prevIcon from "@/assets/icons/Icon-prev.svg";
+import downIcon from "@/assets/icons/Icon-download.svg";
 
 export const ICONS = {
   DEL: delIcon,
@@ -27,5 +29,7 @@ export const ICONS = {
   STUDY: study,
   PROFILE: profile,
   LOGOUT: logout,
-  ALAM: alam
+  ALAM: alam,
+  DOWN: downIcon,
+  PREV: prevIcon,
 } as const;
