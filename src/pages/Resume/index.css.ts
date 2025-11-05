@@ -15,18 +15,7 @@ export const container = style({
 
 export const header = style({
   display: "flex",
-  justifyContent: "space-between",
+  justifyContent: "start",
   alignItems: "center",
-});
-export const headerText = style({
-  h2: {
-    margin: 0,
-    fontSize: vars.typography.fontSize.xl,
-    fontweight: vars.typography.fontWeight.bold,
-  },
-  p: {
-    marginTop: vars.spacing.sm,
-    fontSize: vars.typography.fontSize.md,
-    color: vars.color.subText,
-  },
+  gap: vars.spacing.md,
 });
