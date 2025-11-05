@@ -9,6 +9,7 @@ import {
   subText,
   dateText,
   descText,
+  descTextLink,
   flexContainer,
 } from "./ResumeCardRow.css.ts";
 
@@ -62,7 +63,7 @@ export default function ResumeCardRow({
           {desc.split("\n").map((line) => (
             <>
               {isUrl ? (
-                <a href={line} target="_blank">
+                <a className={descTextLink} href={line} target="_blank">
                   {line}
                 </a>
               ) : (

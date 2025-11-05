@@ -49,6 +49,15 @@ export const dateText = style({
 export const descText = style({
   fontSize: vars.typography.fontSize.sm,
 });
+
+export const descTextLink = style({
+  textDecoration: "none",
+  color: "inherit",
+
+  ":hover": {
+    color: vars.color.main,
+  },
+});
 export const stack = style({
   backgroundColor: vars.color.formBg,
   padding: `${vars.spacing.xs} ${vars.spacing.sm}`,
