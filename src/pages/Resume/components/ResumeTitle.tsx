@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components";
-import { headerText, subPage, btnsWrap } from "./ResumeTitle.css.ts";
+import { headerText, subPage, btnsWrap, prevWrap } from "./ResumeTitle.css.ts";
 
 interface ResumeProps {
   mode: "list" | "view" | "create" | "edit" | "correction";
@@ -24,22 +24,25 @@ export default function ResumeTitle({
 
   return (
     <>
-      {mode !== "list" && (
-        <Button
-          text=""
-          color="none"
-          widthStyle="fit"
-          icon="PREV"
-          callback={() => {
-            navigate("./../resume/");
-          }}
-        />
-      )}
-      <div className={`${headerText} ${mode !== "list" && subPage}`}>
-        <h2 className={mode !== "list" ? "a11y-hidden" : ""}>{titleText}</h2>
-        {mode !== "list" && <p className="title">기본 이력서</p>}
-        <p className="desc">{desc}</p>
+      <div className={prevWrap}>
+        {mode !== "list" && (
+          <Button
+            text=""
+            color="none"
+            widthStyle="fit"
+            icon="PREV"
+            callback={() => {
+              navigate("./../resume/");
+            }}
+          />
+        )}
+        <div className={`${headerText} ${mode !== "list" && subPage}`}>
+          <h2 className={mode !== "list" ? "a11y-hidden" : ""}>{titleText}</h2>
+          {mode !== "list" && <p className="title">기본 이력서</p>}
+          <p className="desc">{desc}</p>
+        </div>
       </div>
+
       <div className={btnsWrap}>
         {mode === "list" && (
           <Button
