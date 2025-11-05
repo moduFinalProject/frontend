@@ -257,7 +257,12 @@ export default function ResumeDetail() {
         {resumeData.qualifications?.map((qualificationItem, idx) => {
           const subTile = `${qualificationItem.organ} · ${
             qualificationItem.acquisition_date
-          }${qualificationItem.score && ` · ${qualificationItem.score}`}`;
+          }${
+            qualificationItem.score === undefined
+              ? ""
+              : ` · ${qualificationItem.score}`
+          }`;
+
           return (
             <>
               {idx > 0 && <hr />}
