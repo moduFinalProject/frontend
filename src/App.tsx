@@ -1,10 +1,20 @@
-import Header from "@/components/Header/Header"
-import LeftMenu from "@/components/LeftMenu/LeftMenu"
-import Footer from "@/components/Footer/Footer"
-import { Routes, Route } from "react-router-dom"
-import Resume from "@/pages/Resume/Resume"
- import { themeClass } from "@/design-system"
- import { vars } from "@/design-system"
+import { Routes, Route } from "react-router-dom";
+import { themeClass } from "@/design-system";
+import { vars } from "@/design-system";
+
+import Header from "@/components/Header/Header";
+import LeftMenu from "@/components/LeftMenu/LeftMenu";
+import Footer from "@/components/Footer/Footer";
+
+import Landing from "@/pages/Landing";
+import NotFound from "@/pages/NotFound";
+
+import Resume from "@/pages/Resume";
+import ResumeList from "@/pages/Resume/ResumeList";
+import ResumeCreate from "@/pages/Resume/ResumeCreate";
+import ResumeDetail from "@/pages/Resume/ResumeDetail";
+import ResumeEdit from "@/pages/Resume/ResumeEdit";
+import ResumeCorrection from "@/pages/Resume/ResumeCorrection";
 
 // 임시 페이지
 const Dashboard = () => <div style={{ marginLeft:"15%", width:"85%", padding: "20px", borderTop: `1px solid ${vars.color.line}`}}>대시보드 페이지</div>
@@ -19,21 +29,28 @@ function App() {
 
   return (
     <>
-      {!loginToken&&<div>랜딩페이지</div>}
+      {!loginToken&&<Landing />}
       {loginToken&&
         <>
           <Header />
           <main style={{display:"flex"}}>
             <LeftMenu></LeftMenu>
             <Routes>
-              <Route path="/frontend/" element={<Dashboard />} />
-              <Route path="/frontend/dashboard" element={<Dashboard />} />
-              <Route path="/frontend/resume" element={<Resume />} />
-              <Route path="/frontend/jobPost" element={<JobPost />} />
-              <Route path="/frontend/resumeFeedbackHis" element={<ResumeFeedbackHis />} />
-              <Route path="/frontend/interview" element={<Interview />} />
-              <Route path="/frontend/studyGuide" element={<StudyGuide />} />
-              <Route path="/frontend/profile" element={<Profile />} />              
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/resume" element={<Resume />}>
+                <Route index element={<ResumeList />} />
+                <Route path="new" element={<ResumeCreate />} />
+                <Route path=":id" element={<ResumeDetail />} />
+                <Route path=":id/edit" element={<ResumeEdit />} />
+                <Route path=":id/correction" element={<ResumeCorrection />} />
+              </Route>
+              <Route path="/jobPost" element={<JobPost />} />
+              <Route path="/resumeFeedbackHis" element={<ResumeFeedbackHis />} />
+              <Route path="/interview" element={<Interview />} />
+              <Route path="/studyGuide" element={<StudyGuide />} />
+              <Route path="/profile" element={<Profile />} />        
+              <Route path="*" element={<NotFound />} />      
             </Routes>
           </main>      
         <Footer />

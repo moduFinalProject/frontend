@@ -28,37 +28,37 @@ export default function LeftMenu() {
       id: "dashboard",
       menuName: "대시보드",
       menuIcon: "DASHBOARD",
-      menuURL: "/frontend/"
+      menuURL: "/"
     },
     {
       id: "resume",
       menuName: "내 이력서",
       menuIcon: "RESUME",
-      menuURL: "/frontend/resume"
+      menuURL: "/resume"
     },
     {
       id: "jobPost",
       menuName: "채용공고 관리",
       menuIcon: "JOB",
-      menuURL: "/frontend/jobPost"
+      menuURL: "/jobPost"
     },
     {
       id: "resumeFeedbackHis",
       menuName: "공고별 첨삭 이력",
       menuIcon: "CHECK",
-      menuURL: "/frontend/resumeFeedbackHis"
+      menuURL: "/resumeFeedbackHis"
     },
     {
       id: "interview",
       menuName: "AI 모의면접",
       menuIcon: "CHAT",
-      menuURL: "/frontend/interview"
+      menuURL: "/interview"
     },
     {
       id: "studyGuide",
       menuName: "학습 가이드",
       menuIcon: "STUDY",
-      menuURL: "/frontend/studyGuide"
+      menuURL: "/studyGuide"
     }
   ]
 
@@ -67,7 +67,7 @@ export default function LeftMenu() {
       id: "profile",
       menuName: "프로필",
       menuIcon: "PROFILE",
-      menuURL: "/frontend/profile"
+      menuURL: "/profile"
     },
     {
       id: "logout",
