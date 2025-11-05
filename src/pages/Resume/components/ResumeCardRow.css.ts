@@ -64,6 +64,7 @@ export const lisence = style({
 
 export const stackWrap = style({
   display: "flex",
+  fontSize: vars.typography.fontSize.xs,
   gap: vars.spacing.sm,
   flexWrap: "wrap",
 });
