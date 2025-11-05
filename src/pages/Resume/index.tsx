@@ -1,4 +1,4 @@
-import { container, header, headerText } from "./Resume.css.ts";
+import { container, header, headerText } from "./index.css.ts";
 import ResumeForm from "./ResumeForm.tsx";
 import ResumeList from "./ResumeList.tsx";
 import { Button } from "@/components/index.ts";

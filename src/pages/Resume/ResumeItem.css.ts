@@ -10,11 +10,18 @@ export const resumeItem = style({
   gap: vars.spacing.lg,
   border: `1px solid ${vars.color.line}`,
   borderRadius: vars.borderRadius.lg,
+  cursor: "pointer",
+
+  ":hover": {
+    boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
+  },
 });
 export const title = style({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "start",
+
+  position: "relative",
 
   p: {
     fontSize: vars.typography.fontSize.sm,
@@ -68,9 +75,26 @@ export const btns = style({
   gap: vars.spacing.sm,
   justifyContent: "center",
   alignItems: "center",
+  flex: 1,
+  alignItems: "end",
 
   button: {
     fontSize: vars.typography.fontSize.sm,
-    padding: vars.spacing.sm,
   },
+});
+
+export const dropdownStyle = style({
+  position: "absolute",
+  display: "flex",
+  flexDirection: "column",
+  gap: vars.spacing.xs,
+  top: "90%",
+  right: 0,
+  padding: `${vars.spacing.xs} ${vars.spacing.sm}`,
+
+  backgroundColor: vars.color.white,
+  border: `1px solid ${vars.color.line}`,
+  borderRadius: vars.borderRadius.sm,
+  boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+  zIndex: 100,
 });
