@@ -10,7 +10,6 @@ export const resumeItem = style({
   gap: vars.spacing.lg,
   border: `1px solid ${vars.color.line}`,
   borderRadius: vars.borderRadius.lg,
-  cursor: "pointer",
 
   ":hover": {
     boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
@@ -33,6 +32,7 @@ export const title = style({
 export const titleRow = style({
   display: "flex",
   gap: vars.spacing.sm,
+  cursor: "pointer",
 
   h4: {
     fontSize: vars.typography.fontSize.m,
@@ -74,7 +74,6 @@ export const btns = style({
   display: "flex",
   gap: vars.spacing.sm,
   justifyContent: "center",
-  alignItems: "center",
   flex: 1,
   alignItems: "end",
 
