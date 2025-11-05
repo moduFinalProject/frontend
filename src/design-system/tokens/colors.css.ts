@@ -11,6 +11,7 @@ export const colors = {
   mainBg: "#F8FAFC", // --MainBgColor
   formBg: "#F3F3F5", // --FormBGColor
   sub: "#F3F8FD", // --SubColor
+  landingBg: "#FFFCEE", // --Landing-BgColor
 
   // 텍스트 색상
   defaultText: "#0A0A0A", // --DefaultColor
