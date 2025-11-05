@@ -129,7 +129,9 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
             text="채용공고"
             color="blue"
             icon="LINK_WHITE"
-            callback={() => {}}
+            callback={() => {
+              window.open(resume.url, "_blank", "noopener,noreferrer");
+            }}
             widthStyle="full"
           />
         )}
