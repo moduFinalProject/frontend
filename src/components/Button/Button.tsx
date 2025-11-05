@@ -3,7 +3,7 @@ import { ICONS } from "@/constants/icons";
 
 interface ButtonProps {
   widthStyle: "full" | "fit";
-  color: "blue" | "red" | "none";
+  color: "blue" | "red" | "white" | "none";
   text: string;
   callback: () => void;
   icon?: keyof typeof ICONS;
