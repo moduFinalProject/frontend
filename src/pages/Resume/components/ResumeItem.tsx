@@ -8,8 +8,10 @@ import {
   dropdownStyle,
 } from "./ResumeItem.css.ts";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type Resume = {
+  id: number;
   url?: string;
 };
 
@@ -20,6 +22,8 @@ interface ResumeItemProps {
 export default function ResumeItem({ resume }: ResumeItemProps) {
   const [dropdown, setDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const navigate = useNavigate();
 
   function handleDropdown() {
     setDropdown((prev) => !prev);
@@ -54,9 +58,14 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
     <li className={resumeItem}>
       <div className={title}>
         <div>
-          <div className={titleRow}>
+          <div
+            className={titleRow}
+            onClick={() => {
+              navigate(`./${resume.id}`);
+            }}
+          >
             <h4>기본 이력서</h4>
-            <span>공고맞춤</span>
+            {resume.url && <span>공고맞춤</span>}
           </div>
           <p>포괄적인 기본 이력서</p>
         </div>
@@ -75,7 +84,9 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
               <Button
                 color="none"
                 text="수정"
-                callback={() => {}}
+                callback={() => {
+                  navigate(`./${resume.id}/edit`);
+                }}
                 widthStyle="full"
               />
               <Button
@@ -104,9 +115,12 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
         <Button
           text="첨삭"
           color="white"
-          callback={() => {}}
+          callback={() => {
+            navigate(`./${resume.id}/correction`);
+          }}
           widthStyle="full"
         />
+
         {resume.url && (
           <Button
             text="채용공고"
