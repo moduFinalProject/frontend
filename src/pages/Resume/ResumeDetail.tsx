@@ -60,7 +60,7 @@ export default function ResumeDetail() {
 
   const resumeData: ResumeData = {
     id: "1",
-    url: "",
+    url: "https://career.example.com/job/123456",
     photoUrl: "",
     title: "기본 이력서",
     name: "김취업",
@@ -163,7 +163,7 @@ export default function ResumeDetail() {
     <div className={flex}>
       {resumeData.url && (
         <ResumeCard title="공고 URL">
-          <ResumeCardRow value={resumeData.url} widthType="full" />
+          <ResumeCardRow desc={resumeData.url} isUrl={true} widthType="full" />
         </ResumeCard>
       )}
       <ResumeCard title="기본 정보">
@@ -241,7 +241,7 @@ export default function ResumeDetail() {
         })}
       </ResumeCard>
       <ResumeCard title="기술 스택">
-        <ResumeCardRow value={resumeData.technology_stack} widthType="full" />
+        <ResumeCardRow keyword={resumeData.technology_stack} widthType="full" />
       </ResumeCard>
       <ResumeCard title="자격증 및 어학">
         {resumeData.qualifications.map((qualificationItem, idx) => {
