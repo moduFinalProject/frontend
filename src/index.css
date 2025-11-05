@@ -9,11 +9,35 @@
   font-display: swap;
 }
 
-/* CSS Reset */
-* {
+/* CSS Reset - 더 강력한 리셋 */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* 헤딩 요소 명시적 리셋 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+
+/* 기타 요소 리셋 */
+p,
+ul,
+ol,
+li,
+blockquote,
+figure {
+  margin: 0;
+  padding: 0;
 }
 
 /* 전역 스타일 */
