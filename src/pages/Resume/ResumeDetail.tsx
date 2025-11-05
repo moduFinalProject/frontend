@@ -5,7 +5,8 @@ import { flex } from "./ResumeDetail.css.ts";
 
 type ResumeData = {
   id: string;
-  url: string;
+  url?: string;
+  imgUrl: string;
   photoUrl: string;
   title: string;
   name: string;
@@ -15,7 +16,7 @@ type ResumeData = {
   address: string;
   military_service: string;
   self_introduction: string;
-  experience: {
+  experience?: {
     job_title: string;
     position: string;
     department: string;
@@ -24,7 +25,7 @@ type ResumeData = {
     job_description: string;
     employment_status: "Y" | "N";
   }[];
-  education: {
+  education?: {
     organ: string;
     department: string;
     degree_level: string;
@@ -32,20 +33,20 @@ type ResumeData = {
     end_date: string;
     score: string;
   };
-  project: {
+  project?: {
     title: string;
     description: string;
     start_date: string;
     end_date: string;
   }[];
-  activity: {
+  activity?: {
     title: string;
     description: string;
     start_date: string;
     end_date: string;
   }[];
-  technology_stack: string[];
-  qualifications: {
+  technology_stack?: string[];
+  qualifications?: {
     title: string;
     organ: string;
     acquisition_date: string;
@@ -61,6 +62,8 @@ export default function ResumeDetail() {
   const resumeData: ResumeData = {
     id: "1",
     url: "https://career.example.com/job/123456",
+    imgUrl:
+      "https://i.pinimg.com/736x/95/f0/8a/95f08adb4d08c76eda72fd488700bd3a.jpg",
     photoUrl: "",
     title: "기본 이력서",
     name: "김취업",
@@ -161,6 +164,13 @@ export default function ResumeDetail() {
 
   return (
     <div className={flex}>
+      <ResumeCard title="증명사진">
+        <ResumeCardRow
+          imgUrl={resumeData.imgUrl}
+          isPhoto={true}
+          widthType="full"
+        />
+      </ResumeCard>
       {resumeData.url && (
         <ResumeCard title="공고 URL">
           <ResumeCardRow desc={resumeData.url} isUrl={true} widthType="full" />
@@ -198,7 +208,7 @@ export default function ResumeDetail() {
         <ResumeCardRow desc={resumeData.self_introduction} widthType="full" />
       </ResumeCard>
       <ResumeCard title="경력">
-        {resumeData.experience.map((experienceItem, idx) => {
+        {resumeData.experience?.map((experienceItem, idx) => {
           const date = `${experienceItem.start_date} ~ ${
             experienceItem.employment_status === "Y"
               ? "현재"
@@ -221,7 +231,7 @@ export default function ResumeDetail() {
         })}
       </ResumeCard>
       <ResumeCard title="경험/활동">
-        {resumeData.activity.map((activityItem, idx) => {
+        {resumeData.activity?.map((activityItem, idx) => {
           const date = `${activityItem.start_date} ~ ${
             activityItem.end_date === "" ? "현재" : activityItem.end_date
           }`;
@@ -244,10 +254,15 @@ export default function ResumeDetail() {
         <ResumeCardRow keyword={resumeData.technology_stack} widthType="full" />
       </ResumeCard>
       <ResumeCard title="자격증 및 어학">
-        {resumeData.qualifications.map((qualificationItem, idx) => {
+        {resumeData.qualifications?.map((qualificationItem, idx) => {
           const subTile = `${qualificationItem.organ} · ${
             qualificationItem.acquisition_date
-          }${qualificationItem.score && ` · ${qualificationItem.score}`}`;
+          }${
+            qualificationItem.score === undefined
+              ? ""
+              : ` · ${qualificationItem.score}`
+          }`;
+
           return (
             <>
               {idx > 0 && <hr />}

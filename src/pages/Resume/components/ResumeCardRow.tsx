@@ -9,7 +9,9 @@ import {
   subText,
   dateText,
   descText,
+  descTextLink,
   flexContainer,
+  imgWrap,
 } from "./ResumeCardRow.css.ts";
 
 type rowData = {
@@ -19,8 +21,10 @@ type rowData = {
   subTile?: string;
   date?: string;
   desc?: string;
+  imgUrl?: string;
   isLisence?: boolean;
   isUrl?: boolean;
+  isPhoto?: boolean;
   widthType: "half" | "full";
 };
 
@@ -31,8 +35,10 @@ export default function ResumeCardRow({
   subTile,
   date,
   desc,
+  imgUrl,
   isLisence = false,
   isUrl = false,
+  isPhoto = false,
   widthType,
 }: rowData) {
   return (
@@ -62,7 +68,7 @@ export default function ResumeCardRow({
           {desc.split("\n").map((line) => (
             <>
               {isUrl ? (
-                <a href={line} target="_blank">
+                <a className={descTextLink} href={line} target="_blank">
                   {line}
                 </a>
               ) : (
@@ -78,6 +84,11 @@ export default function ResumeCardRow({
           {keyword.map((item) => (
             <span className={stack}>{item}</span>
           ))}
+        </div>
+      )}
+      {isPhoto && (
+        <div className={imgWrap}>
+          <img src={imgUrl} alt="증명사진" />
         </div>
       )}
     </div>

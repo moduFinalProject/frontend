@@ -1,5 +1,6 @@
 import { style, styleVariants } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
+import { flex } from "../ResumeDetail.css";
 
 export const row = style({
   display: "flex",
@@ -49,6 +50,15 @@ export const dateText = style({
 export const descText = style({
   fontSize: vars.typography.fontSize.sm,
 });
+
+export const descTextLink = style({
+  textDecoration: "none",
+  color: "inherit",
+
+  ":hover": {
+    color: vars.color.main,
+  },
+});
 export const stack = style({
   backgroundColor: vars.color.formBg,
   padding: `${vars.spacing.xs} ${vars.spacing.sm}`,
@@ -64,6 +74,7 @@ export const lisence = style({
 
 export const stackWrap = style({
   display: "flex",
+  fontSize: vars.typography.fontSize.xs,
   gap: vars.spacing.sm,
   flexWrap: "wrap",
 });
@@ -72,4 +83,18 @@ export const flexContainer = style({
   display: "flex",
   gap: vars.spacing.sm,
   alignItems: "center",
+});
+export const imgWrap = style({
+  border: `1px solid ${vars.color.line}`,
+  width: 160,
+  aspectRatio: "160/224",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  borderRadius: vars.borderRadius.sm,
+  backgroundColor: vars.color.formBg,
+
+  img: {
+    width: "100%",
+  },
 });
