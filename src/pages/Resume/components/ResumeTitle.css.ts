@@ -39,9 +39,11 @@ export const subPage = style({
 });
 
 export const prevWrap = style({
+  flex: 1,
   display: "flex",
   gap: vars.spacing.sm,
 });
+
 export const btnsWrap = style({
   display: "flex",
   gap: vars.spacing.sm,
