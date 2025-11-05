@@ -1,5 +1,13 @@
+import { themeClass } from "@/design-system";
+
+import Landing from "@/pages/Landing";
+
 function App() {
-  return <div>개취개취중입니다</div>;
+  return (
+    <div className={themeClass}>
+      <Landing />
+    </div>
+  );
 }
 
 export default App;
