@@ -41,7 +41,34 @@ export default function ResumeTitle({
         <p className="desc">{desc}</p>
       </div>
       <div className={btnsWrap}>
-        {mode !== "list" ? (
+        {mode === "list" && (
+          <Button
+            text="새 이력서 작성"
+            color="blue"
+            widthStyle="fit"
+            icon="PLUS"
+            callback={() => {
+              navigate("./new");
+            }}
+          />
+        )}
+        {(mode === "create" || mode === "edit") && (
+          <>
+            <Button
+              text="AI 자동완성"
+              color="white"
+              widthStyle="fit"
+              callback={() => {}}
+            />
+            <Button
+              text="저장하기"
+              color="blue"
+              widthStyle="fit"
+              callback={() => {}}
+            />
+          </>
+        )}
+        {mode === "view" && (
           <>
             <Button
               text="삭제"
@@ -62,21 +89,26 @@ export default function ResumeTitle({
               text="수정하기"
               color="blue"
               widthStyle="fit"
-              callback={() => {
-                navigate(`./${resumeId}`);
-              }}
+              callback={() => {}}
             />
           </>
-        ) : (
-          <Button
-            text="새 이력서 작성"
-            color="blue"
-            widthStyle="fit"
-            icon="PLUS"
-            callback={() => {
-              navigate("./new");
-            }}
-          />
+        )}
+        {mode === "correction" && (
+          <>
+            <Button
+              text="다운로드"
+              color="white"
+              widthStyle="fit"
+              icon="DOWN"
+              callback={() => {}}
+            />
+            <Button
+              text="저장"
+              color="blue"
+              widthStyle="fit"
+              callback={() => {}}
+            />
+          </>
         )}
       </div>
     </>
