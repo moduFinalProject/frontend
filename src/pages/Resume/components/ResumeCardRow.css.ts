@@ -1,5 +1,6 @@
 import { style, styleVariants } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
+import { flex } from "../ResumeDetail.css";
 
 export const row = style({
   display: "flex",
@@ -82,4 +83,18 @@ export const flexContainer = style({
   display: "flex",
   gap: vars.spacing.sm,
   alignItems: "center",
+});
+export const imgWrap = style({
+  border: `1px solid ${vars.color.line}`,
+  width: 160,
+  aspectRatio: "160/224",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  borderRadius: vars.borderRadius.sm,
+  backgroundColor: vars.color.formBg,
+
+  img: {
+    width: "100%",
+  },
 });
