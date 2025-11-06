@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import ResumeCard from "./components/ResumeCard";
 import ResumeCardRow from "./components/ResumeCardRow";
 import { flex } from "./ResumeDetail.css.ts";
+import { Fragment } from "react/jsx-runtime";
+import { useEffect } from "react";
 
 type ResumeData = {
   id: string;
@@ -56,8 +58,6 @@ type ResumeData = {
 
 export default function ResumeDetail() {
   const { id } = useParams();
-
-  console.log(id);
 
   const resumeData: ResumeData = {
     id: "1",
@@ -162,6 +162,8 @@ export default function ResumeDetail() {
     ],
   };
 
+  useEffect(() => {}, [id]);
+
   return (
     <div className={flex}>
       <ResumeCard title="증명사진">
@@ -216,7 +218,7 @@ export default function ResumeDetail() {
           }`;
 
           return (
-            <>
+            <Fragment key={idx}>
               {idx > 0 && <hr />}
               <ResumeCardRow
                 key={idx}
@@ -226,7 +228,7 @@ export default function ResumeDetail() {
                 date={date}
                 widthType="full"
               />
-            </>
+            </Fragment>
           );
         })}
       </ResumeCard>
@@ -237,7 +239,7 @@ export default function ResumeDetail() {
           }`;
 
           return (
-            <>
+            <Fragment key={idx}>
               {idx > 0 && <hr />}
               <ResumeCardRow
                 key={idx}
@@ -246,7 +248,7 @@ export default function ResumeDetail() {
                 date={date}
                 widthType="full"
               />
-            </>
+            </Fragment>
           );
         })}
       </ResumeCard>
@@ -264,7 +266,7 @@ export default function ResumeDetail() {
           }`;
 
           return (
-            <>
+            <Fragment key={idx}>
               {idx > 0 && <hr />}
               <ResumeCardRow
                 key={idx}
@@ -273,7 +275,7 @@ export default function ResumeDetail() {
                 widthType="full"
                 isLisence={!qualificationItem.score}
               />
-            </>
+            </Fragment>
           );
         })}
       </ResumeCard>
