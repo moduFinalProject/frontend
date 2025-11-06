@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import { themeClass } from "@/design-system";
 import { vars } from "@/design-system";
 
 import Header from "@/components/Header/Header";

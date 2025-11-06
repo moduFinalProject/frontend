@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:skip-ts": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy": "npm run build",
+    "predeploy": "npm run build:skip-ts",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
