@@ -1,4 +1,4 @@
-import { header, headerLogo, menuContainer, menuUi, menuBottom, menuItem, menuItemActive, menuLink, logoutItem, logoutLink } from "./Header.css";
+import { header, headerLogo, menuContainer, menuUi, menuBottom, menuItem, menuItemActive, menuLink, logoutLink } from "./Header.css";
 import logo from "@/assets/logo/logo.svg";
 import { ICONS } from "@/constants/icons";
 import { Link, useLocation  } from "react-router-dom";
@@ -16,7 +16,7 @@ function MenuItemComponent({ item }: { item: MenuItem }) {
   const isLogout = item.id === "logout";
 
   return (
-    <li className={`${menuItem} ${isLogout ? logoutItem : ""}`}>
+    <li className={`${menuItem}`}>
       <Link to={item.menuURL} className={`${menuLink} ${isLogout ? logoutLink : ""} ${isActive ? menuItemActive:""}`}>
         {item.menuIcon && <img src={ICONS[item.menuIcon]} alt={item.menuName} />}
         {item.menuName}
