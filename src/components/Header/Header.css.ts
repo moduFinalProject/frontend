@@ -37,16 +37,10 @@ export const menuBottom = style({
 export const menuItem = style({  
   display: "flex",
   alignItems: "center",  
-  padding:vars.spacing.sm,
+  padding:vars.spacing.xs,
   cursor: "pointer",
   transition: "background-color 0.2s",
-  borderRadius: vars.borderRadius.sm,
-  ":hover": {
-    background: vars.color.sub,    
-  },
-  ":active": {
-    background: vars.color.sub,    
-  }
+  borderRadius: vars.borderRadius.sm,  
 });
 
 export const menuItemActive = style({
@@ -59,7 +53,14 @@ export const menuLink = style({
   flex: 1,
   display: "flex",
   alignItems: "center",
-  padding: vars.spacing.md
+  gap: vars.spacing.md,
+  padding: vars.spacing.md,
+  ":hover": {
+    background: vars.color.sub,    
+  },
+  ":active": {
+    background: vars.color.sub,    
+  }
 });
 
 export const logoutItem = style({

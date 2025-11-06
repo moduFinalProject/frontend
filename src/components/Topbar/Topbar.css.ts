@@ -14,6 +14,7 @@ export const topbar = style({
 export const topbarRight = style({
   display: "flex",
   justifyContent: "space-between",
+  gap:vars.spacing.sm,
   alignItems: "center"
 });
 

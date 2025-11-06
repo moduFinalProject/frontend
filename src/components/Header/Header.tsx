@@ -15,19 +15,12 @@ function MenuItemComponent({ item }: { item: MenuItem }) {
   const isActive = location.pathname === item.menuURL;
   const isLogout = item.id === "logout";
 
-  if (isLogout) {
-    return (
-      <li className={`${menuItem} ${logoutItem}`}>
-        {item.menuIcon && <img src={ICONS[item.menuIcon]} alt={item.menuName} />}
-        <Link to={item.menuURL} className={`${menuLink} ${logoutLink}`}>{item.menuName}</Link>
-      </li>
-    );
-  }
-
   return (
-    <li className={`${menuItem} ${isActive ? menuItemActive:""}`}>
-      {item.menuIcon && <img src={ICONS[item.menuIcon]} alt={item.menuName} />}
-      <Link to={item.menuURL} className={menuLink}>{item.menuName}</Link>
+    <li className={`${menuItem} ${isLogout ? logoutItem : ""}`}>
+      <Link to={item.menuURL} className={`${menuLink} ${isLogout ? logoutLink : ""} ${isActive ? menuItemActive:""}`}>
+        {item.menuIcon && <img src={ICONS[item.menuIcon]} alt={item.menuName} />}
+        {item.menuName}
+      </Link>
     </li>
   );
 }
