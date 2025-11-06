@@ -92,14 +92,12 @@ export const bannerTitle = style({
   fontWeight: vars.typography.fontWeight.bold,
   fontSize: "40px",
   lineHeight: 1.2, // 120% = 1.2
-  margin: 0, // h1의 기본 마진 제거
 });
 
 export const bannerDescription = style({
   fontSize: vars.typography.fontSize.md, // 16px
   lineHeight: 1.375, // 22px ÷ 16px = 1.375
   color: vars.color.defaultText,
-  margin: 0, // p 요소의 기본 마진 제거
 });
 
 export const bannerButtonContainer = style({
