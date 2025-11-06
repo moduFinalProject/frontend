@@ -11,7 +11,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type Resume = {
-  id: number;
+  id: string;
+  name: string;
+  desc: string;
+  date: string;
   url?: string;
 };
 
@@ -64,10 +67,10 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
               navigate(`./${resume.id}`);
             }}
           >
-            <h4>기본 이력서</h4>
+            <h4>{resume.name}</h4>
             {resume.url && <span>공고맞춤</span>}
           </div>
-          <p>포괄적인 기본 이력서</p>
+          <p>{resume.desc}</p>
         </div>
         <div ref={dropdownRef}>
           <Button
@@ -102,7 +105,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       <div className={desc}>
         <div>
           <p>최근 수정</p>
-          <p>2025.11.12</p>
+          <p>{resume.date}</p>
         </div>
         {resume.url && (
           <div>
@@ -126,7 +129,9 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
             text="채용공고"
             color="blue"
             icon="LINK_WHITE"
-            callback={() => {}}
+            callback={() => {
+              window.open(resume.url, "_blank", "noopener,noreferrer");
+            }}
             widthStyle="full"
           />
         )}

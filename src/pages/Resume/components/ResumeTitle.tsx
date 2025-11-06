@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components";
-import { headerText, subPage, btnsWrap } from "./ResumeTitle.css.ts";
+import { headerText, subPage, btnsWrap, prevWrap } from "./ResumeTitle.css.ts";
 
 interface ResumeProps {
   mode: "list" | "view" | "create" | "edit" | "correction";
@@ -15,6 +15,7 @@ export default function ResumeTitle({
   desc,
   resumeId,
 }: ResumeProps) {
+  const { id } = useParams();
   const navigate = useNavigate();
 
   let titleText = title;
@@ -22,24 +23,35 @@ export default function ResumeTitle({
   else if (mode === "create") titleText += "생성";
   else if (mode === "edit") titleText += "수정";
 
+  function handleSubmit() {
+    if (mode === "create") {
+      console.log("새 이력서 생성");
+    } else {
+      console.log("이력서 수정");
+    }
+  }
+
   return (
     <>
-      {mode !== "list" && (
-        <Button
-          text=""
-          color="none"
-          widthStyle="fit"
-          icon="PREV"
-          callback={() => {
-            navigate("./../resume/");
-          }}
-        />
-      )}
-      <div className={`${headerText} ${mode !== "list" && subPage}`}>
-        <h2 className={mode !== "list" ? "a11y-hidden" : ""}>{titleText}</h2>
-        {mode !== "list" && <p className="title">기본 이력서</p>}
-        <p className="desc">{desc}</p>
+      <div className={prevWrap}>
+        {mode !== "list" && (
+          <Button
+            text=""
+            color="none"
+            widthStyle="fit"
+            icon="PREV"
+            callback={() => {
+              navigate(-1);
+            }}
+          />
+        )}
+        <div className={`${headerText} ${mode !== "list" && subPage}`}>
+          <h2 className={mode !== "list" ? "a11y-hidden" : ""}>{titleText}</h2>
+          {mode !== "list" && <p className="title">기본 이력서</p>}
+          <p className="desc">{desc}</p>
+        </div>
       </div>
+
       <div className={btnsWrap}>
         {mode === "list" && (
           <Button
@@ -64,7 +76,9 @@ export default function ResumeTitle({
               text="저장하기"
               color="blue"
               widthStyle="fit"
-              callback={() => {}}
+              callback={() => {
+                handleSubmit();
+              }}
             />
           </>
         )}
@@ -89,7 +103,9 @@ export default function ResumeTitle({
               text="수정하기"
               color="blue"
               widthStyle="fit"
-              callback={() => {}}
+              callback={() => {
+                navigate(`./${id}/edit`);
+              }}
             />
           </>
         )}

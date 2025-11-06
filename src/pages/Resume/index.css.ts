@@ -18,4 +18,11 @@ export const header = style({
   justifyContent: "start",
   alignItems: "center",
   gap: vars.spacing.md,
+
+  "@media": {
+    "(max-width: 620px)": {
+      flexDirection: "column-reverse",
+      alignItems: "flex-start",
+    },
+  },
 });

@@ -12,10 +12,9 @@ import Profile from "@/pages/Profile";
 
 import Resume from "@/pages/Resume";
 import ResumeList from "@/pages/Resume/ResumeList";
-import ResumeCreate from "@/pages/Resume/ResumeCreate";
 import ResumeDetail from "@/pages/Resume/ResumeDetail";
-import ResumeEdit from "@/pages/Resume/ResumeEdit";
 import ResumeCorrection from "@/pages/Resume/ResumeCorrection";
+import ResumeForm from "@/pages/Resume/ResumeForm";
 
 // 임시 페이지
 const Dashboard = () => (
@@ -95,9 +94,9 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/resume" element={<Resume />}>
                 <Route index element={<ResumeList />} />
-                <Route path="new" element={<ResumeCreate />} />
+                <Route path="new" element={<ResumeForm mode="create" />} />
                 <Route path=":id" element={<ResumeDetail />} />
-                <Route path=":id/edit" element={<ResumeEdit />} />
+                <Route path=":id/edit" element={<ResumeForm mode="edit" />} />
                 <Route path=":id/correction" element={<ResumeCorrection />} />
               </Route>
               <Route path="/jobPost" element={<JobPost />} />
