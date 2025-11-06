@@ -2,7 +2,15 @@ import { inputContainer, label, inputBase, errorMessage } from "./Input.css";
 
 interface InputProps {
   label?: string;
-  type?: "text" | "email" | "password" | "tel";
+  type?:
+    | "text"
+    | "email"
+    | "password"
+    | "tel"
+    | "file"
+    | "date"
+    | "checkbox"
+    | "radio";
   placeholder?: string;
   value: string;
   onChange: (value: string) => void;
@@ -11,7 +19,7 @@ interface InputProps {
   disabled?: boolean;
 }
 
-export default function Input({
+export default function Text({
   label: labelText,
   type = "text",
   placeholder,

@@ -11,6 +11,7 @@ export const card = style({
 
   h3: {
     fontWeight: vars.typography.fontWeight.normal,
+    flex: 1,
   },
 });
 
@@ -25,4 +26,8 @@ export const grid = style({
       gap: `${vars.spacing.lg} 0`,
     },
   },
+});
+
+export const titleWrap = style({
+  display: "flex",
 });
