@@ -63,15 +63,12 @@ export const menuLink = style({
   }
 });
 
-export const logoutItem = style({
+export const logoutLink = style({
+  color: vars.color.delete,
   ":hover": {
     background: "#FEF2F2",
   },
   ":active": {
     background: "#FEF2F2",
   }
-});
-
-export const logoutLink = style({
-  color: vars.color.delete
 });
