@@ -2,9 +2,7 @@ import { style } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
 
 export const profileContainer = style({
-  marginLeft: "15%",
-  width: "85%",
-  minHeight: "100vh",
+  width: "100%",
   backgroundColor: vars.color.white,
   display: "flex",
   flexDirection: "column",
@@ -13,7 +11,7 @@ export const profileContainer = style({
 
 export const profileContent = style({
   width: "100%",
-  maxWidth: "800px",
+  maxWidth: "1280px",
   padding: vars.spacing.lg,
   display: "flex",
   flexDirection: "column",
