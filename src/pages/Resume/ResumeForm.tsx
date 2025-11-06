@@ -1,9 +1,9 @@
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import ResumeCard from "./components/ResumeCard";
-import ResumeCardRow from "./components/ResumeCardRow";
-import { flex } from "./ResumeDetail.css.ts";
-import { Fragment } from "react/jsx-runtime";
-import { useEffect } from "react";
+
+interface ResumeFormProps {
+  mode: "create" | "edit";
+}
 
 type ResumeData = {
   id: string;
@@ -56,8 +56,9 @@ type ResumeData = {
   }[];
 };
 
-export default function ResumeDetail() {
+export default function ResumeForm({ mode }: ResumeFormProps) {
   const { id } = useParams();
+  const [form, setForm] = useState<ResumeData>({} as ResumeData);
 
   const resumeData: ResumeData = {
     id: "1",
@@ -162,123 +163,28 @@ export default function ResumeDetail() {
     ],
   };
 
-  useEffect(() => {}, [id]);
+  useEffect(() => {
+    if (mode === "edit" && id) {
+      // 기존 이력서 불러오기 로직
+      // fetch(`/api/resume/${resumeId}`).then(...)
+      setForm(resumeData);
+    }
+  }, [mode, id]);
 
   return (
-    <div className={flex}>
-      <ResumeCard title="증명사진">
-        <ResumeCardRow
-          imgUrl={resumeData.imgUrl}
-          isPhoto={true}
-          widthType="full"
-        />
-      </ResumeCard>
-      {resumeData.url && (
-        <ResumeCard title="공고 URL">
-          <ResumeCardRow desc={resumeData.url} isUrl={true} widthType="full" />
-        </ResumeCard>
-      )}
-      <ResumeCard title="기본 정보">
-        <ResumeCardRow lavel="이름" value={resumeData.name} widthType="half" />
-        <ResumeCardRow
-          lavel="이메일"
-          value={resumeData.email}
-          widthType="half"
-        />
-        <ResumeCardRow
-          lavel="연락처"
-          value={resumeData.phone}
-          widthType="half"
-        />
-        <ResumeCardRow
-          lavel="성별"
-          value={resumeData.gender}
-          widthType="half"
-        />
-        <ResumeCardRow
-          lavel="주소"
-          value={resumeData.address}
-          widthType="half"
-        />
-        <ResumeCardRow
-          lavel="병역 구분"
-          value={resumeData.military_service}
-          widthType="half"
-        />
-      </ResumeCard>
-      <ResumeCard title="자기소개">
-        <ResumeCardRow desc={resumeData.self_introduction} widthType="full" />
-      </ResumeCard>
-      <ResumeCard title="경력">
-        {resumeData.experience?.map((experienceItem, idx) => {
-          const date = `${experienceItem.start_date} ~ ${
-            experienceItem.employment_status === "Y"
-              ? "현재"
-              : experienceItem.end_date
-          }`;
-
-          return (
-            <Fragment key={idx}>
-              {idx > 0 && <hr />}
-              <ResumeCardRow
-                key={idx}
-                subTile={experienceItem.position}
-                value={experienceItem.job_title}
-                desc={experienceItem.job_description}
-                date={date}
-                widthType="full"
-              />
-            </Fragment>
-          );
-        })}
-      </ResumeCard>
-      <ResumeCard title="경험/활동">
-        {resumeData.activity?.map((activityItem, idx) => {
-          const date = `${activityItem.start_date} ~ ${
-            activityItem.end_date === "" ? "현재" : activityItem.end_date
-          }`;
-
-          return (
-            <Fragment key={idx}>
-              {idx > 0 && <hr />}
-              <ResumeCardRow
-                key={idx}
-                value={activityItem.title}
-                desc={activityItem.description}
-                date={date}
-                widthType="full"
-              />
-            </Fragment>
-          );
-        })}
-      </ResumeCard>
-      <ResumeCard title="기술 스택">
-        <ResumeCardRow keyword={resumeData.technology_stack} widthType="full" />
-      </ResumeCard>
-      <ResumeCard title="자격증 및 어학">
-        {resumeData.qualifications?.map((qualificationItem, idx) => {
-          const subTile = `${qualificationItem.organ} · ${
-            qualificationItem.acquisition_date
-          }${
-            qualificationItem.score === undefined
-              ? ""
-              : ` · ${qualificationItem.score}`
-          }`;
-
-          return (
-            <Fragment key={idx}>
-              {idx > 0 && <hr />}
-              <ResumeCardRow
-                key={idx}
-                subTile={subTile}
-                value={qualificationItem.title}
-                widthType="full"
-                isLisence={!qualificationItem.score}
-              />
-            </Fragment>
-          );
-        })}
-      </ResumeCard>
-    </div>
+    <form onSubmit={(e) => e.preventDefault()}>
+      <label>제목</label>
+      <input
+        value={form.title}
+        onChange={(e) => setForm({ ...form, title: e.target.value })}
+      />
+      <label>내용</label>
+      <textarea
+        value={form.self_introduction}
+        onChange={(e) =>
+          setForm({ ...form, self_introduction: e.target.value })
+        }
+      />
+    </form>
   );
 }

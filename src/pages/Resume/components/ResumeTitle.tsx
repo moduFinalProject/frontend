@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components";
 import { headerText, subPage, btnsWrap, prevWrap } from "./ResumeTitle.css.ts";
 
@@ -15,12 +15,21 @@ export default function ResumeTitle({
   desc,
   resumeId,
 }: ResumeProps) {
+  const { id } = useParams();
   const navigate = useNavigate();
 
   let titleText = title;
   if (mode === "view") titleText += "보기";
   else if (mode === "create") titleText += "생성";
   else if (mode === "edit") titleText += "수정";
+
+  function handleSubmit() {
+    if (mode === "create") {
+      console.log("새 이력서 생성");
+    } else {
+      console.log("이력서 수정");
+    }
+  }
 
   return (
     <>
@@ -32,7 +41,7 @@ export default function ResumeTitle({
             widthStyle="fit"
             icon="PREV"
             callback={() => {
-              navigate("./../resume/");
+              navigate(-1);
             }}
           />
         )}
@@ -67,7 +76,9 @@ export default function ResumeTitle({
               text="저장하기"
               color="blue"
               widthStyle="fit"
-              callback={() => {}}
+              callback={() => {
+                handleSubmit();
+              }}
             />
           </>
         )}
@@ -92,7 +103,9 @@ export default function ResumeTitle({
               text="수정하기"
               color="blue"
               widthStyle="fit"
-              callback={() => {}}
+              callback={() => {
+                navigate(`./${id}/edit`);
+              }}
             />
           </>
         )}

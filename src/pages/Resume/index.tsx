@@ -39,9 +39,6 @@ export default function Resume() {
     ? "correction"
     : "list";
 
-  console.log("mode", mode);
-  console.log("id", id);
-
   return (
     <div className={container}>
       <div className={header}>

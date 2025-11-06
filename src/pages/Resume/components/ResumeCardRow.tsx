@@ -1,3 +1,4 @@
+import { Fragment } from "react/jsx-runtime";
 import {
   row,
   widthStyle,
@@ -49,11 +50,11 @@ export default function ResumeCardRow({
             {lavel && <h4>{lavel}</h4>}
             {!Array.isArray(value) && (
               <p className={flexContainer}>
-                {value?.split("\n").map((line) => (
-                  <>
+                {value?.split("\n").map((line, idx) => (
+                  <Fragment key={idx}>
                     {line}
                     <br />
-                  </>
+                  </Fragment>
                 ))}
                 {isLisence && <span className={lisence}>자격증</span>}
               </p>
@@ -65,8 +66,8 @@ export default function ResumeCardRow({
       )}
       {desc && (
         <div className={descText}>
-          {desc.split("\n").map((line) => (
-            <>
+          {desc.split("\n").map((line, idx) => (
+            <Fragment key={idx}>
               {isUrl ? (
                 <a className={descTextLink} href={line} target="_blank">
                   {line}
@@ -75,14 +76,16 @@ export default function ResumeCardRow({
                 line
               )}
               <br />
-            </>
+            </Fragment>
           ))}
         </div>
       )}
       {Array.isArray(keyword) && (
         <div className={stackWrap}>
           {keyword.map((item) => (
-            <span className={stack}>{item}</span>
+            <span key={item} className={stack}>
+              {item}
+            </span>
           ))}
         </div>
       )}
