@@ -2,7 +2,6 @@ import { ReactNode } from "react";
 import { layoutContainer, layoutContent, layoutMain } from "./Layout.css";
 import Header from "@/components/Header/Header";
 import Topbar from "@/components/Topbar/Topbar";
-import Footer from "@/components/Footer/Footer";
 
 interface LayoutProps {
   children: ReactNode;
@@ -17,7 +16,6 @@ export default function Layout({ children }: LayoutProps) {
         <main className={layoutMain}>
           {children}
         </main>
-        <Footer />
       </div>
     </div>
   );
