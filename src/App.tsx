@@ -1,10 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { vars } from "@/design-system";
 
-import Header from "@/components/Header/Header";
-import LeftMenu from "@/components/LeftMenu/LeftMenu";
-import Footer from "@/components/Footer/Footer";
-
+import Layout from "@/components/Layout/Layout";
 import Landing from "@/pages/Landing";
 import NotFound from "@/pages/NotFound";
 import Profile from "@/pages/Profile";
@@ -80,39 +77,73 @@ const StudyGuide = () => (
 function App() {
   let loginToken: boolean = true;
 
+  const ProtectedRoute = ({ element }: { element: React.ReactNode }) => {
+    if (!loginToken) {
+      return <Landing />;
+    }
+    return element as React.ReactElement;
+  };
+
   return (
-    <>
-      {!loginToken && <Landing />}
-      {loginToken && (
-        <>
-          <Header />
-          <main style={{ display: "flex" }}>
-            <LeftMenu></LeftMenu>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/resume" element={<Resume />}>
-                <Route index element={<ResumeList />} />
-                <Route path="new" element={<ResumeForm mode="create" />} />
-                <Route path=":id" element={<ResumeDetail />} />
-                <Route path=":id/edit" element={<ResumeForm mode="edit" />} />
-                <Route path=":id/correction" element={<ResumeCorrection />} />
-              </Route>
-              <Route path="/jobPost" element={<JobPost />} />
-              <Route
-                path="/resumeFeedbackHis"
-                element={<ResumeFeedbackHis />}
-              />
-              <Route path="/interview" element={<Interview />} />
-              <Route path="/studyGuide" element={<StudyGuide />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-          <Footer />
-        </>
-      )}
-    </>
+    <Routes>
+      <Route path="/landing" element={<Landing />} />
+      
+      <Route path="/" element={loginToken ? (
+        <Layout>
+          <ProtectedRoute element={<Dashboard />} />
+        </Layout>
+      ) : <Landing />} />
+
+      <Route path="/dashboard" element={loginToken ? (
+        <Layout>
+          <ProtectedRoute element={<Dashboard />} />
+        </Layout>
+      ) : <Landing />} />
+
+      <Route path="/resume" element={loginToken ? (
+        <Layout>
+          <Resume />
+        </Layout>
+      ) : <Landing />}>
+        <Route index element={<ResumeList />} />
+        <Route path="new" element={<ResumeForm mode="create" />} />
+        <Route path=":id" element={<ResumeDetail />} />
+        <Route path=":id/edit" element={<ResumeForm mode="edit" />} />
+        <Route path=":id/correction" element={<ResumeCorrection />} />
+      </Route>
+
+      <Route path="/jobPost" element={loginToken ? (
+        <Layout>
+          <ProtectedRoute element={<JobPost />} />
+        </Layout>
+      ) : <Landing />} />
+
+      <Route path="/resumeFeedbackHis" element={loginToken ? (
+        <Layout>
+          <ProtectedRoute element={<ResumeFeedbackHis />} />
+        </Layout>
+      ) : <Landing />} />
+
+      <Route path="/interview" element={loginToken ? (
+        <Layout>
+          <ProtectedRoute element={<Interview />} />
+        </Layout>
+      ) : <Landing />} />
+
+      <Route path="/studyGuide" element={loginToken ? (
+        <Layout>
+          <ProtectedRoute element={<StudyGuide />} />
+        </Layout>
+      ) : <Landing />} />
+
+      <Route path="/profile" element={loginToken ? (
+        <Layout>
+          <ProtectedRoute element={<Profile />} />
+        </Layout>
+      ) : <Landing />} />
+
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 

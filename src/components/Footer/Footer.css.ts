@@ -8,5 +8,6 @@ export const footer = style({
   alignContent: "center",    
   margin: vars.spacing.lg,
   backgroundColor: vars.color.white,
-  borderTop: `1px solid ${vars.color.line}`
+  borderTop: `1px solid ${vars.color.line}`,
+  marginTop: "auto"  
 });
