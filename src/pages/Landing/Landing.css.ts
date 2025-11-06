@@ -18,13 +18,12 @@ export const header = style({
 });
 
 export const headerWrapper = style({
-  width: "1280px",
-  display: "flex",
-  justifyContent: "center",
+  maxWidth: "1280px",
+  width: "100%",
 });
 
 export const headerContainer = style({
-  width: "90%",
+  width: "100%",
   height: "68px",
   display: "flex",
   alignItems: "center",
@@ -55,17 +54,18 @@ export const mainSection = style({
 });
 
 export const mainContainer = style({
-  width: "1280px",
+  maxWidth: "1280px",
+  width: "100%",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
 });
 
 export const bannerContainer = style({
-  width: "90%",
-  height: "474px",
+  width: "95%",
   display: "flex",
   alignItems: "center",
+  justifyContent: "center",
 });
 
 export const bannerContent = style({
