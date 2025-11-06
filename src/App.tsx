@@ -8,6 +8,7 @@ import Footer from "@/components/Footer/Footer";
 
 import Landing from "@/pages/Landing";
 import NotFound from "@/pages/NotFound";
+import Profile from "@/pages/Profile";
 
 import Resume from "@/pages/Resume";
 import ResumeList from "@/pages/Resume/ResumeList";
@@ -74,18 +75,6 @@ const StudyGuide = () => (
     }}
   >
     학습가이드
-  </div>
-);
-const Profile = () => (
-  <div
-    style={{
-      marginLeft: "15%",
-      width: "85%",
-      padding: "20px",
-      borderTop: `1px solid ${vars.color.line}`,
-    }}
-  >
-    마이페이지
   </div>
 );
 
