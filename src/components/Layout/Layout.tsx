@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { layoutContainer, layoutContent, layoutMain } from "./Layout.css";
 import Header from "@/components/Header/Header";
 import Topbar from "@/components/Topbar/Topbar";
