@@ -39,8 +39,7 @@ export const menuItem = style({
   alignItems: "center",  
   padding:vars.spacing.xs,
   cursor: "pointer",
-  transition: "background-color 0.2s",
-  borderRadius: vars.borderRadius.sm,  
+  transition: "background-color 0.2s",  
 });
 
 export const menuItemActive = style({
@@ -55,6 +54,7 @@ export const menuLink = style({
   alignItems: "center",
   gap: vars.spacing.md,
   padding: vars.spacing.md,
+  borderRadius: vars.borderRadius.sm,  
   ":hover": {
     background: vars.color.sub,    
   },
@@ -65,10 +65,10 @@ export const menuLink = style({
 
 export const logoutItem = style({
   ":hover": {
-    background: vars.color.landingBg,
+    background: vars.color.delete,
   },
   ":active": {
-    background: vars.color.landingBg,
+    background: vars.color.delete,
   }
 });
 
