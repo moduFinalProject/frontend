@@ -14,7 +14,9 @@ import logout from "@/assets/icons/Icon-logout.svg";
 import alam from "@/assets/icons/icon-alarm.svg";
 import prevIcon from "@/assets/icons/Icon-prev.svg";
 import downIcon from "@/assets/icons/Icon-download.svg";
-import google from "@/assets/icons/icon-google.svg"
+import google from "@/assets/icons/icon-google.svg";
+import imgIcon from "@/assets/icons/Icon-img.svg";
+import upIcon from "@/assets/icons/Icon-upload.svg";
 
 export const ICONS = {
   DEL: delIcon,
@@ -34,4 +36,6 @@ export const ICONS = {
   DOWN: downIcon,
   PREV: prevIcon,
   GOOGLE: google,
+  IMG: imgIcon,
+  UP: upIcon,
 } as const;
