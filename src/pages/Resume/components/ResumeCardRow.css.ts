@@ -21,7 +21,7 @@ export const widthStyle = styleVariants({
     gridColumn: "span 2",
     minWidth: 0,
     "@media": {
-      "(max-width: 620px)": {
+      "(max-width: 768px)": {
         gridColumn: "span 1",
       },
     },

@@ -49,7 +49,7 @@ export const btnsWrap = style({
   gap: vars.spacing.sm,
 
   "@media": {
-    "(max-width: 620px)": {
+    "(max-width: 768px)": {
       alignSelf: "flex-end",
     },
   },

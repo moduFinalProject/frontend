@@ -20,7 +20,7 @@ export const grid = style({
   gap: vars.spacing.lg,
 
   "@media": {
-    "(max-width: 620px)": {
+    "(max-width: 768px)": {
       gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
       gap: `${vars.spacing.lg} 0`,
     },
