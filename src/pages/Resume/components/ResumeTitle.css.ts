@@ -12,7 +12,7 @@ export const headerText = style({
   h2: {
     margin: 0,
     fontSize: vars.typography.fontSize.xl,
-    fontweight: vars.typography.fontWeight.bold,
+    fontWeight: vars.typography.fontWeight.bold,
   },
   p: {
     margin: 0,
