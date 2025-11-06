@@ -28,7 +28,7 @@ export default function File({
 
   useEffect(() => {
     const imgWrap = document.getElementById("imgWrap");
-    if (imgWrap) {
+    if (imgWrap && value) {
       imgWrap.innerHTML = `<img src="${value}" alt="증명사진" />`;
     }
   }, []);
