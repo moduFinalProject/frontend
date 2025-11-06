@@ -2,7 +2,9 @@ import { Routes, Route } from "react-router-dom";
 import { vars } from "@/design-system";
 
 import Layout from "@/components/Layout/Layout";
+
 import Landing from "@/pages/Landing";
+import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Profile from "@/pages/Profile";
 
@@ -18,8 +20,7 @@ const Dashboard = () => (
     style={{
       marginLeft: "15%",
       width: "85%",
-      padding: "20px",
-      borderTop: `1px solid ${vars.color.line}`,
+      padding: "20px",      
     }}
   >
     대시보드 페이지
@@ -30,8 +31,7 @@ const JobPost = () => (
     style={{
       marginLeft: "15%",
       width: "85%",
-      padding: "20px",
-      borderTop: `1px solid ${vars.color.line}`,
+      padding: "20px",      
     }}
   >
     채용공고 관리 페이지
@@ -42,8 +42,7 @@ const ResumeFeedbackHis = () => (
     style={{
       marginLeft: "15%",
       width: "85%",
-      padding: "20px",
-      borderTop: `1px solid ${vars.color.line}`,
+      padding: "20px",      
     }}
   >
     공고별 첨삭 이력 페이지
@@ -54,8 +53,7 @@ const Interview = () => (
     style={{
       marginLeft: "15%",
       width: "85%",
-      padding: "20px",
-      borderTop: `1px solid ${vars.color.line}`,
+      padding: "20px",      
     }}
   >
     AI면접
@@ -66,8 +64,7 @@ const StudyGuide = () => (
     style={{
       marginLeft: "15%",
       width: "85%",
-      padding: "20px",
-      borderTop: `1px solid ${vars.color.line}`,
+      padding: "20px",      
     }}
   >
     학습가이드
@@ -87,6 +84,7 @@ function App() {
   return (
     <Routes>
       <Route path="/landing" element={<Landing />} />
+      <Route path="/login" element={<Login />} />
       
       <Route path="/" element={loginToken ? (
         <Layout>
