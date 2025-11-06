@@ -8,6 +8,7 @@ type Resume = {
   desc: string;
   date: string;
   url?: string;
+  end_date?: string;
 };
 
 export default function ResumeList() {
@@ -27,6 +28,7 @@ export default function ResumeList() {
         desc: "기본 이력서 첨삭",
         date: "2025.10.28",
         url: "https://career.example.com/job/123456",
+        end_date: "2025.11.31",
       },
       {
         id: "3",
@@ -34,6 +36,7 @@ export default function ResumeList() {
         desc: "기본 이력서 첨삭",
         date: "2025.10.28",
         url: "https://career.example.com/job/123456",
+        end_date: "2025.11.31",
       },
       {
         id: "4",
@@ -41,6 +44,7 @@ export default function ResumeList() {
         desc: "기본 이력서 첨삭",
         date: "2025.10.30",
         url: "https://career.example.com/job/123456",
+        end_date: "2025.11.31",
       },
       {
         id: "5",
@@ -48,6 +52,7 @@ export default function ResumeList() {
         desc: "카카오 이력서 첨삭",
         date: "2025.10.30",
         url: "https://career.example.com/job/123456",
+        end_date: "2025.11.31",
       },
       {
         id: "6",
@@ -55,6 +60,7 @@ export default function ResumeList() {
         desc: "카카오 이력서 첨삭",
         date: "2025.10.31",
         url: "https://career.example.com/job/123456",
+        end_date: "2025.11.31",
       },
     ]);
   }, []);

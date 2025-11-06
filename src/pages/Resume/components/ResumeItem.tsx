@@ -16,6 +16,7 @@ type Resume = {
   desc: string;
   date: string;
   url?: string;
+  end_date?: string;
 };
 
 interface ResumeItemProps {
@@ -108,10 +109,16 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
           <p>{resume.date}</p>
         </div>
         {resume.url && (
-          <div>
-            <p>맞춤 공고</p>
-            <span>1개</span>
-          </div>
+          <>
+            <div>
+              <p>맞춤 공고</p>
+              <span>1개</span>
+            </div>
+            <div>
+              <p>마감일</p>
+              <p>~ {resume.end_date}</p>
+            </div>
+          </>
         )}
       </div>
       <div className={btns}>
