@@ -15,8 +15,9 @@ export const label = style({
 });
 
 export const inputBase = style({
-  width: "100%",
-  height: "36px",
+  // width: "100%",
+  // height: "36px",
+  flex: 1,
   padding: `${vars.spacing.xs} 12px`,
   fontSize: vars.typography.fontSize.sm,
   lineHeight: "20px",
@@ -45,4 +46,13 @@ export const errorMessage = style({
   fontSize: vars.typography.fontSize.sm,
   color: vars.color.delete,
   lineHeight: "14px",
+});
+
+export const useBtn = style({
+  display: "flex",
+  gap: vars.spacing.sm,
+
+  button: {
+    flexBasis: "auto",
+  },
 });
