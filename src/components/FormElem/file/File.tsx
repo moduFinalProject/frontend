@@ -1,7 +1,7 @@
 // import { inputContainer, label, inputBase, errorMessage } from "./Input.css";
 
 import { Button } from "@/components/Button";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { btnWrap } from "./File.css";
 
 interface InputProps {
@@ -18,12 +18,20 @@ interface InputProps {
 export default function File({
   label: labelText,
   type = "img",
+  value,
   placeholder,
   onBlur,
   error,
   disabled = false,
 }: InputProps) {
   const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const imgWrap = document.getElementById("imgWrap");
+    if (imgWrap) {
+      imgWrap.innerHTML = `<img src="${value}" alt="증명사진" />`;
+    }
+  }, []);
 
   const handleButtonClick = () => {
     fileRef.current?.click();
