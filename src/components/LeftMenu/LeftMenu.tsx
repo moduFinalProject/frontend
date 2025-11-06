@@ -1,5 +1,4 @@
 import { leftMenu, menuContainer, menuBottom, menuItem, menuItemActive, menuLink } from "./LeftMenu.css";
-import { Button } from "@/components/Button";
 import { ICONS } from "@/constants/icons";
 import { Link, useLocation  } from "react-router-dom";
 

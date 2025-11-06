@@ -40,6 +40,12 @@ export const buttonColor = styleVariants({
     border: `1px solid ${vars.color.white}`,
     fontWeight: vars.typography.fontWeight.normal,
   },
+  white: {
+    backgroundColor: vars.color.white,
+    color: vars.color.defaultText,
+    border: `1px solid ${vars.color.line}`,
+    fontWeight: vars.typography.fontWeight.normal,
+  },
   red: {
     backgroundColor: vars.color.delete,
     color: vars.color.mainBg,

@@ -1,6 +1,5 @@
 import { style, styleVariants } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
-import { flex } from "../ResumeDetail.css";
 
 export const row = style({
   display: "flex",

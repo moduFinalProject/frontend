@@ -1,2 +1,1 @@
-import { style } from "@vanilla-extract/css";
-import { vars } from "@/design-system";
+// Empty CSS file - remove unused imports
