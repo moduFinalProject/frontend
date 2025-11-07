@@ -12,6 +12,7 @@ export const baseButton = style({
   justifyContent: "center",
   alignItems: "center",
   gap: vars.spacing.sm,
+  alignSelf: "flex-start",
 
   selectors: {
     "&:hover": {
@@ -79,5 +80,6 @@ export const buttonWidth = styleVariants({
   },
   fit: {
     width: "fit-content",
+    flexShrink: 0,
   },
 });
