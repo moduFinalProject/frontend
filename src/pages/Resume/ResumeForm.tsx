@@ -7,7 +7,7 @@ import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import Text, { Textarea } from "@/components/FormElem/text";
 import File from "@/components/FormElem/file/File";
-import { container } from "./index.css.ts";
+import { container, innerContainer } from "./index.css.ts";
 
 const basicInfoSchema = z.object({
   user_info: {
@@ -263,7 +263,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         basicInfoForm.handleSubmit();
       }}
     >
-      <div className={container}>
+      <div className={`${container} ${innerContainer}`}>
         <ResumeCard isMust={true}>
           <ResumeCardRow
             value="표시는 필수 항목입니다. (증명사진, 기본정보, 경력, 학력)"
