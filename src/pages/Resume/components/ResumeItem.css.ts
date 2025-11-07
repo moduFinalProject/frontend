@@ -79,6 +79,7 @@ export const btns = style({
 
   button: {
     fontSize: vars.typography.fontSize.sm,
+    alignSelf: "auto",
   },
 });
 
