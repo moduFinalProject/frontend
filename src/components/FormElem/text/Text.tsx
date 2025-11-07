@@ -5,6 +5,7 @@ import {
   inputBase,
   errorMessage,
   useBtn,
+  hidden,
 } from "./Input.css";
 
 interface InputProps {
@@ -18,6 +19,7 @@ interface InputProps {
   disabled?: boolean;
   isMust?: boolean;
   isBtn?: boolean;
+  isHidden?: boolean;
 }
 
 export default function Text({
@@ -31,9 +33,10 @@ export default function Text({
   disabled = false,
   isMust = false,
   isBtn = false,
+  isHidden = false,
 }: InputProps) {
   return (
-    <div className={inputContainer}>
+    <div className={`${inputContainer} ${isHidden && hidden}`}>
       {labelText && (
         <label className={label}>
           {labelText}
