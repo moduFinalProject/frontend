@@ -1,7 +1,7 @@
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
-import Input from "@/components/Input";
+
 import { Button } from "@/components/Button";
 import IconPrev from "@/assets/icons/Icon-prev.svg";
 import {
@@ -22,6 +22,8 @@ import {
   divider,
   warningText,
 } from "./Profile.css";
+
+import Input from "@/components/FormElem/text/Input";
 
 // Zod 스키마 정의
 const basicInfoSchema = z.object({
