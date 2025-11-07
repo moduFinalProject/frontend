@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ResumeCard from "./components/card/ResumeCard";
 import ResumeCardRow from "./components/card/ResumeCardRow";
@@ -10,7 +10,6 @@ import File from "@/components/FormElem/file/File";
 import { container, innerContainer } from "./index.css.ts";
 import { basicInfoSchema } from "./components/form/validators";
 import Select from "@/components/FormElem/text/Select.tsx";
-// import EducationSection from "./components/form/EducationSection.tsx";
 
 interface ResumeFormProps {
   mode: "create" | "edit";
@@ -190,6 +189,42 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   const { id } = useParams();
   const isEditMode = Boolean(id);
 
+  // 항목 추가를 위한 빈 템플릿
+  const emptyEducationItem: EducationItem = {
+    organ: "",
+    department: "",
+    degree_level: "",
+    score: "",
+    start_date: "",
+    end_date: "",
+  };
+  const emptyExperienceItem: ExperienceItem = {
+    title: "",
+    department: "",
+    position: "",
+    start_date: "",
+    end_date: "",
+    description: "",
+  };
+  const emptyProjectItem: ProjectItem = {
+    title: "",
+    description: "",
+    start_date: "",
+    end_date: "",
+  };
+  const emptyActivityItem: ActivityItem = {
+    title: "",
+    description: "",
+    start_date: "",
+    end_date: "",
+  };
+  const emptyQualificationItem: QualificationItem = {
+    qua_title: "",
+    organ: "",
+    acquisition_date: "",
+    score: "",
+  };
+
   const defaultValues = isEditMode
     ? resumeDataSample
     : {
@@ -204,16 +239,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           address: "",
           military_service: "",
         },
-        education: [
-          {
-            organ: "",
-            department: "",
-            degree_level: "",
-            score: "",
-            start_date: "",
-            end_date: "",
-          },
-        ],
+        education: [emptyEducationItem],
         self_introduction: "",
         experience: [],
         project: [],
@@ -427,53 +453,100 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         </ResumeCard>
       );
 
-    // experience, project 등
     return (
-      <ResumeCard
-        key={key}
-        title={key}
-        useButton={true}
-        isMust={"education".includes(key)}
-      >
-        {value.length === 0 && <p>등록된 항목이 없습니다.</p>}
-        {value.map((item, idx) => (
-          <ResumeCard key={idx} title={`${key} #${idx + 1}`}>
-            {Object.entries(item).map(([k, v]) => (
-              <form.Field key={k} name={`${key}[${idx}].${k}`}>
-                {(field) => (
-                  <ResumeCardRow
-                    widthType={
-                      k === "description" || k === "title" ? "full" : "half"
-                    }
-                    input={
-                      k === "description" ? (
-                        <Textarea
-                          rows={8}
-                          value={field.state.value || v}
-                          onChange={field.handleChange}
+      <form.Field key={key} name={key}>
+        {(field) => {
+          const fieldArrayValue = field.state.value as any[];
+          console.log(fieldArrayValue);
+
+          // experience, project 등
+          const isEducation = key === "education";
+          const handleAddItem = () => {
+            let newItem;
+            if (key === "experience") newItem = emptyExperienceItem;
+            else if (key === "education") newItem = emptyEducationItem;
+            else if (key === "project") newItem = emptyProjectItem;
+            else if (key === "activity") newItem = emptyActivityItem;
+            else if (key === "qualifications") newItem = emptyQualificationItem;
+
+            if (newItem) {
+              field.pushValue(newItem);
+              console.log(newItem);
+              console.log("추가완료");
+            }
+          };
+
+          const handleRemoveItem = (index: number) => {
+            if (isEducation && fieldArrayValue.length <= 1) {
+              alert("학력은 최소 한 개 이상 등록해야 합니다.");
+              return;
+            }
+            field.removeValue(index);
+          };
+
+          return (
+            <ResumeCard
+              key={key}
+              title={key}
+              useButton={true}
+              btnType="PLUSBLACK"
+              onAdd={handleAddItem}
+              isMust={"education".includes(key)}
+            >
+              {fieldArrayValue.length === 0 && <p>등록된 항목이 없습니다.</p>}
+              {fieldArrayValue.map((item, idx) => (
+                <ResumeCard
+                  key={idx}
+                  title={`${key} #${idx + 1}`}
+                  useButton={true}
+                  btnType="DEL"
+                  onDelete={
+                    isEducation && fieldArrayValue.length <= 1
+                      ? undefined
+                      : () => handleRemoveItem(idx)
+                  }
+                >
+                  {Object.entries(item).map(([k, v]) => (
+                    <form.Field key={k} name={`${key}[${idx}].${k}`}>
+                      {(field) => (
+                        <ResumeCardRow
+                          widthType={
+                            k === "description" || k === "title"
+                              ? "full"
+                              : "half"
+                          }
+                          input={
+                            k === "description" ? (
+                              <Textarea
+                                rows={8}
+                                value={field.state.value || v}
+                                onChange={field.handleChange}
+                              />
+                            ) : (
+                              <Text
+                                label={k}
+                                isMust={[
+                                  "organ",
+                                  "department",
+                                  "start_date",
+                                  "end_date",
+                                ].includes(k)}
+                                type={k.includes("date") ? "month" : "text"}
+                                value={field.state.value || v}
+                                onChange={field.handleChange}
+                              />
+                            )
+                          }
                         />
-                      ) : (
-                        <Text
-                          label={k}
-                          isMust={[
-                            "organ",
-                            "department",
-                            "start_date",
-                            "end_date",
-                          ].includes(k)}
-                          type={k.includes("date") ? "month" : "text"}
-                          value={field.state.value || v}
-                          onChange={field.handleChange}
-                        />
-                      )
-                    }
-                  />
-                )}
-              </form.Field>
-            ))}
-          </ResumeCard>
-        ))}
-      </ResumeCard>
+                      )}
+                    </form.Field>
+                  ))}
+                </ResumeCard>
+              ))}
+            </ResumeCard>
+          );
+        }}
+      </form.Field>
     );
   }
 
@@ -498,266 +571,6 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           if (key !== "id")
             return renderFieldByType(form, key, value, isEditMode);
         })}
-        {/* {Object.entries(defaultValues).map(([key, value]) => {
-          // 기본 타입 (문자열)
-          if (typeof value === "string") {
-            if (!isEditMode && key === "url") return;
-            if (key === "id")
-              return (
-                <basicInfoForm.Field name={key}>
-                  {(field) => {
-                    return (
-                      <Text
-                        isHidden={true}
-                        // label="이력서 제목"
-                        value={field.state.value}
-                        onChange={field.handleChange}
-                        onBlur={field.handleBlur}
-                        error={field.state.meta.errors.join(", ")}
-                        placeholder=""
-                      />
-                    );
-                  }}
-                </basicInfoForm.Field>
-              );
-
-            if (key === "photoUrl")
-              return (
-                <ResumeCard key={key} title={key} isMust={true}>
-                  <basicInfoForm.Field name={key}>
-                    {(field) => {
-                      return (
-                        <ResumeCardRow
-                          widthType="full"
-                          isPhoto={true}
-                          input={
-                            <File
-                              label="사진 업로드"
-                              type="img"
-                              value={field.state.value}
-                              onChange={field.handleChange}
-                              onBlur={field.handleBlur}
-                              error={field.state.meta.errors.join(", ")}
-                              placeholder="권장 크기: 3:4 비율 (예: 300x400px)"
-                            />
-                          }
-                        />
-                      );
-                    }}
-                  </basicInfoForm.Field>
-                </ResumeCard>
-              );
-
-            return (
-              <ResumeCard
-                key={key}
-                title={key}
-                isMust={key === "title" && true}
-              >
-                <basicInfoForm.Field name={key}>
-                  {(field) => {
-                    return (
-                      <ResumeCardRow
-                        widthType="full"
-                        input={
-                          key === "self_introduction" ? (
-                            <Textarea
-                              // label="이력서 제목"
-                              value={field.state.value}
-                              onChange={field.handleChange}
-                              onBlur={field.handleBlur}
-                              error={field.state.meta.errors.join(", ")}
-                              placeholder=""
-                              rows={8}
-                            />
-                          ) : (
-                            <Text
-                              // label="이력서 제목"
-                              value={field.state.value}
-                              onChange={field.handleChange}
-                              onBlur={field.handleBlur}
-                              error={field.state.meta.errors.join(", ")}
-                              placeholder=""
-                              disabled={key === "url" && true}
-                            />
-                          )
-                        }
-                      />
-                    );
-                  }}
-                </basicInfoForm.Field>
-              </ResumeCard>
-            );
-          }
-
-          // 객체 타입 (user_info, education 등)
-          if (typeof value === "object" && !Array.isArray(value)) {
-            return (
-              <ResumeCard
-                key={key}
-                title={key}
-                isMust={key === "user_info" || (key === "education" && true)}
-              >
-                {Object.entries(value).map(([subKey, subValue], idx) => (
-                  <basicInfoForm.Field name={`${subKey}${idx}`}>
-                    {(field) => (
-                      <ResumeCardRow
-                        widthType="half"
-                        input={
-                          <Text
-                            label={subKey}
-                            type={
-                              subKey === "email"
-                                ? "email"
-                                : subKey === "phone"
-                                ? "tel"
-                                : subKey.includes("date")
-                                ? "month"
-                                : "text"
-                            }
-                            value={
-                              field.state.value ? field.state.value : subValue
-                            }
-                            onChange={field.handleChange}
-                            onBlur={field.handleBlur}
-                            error={field.state.meta.errors.join(", ")}
-                            placeholder=""
-                          />
-                        }
-                      />
-                    )}
-                  </basicInfoForm.Field>
-                ))}
-              </ResumeCard>
-            );
-          }
-
-          // 배열 타입 (experience, project 등)
-          if (Array.isArray(value)) {
-            return (
-              <ResumeCard
-                key={key}
-                title={key}
-                useButton={key !== "technology_stack" && true}
-              >
-                {value.length === 0 && key !== "technology_stack" ? (
-                  <p>등록된 항목이 없습니다.</p>
-                ) : key === "technology_stack" ? (
-                  <basicInfoForm.Field
-                    name="technology_stack"
-                    validators={{
-                      onChange: ({ value }) => {
-                        if (!value) return undefined;
-
-                        // ',' 기준으로 나누기
-                        const items = value
-                          .split(",")
-                          .map((v) => v.trim())
-                          .filter((v) => v.length > 0);
-
-                        // 2중복 여부 확인
-                        const duplicates = items.filter(
-                          (item, idx) => items.indexOf(item) !== idx
-                        );
-
-                        // 중복이 있으면 에러 메시지 리턴
-                        if (duplicates.length > 0) {
-                          return `중복된 항목이 있습니다: ${[
-                            ...new Set(duplicates),
-                          ].join(", ")}`;
-                        }
-
-                        // 통과
-                        return undefined;
-                      },
-                    }}
-                  >
-                    {(field) => (
-                      <>
-                        <ResumeCardRow
-                          widthType="full"
-                          input={
-                            <Text
-                              value={field.state.value}
-                              onChange={field.handleChange}
-                              onBlur={field.handleBlur}
-                              error={field.state.meta.errors.join(", ")}
-                              placeholder="기술명을 중복이 되지 않도록 콤마(,)로 구분하여 입력하세요"
-                            />
-                          }
-                        />
-                      </>
-                    )}
-                  </basicInfoForm.Field>
-                ) : (
-                  value.map((item, idx) => (
-                    <ResumeCard key={idx} title={key}>
-                      {typeof item === "object"
-                        ? Object.entries(item).map(([k, v]) => (
-                            <basicInfoForm.Field key={k} name={`${k}${idx}`}>
-                              {(field) => {
-                                return (
-                                  <ResumeCardRow
-                                    widthType={
-                                      k === "description" || k === "title"
-                                        ? "full"
-                                        : "half"
-                                    }
-                                    input={
-                                      k === "description" ? (
-                                        <Textarea
-                                          label={k}
-                                          value={
-                                            field.state.value
-                                              ? field.state.value
-                                              : v
-                                          }
-                                          onChange={field.handleChange}
-                                          onBlur={field.handleBlur}
-                                          error={field.state.meta.errors.join(
-                                            ", "
-                                          )}
-                                          placeholder=""
-                                          rows={8}
-                                        />
-                                      ) : (
-                                        <Text
-                                          label={k}
-                                          type={
-                                            k.includes("date")
-                                              ? "month"
-                                              : "text"
-                                          }
-                                          value={
-                                            field.state.value
-                                              ? field.state.value
-                                              : v
-                                          }
-                                          onChange={field.handleChange}
-                                          onBlur={field.handleBlur}
-                                          error={field.state.meta.errors.join(
-                                            ", "
-                                          )}
-                                          placeholder=""
-                                          disabled={key === "url" && true}
-                                        />
-                                      )
-                                    }
-                                  />
-                                );
-                              }}
-                            </basicInfoForm.Field>
-                          ))
-                        : item}
-                    </ResumeCard>
-                  ))
-                )}
-              </ResumeCard>
-            );
-          }
-
-          return null;
-        })} */}
       </div>
     </form>
   );
