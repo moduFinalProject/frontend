@@ -47,7 +47,7 @@ type ResumeData = {
     department: string;
     start_date: string;
     end_date: string;
-    job_description: string;
+    description: string;
     employment_status: "Y" | "N";
   }[];
   education?: {
@@ -72,7 +72,7 @@ type ResumeData = {
   }[];
   technology_stack?: string[];
   qualifications?: {
-    title: string;
+    qua_title: string;
     organ: string;
     acquisition_date: string;
     score?: string;
@@ -95,13 +95,22 @@ const resumeData: ResumeData = {
   },
   self_introduction:
     "안녕하세요. 3년차 웹 개발자 김취업입니다.\n\n사용자 중심의 인터페이스 설계와 효율적인 코드 작성에 관심이 많으며, 항상 새로운 기술을 배우고 적용하는 것을 즐깁니다. 팀원들과의 원활한 소통을 통해 프로젝트를 성공적으로 이끌어 낸 경험이 있으며, 문제 해결 능력과 책임감을 바탕으로 맡은 업무를 완수하는 것을 목표로 하고 있습니다.\n\n지속적인 학습과 성장을 통해 더 나은 개발자가 되고자 노력하고 있습니다.",
+
+  education: {
+    organ: "한국대학교",
+    department: "컴퓨터공학",
+    degree_level: "학사",
+    score: "3.8 / 4.5",
+    start_date: "2020-06",
+    end_date: "2022-02",
+  },
   experience: [
     {
       job_title: "테크스타트업",
       position: "프론트엔드 개발자",
       start_date: "2022-03",
       end_date: "현재",
-      job_description:
+      description:
         "- React와 TypeScript를 활용한 웹 서비스 개발 및 유지보수\n- Redux를 이용한 상태 관리 구조 설계 및 구현\n- REST API 연동 및 데이터 처리 로직 개발\n- 반응형 웹 디자인 구현으로 모바일 사용자 경험 개선\n- Git을 활용한 버전 관리 및 코드 리뷰 참여\n- 웹 접근성 개선 작업으로 WCAG 2.1 AA 등급 달성",
       department: "개발팀",
       employment_status: "Y",
@@ -111,34 +120,26 @@ const resumeData: ResumeData = {
       position: "주니어 웹 개발자",
       start_date: "2020-06",
       end_date: "2022-02",
-      job_description:
+      description:
         "- HTML, CSS, JavaScript를 활용한 웹 페이지 개발\n- jQuery를 이용한 동적 UI 구현\n- 크로스 브라우저 호환성 테스트 및 이슈 해결\n- 웹사이트 성능 최적화를 통한 로딩 속도 25% 개선\n- UI/UX 디자이너와 협업하여 사용자 경험 개선",
       department: "개발팀",
       employment_status: "N",
     },
   ],
-  education: {
-    organ: "한국대학교",
-    department: "컴퓨터공학",
-    degree_level: "학사",
-    start_date: "2020-06",
-    end_date: "2022-02",
-    score: "3.8 / 4.5",
-  },
   project: [
     {
       title: "전자상거래 플랫폼 구축",
-      description:
-        "- React와 Next.js를 활용한 SSR 기반 전자상거래 플랫폼 개발\n- 상품 검색, 장바구니, 결제 시스템 등 핵심 기능 구현\n- 5인 개발팀에서 프론트엔드 파트 리딩\n- 페이지 로딩 속도 최적화로 Lighthouse 성능 점수 85점 이상 달성",
       start_date: "2020-06",
       end_date: "2022-02",
+      description:
+        "- React와 Next.js를 활용한 SSR 기반 전자상거래 플랫폼 개발\n- 상품 검색, 장바구니, 결제 시스템 등 핵심 기능 구현\n- 5인 개발팀에서 프론트엔드 파트 리딩\n- 페이지 로딩 속도 최적화로 Lighthouse 성능 점수 85점 이상 달성",
     },
     {
       title: "사내 관리 시스템 개발",
-      description:
-        "- 사내 업무 효율화를 위한 관리 시스템 개발\n- 실시간 데이터 동기화를 위한 WebSocket 구현\n- Chart.js를 활용한 데이터 시각화 대시보드 개발\n- 사용자 권한 관리 시스템 구축",
       start_date: "2020-06",
       end_date: "2022-02",
+      description:
+        "- 사내 업무 효율화를 위한 관리 시스템 개발\n- 실시간 데이터 동기화를 위한 WebSocket 구현\n- Chart.js를 활용한 데이터 시각화 대시보드 개발\n- 사용자 권한 관리 시스템 구축",
     },
   ],
   activity: [
@@ -170,12 +171,12 @@ const resumeData: ResumeData = {
   ],
   qualifications: [
     {
-      title: "정보처리기사",
+      qua_title: "정보처리기사",
       organ: "한국산업인력공단",
       acquisition_date: "2020-08",
     },
     {
-      title: "TOEIC",
+      qua_title: "TOEIC",
       organ: "ETS",
       acquisition_date: "2024-05",
       score: "850점",
@@ -201,15 +202,15 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           military_service: "",
         },
         self_introduction: "",
-        experience: [],
         education: {
           organ: "",
           department: "",
           degree_level: "",
+          score: "",
           start_date: "",
           end_date: "",
-          score: "",
         },
+        experience: [],
         project: [],
         activity: [],
         technology_stack: [],
@@ -271,1237 +272,266 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           />
         </ResumeCard>
 
-        {/* {defaultValues.map((card) => {
-          return card;
-        })} */}
+        {Object.entries(defaultValues).map(([key, value]) => {
+          // 기본 타입 (문자열)
+          if (typeof value === "string") {
+            if (!isEditMode && key === "url") return;
+            if (key === "id")
+              return (
+                <basicInfoForm.Field name={key}>
+                  {(field) => {
+                    return (
+                      <Text
+                        isHidden={true}
+                        // label="이력서 제목"
+                        value={field.state.value}
+                        onChange={field.handleChange}
+                        onBlur={field.handleBlur}
+                        error={field.state.meta.errors.join(", ")}
+                        placeholder=""
+                      />
+                    );
+                  }}
+                </basicInfoForm.Field>
+              );
 
-        <ResumeCard title="이력서 제목" isMust={true}>
-          <basicInfoForm.Field
-            name="title"
-            validators={{
-              onChange: ({ value }) => {
-                const result = z
-                  .string()
-                  .min(2, "이름은 2글자 이상이어야 합니다.")
-                  .safeParse(value);
-                return result.success
-                  ? undefined
-                  : result.error.issues[0].message;
-              },
-            }}
-          >
-            {(field) => (
-              <ResumeCardRow
-                widthType="full"
-                input={
-                  <Text
-                    // label="이력서 제목"
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
-                    placeholder="이력서 제목을 입력하세요"
-                  />
-                }
-              />
-            )}
-          </basicInfoForm.Field>
-        </ResumeCard>
-        <ResumeCard title="증명사진" isMust={true}>
-          <basicInfoForm.Field
-            name="photoUrl"
-            validators={{
-              onChange: ({ value }) => {
-                const result = z
-                  .string()
-                  .min(2, "이름은 2글자 이상이어야 합니다.")
-                  .safeParse(value);
-                return result.success
-                  ? undefined
-                  : result.error.issues[0].message;
-              },
-            }}
-          >
-            {(field) => (
-              <ResumeCardRow
-                widthType="full"
-                isPhoto={true}
-                input={
-                  <File
-                    label="사진 업로드"
-                    type="img"
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
-                    placeholder="권장 크기: 3:4 비율 (예: 300x400px)"
-                  />
-                }
-              />
-            )}
-          </basicInfoForm.Field>
-        </ResumeCard>
-        {isEditMode && resumeData.url ? (
-          <basicInfoForm.Field
-            name="url"
-            validators={{
-              onChange: ({ value }) => {
-                const result = z
-                  .string()
-                  .min(2, "이름은 2글자 이상이어야 합니다.")
-                  .safeParse(value);
-                return result.success
-                  ? undefined
-                  : result.error.issues[0].message;
-              },
-            }}
-          >
-            {(field) => (
-              <ResumeCard title="공고 url" isMust={true}>
-                <ResumeCardRow
-                  widthType="full"
-                  input={
-                    <Text
-                      value={field.state.value ? field.state.value : ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      disabled={true}
-                    />
-                  }
-                />
+            if (key === "photoUrl")
+              return (
+                <ResumeCard key={key} title={key} isMust={true}>
+                  <basicInfoForm.Field name={key}>
+                    {(field) => {
+                      return (
+                        <ResumeCardRow
+                          widthType="full"
+                          isPhoto={true}
+                          input={
+                            <File
+                              label="사진 업로드"
+                              type="img"
+                              value={field.state.value}
+                              onChange={field.handleChange}
+                              onBlur={field.handleBlur}
+                              error={field.state.meta.errors.join(", ")}
+                              placeholder="권장 크기: 3:4 비율 (예: 300x400px)"
+                            />
+                          }
+                        />
+                      );
+                    }}
+                  </basicInfoForm.Field>
+                </ResumeCard>
+              );
+
+            return (
+              <ResumeCard
+                key={key}
+                title={key}
+                isMust={key === "title" && true}
+              >
+                <basicInfoForm.Field name={key}>
+                  {(field) => {
+                    return (
+                      <ResumeCardRow
+                        widthType="full"
+                        input={
+                          key === "self_introduction" ? (
+                            <Textarea
+                              // label="이력서 제목"
+                              value={field.state.value}
+                              onChange={field.handleChange}
+                              onBlur={field.handleBlur}
+                              error={field.state.meta.errors.join(", ")}
+                              placeholder=""
+                              rows={8}
+                            />
+                          ) : (
+                            <Text
+                              // label="이력서 제목"
+                              value={field.state.value}
+                              onChange={field.handleChange}
+                              onBlur={field.handleBlur}
+                              error={field.state.meta.errors.join(", ")}
+                              placeholder=""
+                              disabled={key === "url" && true}
+                            />
+                          )
+                        }
+                      />
+                    );
+                  }}
+                </basicInfoForm.Field>
               </ResumeCard>
-            )}
-          </basicInfoForm.Field>
-        ) : (
-          ""
-        )}
-        <ResumeCard title="기본정보" isMust={true}>
-          <basicInfoForm.Field
-            name="user_info.name"
-            validators={{
-              onChange: ({ value }) => {
-                const result = z
-                  .string()
-                  .min(2, "이름은 2글자 이상이어야 합니다.")
-                  .safeParse(value);
-                return result.success
-                  ? undefined
-                  : result.error.issues[0].message;
-              },
-            }}
-          >
-            {(field) => (
-              <ResumeCardRow
-                widthType="half"
-                input={
-                  <Text
-                    isMust={true}
-                    label="이름"
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
-                    placeholder="홍길동"
-                  />
-                }
-              />
-            )}
-          </basicInfoForm.Field>
-          <basicInfoForm.Field
-            name="user_info.email"
-            validators={{
-              onChange: ({ value }) => {
-                const result = z
-                  .string()
-                  .email("올바른 이메일 형식이 아닙니다.")
-                  .safeParse(value);
-                return result.success
-                  ? undefined
-                  : result.error.issues[0].message;
-              },
-            }}
-          >
-            {(field) => (
-              <ResumeCardRow
-                widthType="half"
-                input={
-                  <Text
-                    isMust={true}
-                    label="이메일"
-                    type="email"
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
-                    placeholder="email@example.com"
-                  />
-                }
-              />
-            )}
-          </basicInfoForm.Field>
-          <basicInfoForm.Field
-            name="user_info.phone"
-            validators={{
-              onChange: ({ value }) => {
-                const result = z
-                  .string()
-                  .regex(
-                    /^010-\d{4}-\d{4}$/,
-                    "올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)"
-                  )
-                  .safeParse(value);
-                return result.success
-                  ? undefined
-                  : result.error.issues[0].message;
-              },
-            }}
-          >
-            {(field) => (
-              <ResumeCardRow
-                widthType="half"
-                input={
-                  <Text
-                    isMust={true}
-                    label="연락처"
-                    type="tel"
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
-                    placeholder="010-0000-0000"
-                  />
-                }
-              />
-            )}
-          </basicInfoForm.Field>
-          <basicInfoForm.Field
-            name="user_info.gender"
-            validators={{
-              onChange: ({ value }) => {
-                const result = z
-                  .string()
-                  .min(1, "남/여 중 하나를 적으세요")
-                  .safeParse(value);
-                return result.success
-                  ? undefined
-                  : result.error.issues[0].message;
-              },
-            }}
-          >
-            {(field) => (
-              <ResumeCardRow
-                widthType="half"
-                input={
-                  <Text
-                    label="성별"
-                    type="text"
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
-                    placeholder="남/여"
-                  />
-                }
-              />
-            )}
-          </basicInfoForm.Field>
-          <basicInfoForm.Field
-            name="user_info.address"
-            validators={{
-              onChange: ({ value }) => {
-                const result = z
-                  .string()
-                  .min(5, "주소를 적으세요")
-                  .safeParse(value);
-                return result.success
-                  ? undefined
-                  : result.error.issues[0].message;
-              },
-            }}
-          >
-            {(field) => (
-              <ResumeCardRow
-                widthType="half"
-                input={
-                  <Text
-                    label="주소"
-                    type="text"
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
-                    placeholder="서울시 강남구"
-                  />
-                }
-              />
-            )}
-          </basicInfoForm.Field>
-          <basicInfoForm.Field
-            name="user_info.military_service"
-            validators={{
-              onChange: ({ value }) => {
-                const result = z
-                  .string()
-                  .min(1, "군필/미필/해당없음 중 하나를 적으세요")
-                  .safeParse(value);
-                return result.success
-                  ? undefined
-                  : result.error.issues[0].message;
-              },
-            }}
-          >
-            {(field) => (
-              <ResumeCardRow
-                widthType="half"
-                input={
-                  <Text
-                    label="병역 구분"
-                    type="text"
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
-                    placeholder="군필/미필/해당없음"
-                  />
-                }
-              />
-            )}
-          </basicInfoForm.Field>
-        </ResumeCard>
-        <ResumeCard title="자기소개">
-          <basicInfoForm.Field
-            name="self_introduction"
-            validators={{
-              onChange: ({ value }) => {
-                const result = z
-                  .string()
-                  .max(400, "400자 이하로 작성해주세요")
-                  .safeParse(value);
-                return result.success
-                  ? undefined
-                  : result.error.issues[0].message;
-              },
-            }}
-          >
-            {(field) => (
-              <ResumeCardRow
-                widthType="full"
-                input={
-                  <Textarea
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
-                    placeholder="자신의 강점, 경험, 목표 등을 자유롭게 작성해주세요."
-                  />
-                }
-              />
-            )}
-          </basicInfoForm.Field>
-        </ResumeCard>
-        <ResumeCard title="학력" isMust={true} useButton={true}>
-          <ResumeCard span={2} title="학력 #1">
-            <basicInfoForm.Field
-              name="education.organ"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(2, "학교명을 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      isMust={true}
-                      label="학교명"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="한국대학교"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
+            );
+          }
 
-            <basicInfoForm.Field
-              name="education.department"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(2, "전공을 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      isMust={true}
-                      label="전공"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="컴퓨터공학"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
+          // 객체 타입 (user_info, education 등)
+          if (typeof value === "object" && !Array.isArray(value)) {
+            return (
+              <ResumeCard
+                key={key}
+                title={key}
+                isMust={key === "user_info" || (key === "education" && true)}
+              >
+                {Object.entries(value).map(([subKey, subValue], idx) => (
+                  <basicInfoForm.Field name={`${subKey}${idx}`}>
+                    {(field) => (
+                      <ResumeCardRow
+                        widthType="half"
+                        input={
+                          <Text
+                            label={subKey}
+                            type={
+                              subKey === "email"
+                                ? "email"
+                                : subKey === "phone"
+                                ? "tel"
+                                : subKey.includes("date")
+                                ? "month"
+                                : "text"
+                            }
+                            value={
+                              field.state.value ? field.state.value : subValue
+                            }
+                            onChange={field.handleChange}
+                            onBlur={field.handleBlur}
+                            error={field.state.meta.errors.join(", ")}
+                            placeholder=""
+                          />
+                        }
+                      />
+                    )}
+                  </basicInfoForm.Field>
+                ))}
+              </ResumeCard>
+            );
+          }
 
-            <basicInfoForm.Field
-              name="education.degree_level"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(2, "학위를 선택해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      isMust={true}
-                      label="학위"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="학사/석사/박사"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
+          // 배열 타입 (experience, project 등)
+          if (Array.isArray(value)) {
+            return (
+              <ResumeCard
+                key={key}
+                title={key}
+                useButton={key !== "technology_stack" && true}
+              >
+                {value.length === 0 ? (
+                  <p>등록된 항목이 없습니다.</p>
+                ) : key === "technology_stack" ? (
+                  <basicInfoForm.Field
+                    name="technology_stack"
+                    validators={{
+                      onChange: ({ value }) => {
+                        if (!value) return undefined;
 
-            <basicInfoForm.Field
-              name="education.score"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .regex(
-                      /^\d+\.?\d*\s*\/\s*\d+\.?\d*$/,
-                      "학점 형식으로 입력해주세요 (예: 3.8 / 4.5)"
-                    )
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="학점"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="3.8 / 4.5"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
+                        // ',' 기준으로 나누기
+                        const items = value
+                          .split(",")
+                          .map((v) => v.trim())
+                          .filter((v) => v.length > 0);
 
-            <basicInfoForm.Field
-              name="education.start_date"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .regex(/^\d{4}-\d{2}$/, "YYYY-MM 형식으로 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      isMust={true}
-                      label="입학일"
-                      type="month"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="2020-03"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
+                        // 2중복 여부 확인
+                        const duplicates = items.filter(
+                          (item, idx) => items.indexOf(item) !== idx
+                        );
 
-            <basicInfoForm.Field
-              name="education.end_date"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .regex(/^\d{4}-\d{2}$/, "YYYY-MM 형식으로 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      isMust={true}
-                      label="졸업일"
-                      type="month"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="2024-02"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-          </ResumeCard>
-        </ResumeCard>
-        {/* <EducationSection form={basicInfoForm} /> 👈 여기 추가 */}
-        <ResumeCard title="경력" useButton={true}>
-          <ResumeCard span={2} title="경력 #1">
-            <basicInfoForm.Field
-              name="experience[0].job_title"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(2, "회사명을 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="회사명"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="회사명"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
+                        // 중복이 있으면 에러 메시지 리턴
+                        if (duplicates.length > 0) {
+                          return `중복된 항목이 있습니다: ${[
+                            ...new Set(duplicates),
+                          ].join(", ")}`;
+                        }
 
-            <basicInfoForm.Field
-              name="experience[0].position"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(2, "직무를 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="직책/직무"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="프론트엔드 개발자"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
+                        // 통과
+                        return undefined;
+                      },
+                    }}
+                  >
+                    {(field) => (
+                      <>
+                        <ResumeCardRow
+                          widthType="full"
+                          input={
+                            <Text
+                              value={field.state.value}
+                              onChange={field.handleChange}
+                              onBlur={field.handleBlur}
+                              error={field.state.meta.errors.join(", ")}
+                              placeholder="기술명을 중복이 되지 않도록 콤마(,)로 구분하여 입력하세요"
+                            />
+                          }
+                        />
+                      </>
+                    )}
+                  </basicInfoForm.Field>
+                ) : (
+                  value.map((item, idx) => (
+                    <ResumeCard key={idx} title={key}>
+                      {typeof item === "object"
+                        ? Object.entries(item).map(([k, v]) => (
+                            <basicInfoForm.Field key={k} name={`${k}${idx}`}>
+                              {(field) => {
+                                return (
+                                  <ResumeCardRow
+                                    widthType={
+                                      k === "description" || k === "title"
+                                        ? "full"
+                                        : "half"
+                                    }
+                                    input={
+                                      k === "description" ? (
+                                        <Textarea
+                                          label={k}
+                                          value={
+                                            field.state.value
+                                              ? field.state.value
+                                              : v
+                                          }
+                                          onChange={field.handleChange}
+                                          onBlur={field.handleBlur}
+                                          error={field.state.meta.errors.join(
+                                            ", "
+                                          )}
+                                          placeholder=""
+                                          rows={8}
+                                        />
+                                      ) : (
+                                        <Text
+                                          label={k}
+                                          type={
+                                            k.includes("date")
+                                              ? "month"
+                                              : "text"
+                                          }
+                                          value={
+                                            field.state.value
+                                              ? field.state.value
+                                              : v
+                                          }
+                                          onChange={field.handleChange}
+                                          onBlur={field.handleBlur}
+                                          error={field.state.meta.errors.join(
+                                            ", "
+                                          )}
+                                          placeholder=""
+                                          disabled={key === "url" && true}
+                                        />
+                                      )
+                                    }
+                                  />
+                                );
+                              }}
+                            </basicInfoForm.Field>
+                          ))
+                        : item}
+                    </ResumeCard>
+                  ))
+                )}
+              </ResumeCard>
+            );
+          }
 
-            <basicInfoForm.Field
-              name="experience[0].start_date"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .regex(/^\d{4}-\d{2}$/, "YYYY-MM 형식으로 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="시작일"
-                      type="month"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="2020-03"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="experience[0].end_date"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .regex(/^\d{4}-\d{2}$/, "YYYY-MM 형식으로 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="종료일"
-                      type="month"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="2020-03"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="experience[0].job_description"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .max(400, "400자 미만으로 적어주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="full"
-                  input={
-                    <Textarea
-                      label="경력 기술서 (담당 업무 및 성과)"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      rows={10}
-                      placeholder="- 주요 업무 내용 및 담당 역할
-- 사용한 기술 스택과 도구
-- 구체적인 성과 및 기여도 (수치화 권장)
-- 프로젝트 규모 및 팀 구성
-예시:
-- React와 TypeScript를 활용한 웹 서비스 개발 및 유지보수
-- 성능 최적화를 통한 페이지 로딩 속도 30% 개선
-- 5인 팀에서 프론트엔드 파트 리딩"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-          </ResumeCard>
-        </ResumeCard>
-        <ResumeCard title="프로젝트" useButton={true}>
-          <ResumeCard span={2} title="프로젝트 #1">
-            <basicInfoForm.Field
-              name="project[0].title"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(2, "프로젝트명을 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="full"
-                  input={
-                    <Text
-                      label="프로젝트명"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="프로젝트명"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="project[0].start_date"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .regex(/^\d{4}-\d{2}$/, "YYYY-MM 형식으로 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="시작일"
-                      type="month"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="2020-03"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="project[0].end_date"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .regex(/^\d{4}-\d{2}$/, "YYYY-MM 형식으로 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="마감일"
-                      type="month"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="2024-02"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="project[0].description"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .max(400, "400자 미만으로 적어주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="full"
-                  input={
-                    <Textarea
-                      label="프로젝트 설명"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      rows={5}
-                      placeholder="프로젝트 내용, 역할, 성과 등을 작성해주세요"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-          </ResumeCard>
-        </ResumeCard>
-        <ResumeCard title="경험/활동" useButton={true}>
-          <ResumeCard span={2} title="경험/활동 #1">
-            <basicInfoForm.Field
-              name="activity[0].title"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(2, "활동명을 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="full"
-                  input={
-                    <Text
-                      label="활동명"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="활동명"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="activity[0].start_date"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .regex(/^\d{4}-\d{2}$/, "YYYY-MM 형식으로 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="시작일"
-                      type="month"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="2020-03"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="activity[0].end_date"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .regex(/^\d{4}-\d{2}$/, "YYYY-MM 형식으로 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="마감일"
-                      type="month"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="2024-02"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="activity[0].description"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .max(400, "400자 미만으로 적어주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="full"
-                  input={
-                    <Textarea
-                      label="활동 설명"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      rows={5}
-                      placeholder="활동 내용, 역할, 성과 등을 작성해주세요"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-          </ResumeCard>
-        </ResumeCard>
-        <ResumeCard title="기술 스택">
-          <basicInfoForm.Field
-            name="technology_stack"
-            validators={{
-              onChange: ({ value }) => {
-                if (!value) return undefined;
-
-                // ',' 기준으로 나누기
-                const items = value
-                  .split(",")
-                  .map((v) => v.trim())
-                  .filter((v) => v.length > 0);
-
-                // 2중복 여부 확인
-                const duplicates = items.filter(
-                  (item, idx) => items.indexOf(item) !== idx
-                );
-
-                // 중복이 있으면 에러 메시지 리턴
-                if (duplicates.length > 0) {
-                  return `중복된 항목이 있습니다: ${[
-                    ...new Set(duplicates),
-                  ].join(", ")}`;
-                }
-
-                // 통과
-                return undefined;
-              },
-            }}
-          >
-            {(field) => (
-              <>
-                <ResumeCardRow
-                  widthType="full"
-                  input={
-                    <Text
-                      value={field.state.value}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="기술명을 중복이 되지 않도록 콤마(,)로 구분하여 입력하세요"
-                    />
-                  }
-                />
-              </>
-            )}
-          </basicInfoForm.Field>
-        </ResumeCard>
-        <ResumeCard title="자격증 및 어학" useButton={true}>
-          <ResumeCard span={2} title="자격증 #1">
-            <basicInfoForm.Field
-              name="qualifications[0].title"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(2, "자격증명을 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="자격증명"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="자격증명"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="qualifications[0].organ"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(2, "자격증명을 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="발급기관"
-                      type="text"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="자격증명"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="qualifications[0].acquisition_date"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .regex(/^\d{4}-\d{2}$/, "YYYY-MM 형식으로 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="취득일"
-                      type="month"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="2024-02"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-          </ResumeCard>
-          <ResumeCard span={2} title="어학 #2">
-            <basicInfoForm.Field
-              name="qualifications[1].title"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(2, "시험명을 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="시험명"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="TOEIC"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="qualifications[1].organ"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(2, "주관기관을 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="주관기관"
-                      type="text"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="ETS"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="qualifications[1].acquisition_date"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .regex(/^\d{4}-\d{2}$/, "YYYY-MM 형식으로 입력해주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="취득일"
-                      type="month"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="2024-02"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-
-            <basicInfoForm.Field
-              name="qualifications[1].score"
-              validators={{
-                onChange: ({ value }) => {
-                  const result = z
-                    .string()
-                    .min(1000, "점수를 적어주세요")
-                    .safeParse(value);
-                  return result.success
-                    ? undefined
-                    : result.error.issues[0].message;
-                },
-              }}
-            >
-              {(field) => (
-                <ResumeCardRow
-                  widthType="half"
-                  input={
-                    <Text
-                      label="점수"
-                      type="text"
-                      value={field.state.value ?? ""}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="900"
-                    />
-                  }
-                />
-              )}
-            </basicInfoForm.Field>
-          </ResumeCard>
-        </ResumeCard>
+          return null;
+        })}
       </div>
     </form>
   );

@@ -48,6 +48,9 @@ export const errorMessage = style({
   lineHeight: "14px",
 });
 
+export const hidden = style({
+  display: "none",
+});
 export const useBtn = style({
   display: "flex",
   gap: vars.spacing.sm,
