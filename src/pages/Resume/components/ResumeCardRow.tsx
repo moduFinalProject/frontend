@@ -13,7 +13,12 @@ import {
   descTextLink,
   flexContainer,
   imgWrap,
+  noImg,
+  imgRow,
 } from "./ResumeCardRow.css.ts";
+
+import type { ReactNode } from "react";
+import { ICONS } from "@/constants/icons.ts";
 
 type rowData = {
   value?: string;
@@ -26,6 +31,7 @@ type rowData = {
   isLisence?: boolean;
   isUrl?: boolean;
   isPhoto?: boolean;
+  input?: ReactNode;
   widthType: "half" | "full";
 };
 
@@ -40,11 +46,12 @@ export default function ResumeCardRow({
   isLisence = false,
   isUrl = false,
   isPhoto = false,
+  input,
   widthType,
 }: rowData) {
   return (
     <div className={`${row} ${widthStyle[widthType]}`}>
-      {value && (
+      {(value || subTile) && (
         <div className={topTitle}>
           <div className={topTitleText}>
             {lavel && <h4>{lavel}</h4>}
@@ -89,11 +96,21 @@ export default function ResumeCardRow({
           ))}
         </div>
       )}
-      {isPhoto && (
-        <div className={imgWrap}>
-          <img src={imgUrl} alt="증명사진" />
-        </div>
-      )}
+      <div className={imgRow}>
+        {isPhoto && (
+          <div id="imgWrap" className={imgWrap}>
+            {imgUrl ? (
+              <img src={imgUrl} alt="증명사진" />
+            ) : (
+              <div className={noImg}>
+                <img src={ICONS["IMG"]} alt="" />
+                <span>3x4 증명사진</span>
+              </div>
+            )}
+          </div>
+        )}
+        {input && input}
+      </div>
     </div>
   );
 }

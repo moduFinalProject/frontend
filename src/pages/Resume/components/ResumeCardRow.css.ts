@@ -97,3 +97,26 @@ export const imgWrap = style({
     width: "100%",
   },
 });
+
+export const imgRow = style({
+  display: "flex",
+  alignItems: "center",
+  gap: vars.spacing.sm,
+});
+export const noImg = style({
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: vars.spacing.lg,
+
+  img: {
+    width: "48px",
+  },
+  span: {
+    color: vars.color.subText,
+    fontSize: vars.typography.fontSize.sm,
+  },
+});

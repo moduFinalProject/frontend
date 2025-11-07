@@ -48,15 +48,28 @@ export const buttonColor = styleVariants({
   },
   red: {
     backgroundColor: vars.color.delete,
-    color: vars.color.mainBg,
+    color: vars.color.white,
     border: `1px solid ${vars.color.delete}`,
     fontWeight: vars.typography.fontWeight.bold,
   },
   blue: {
     backgroundColor: vars.color.main,
-    color: vars.color.mainBg,
+    color: vars.color.white,
     border: `1px solid ${vars.color.main}`,
     fontWeight: vars.typography.fontWeight.bold,
+  },
+  gray: {
+    backgroundColor: vars.color.white,
+    color: vars.color.defaultText,
+    border: `1px solid ${vars.color.white}`,
+    fontWeight: vars.typography.fontWeight.bold,
+    padding: vars.spacing.sm,
+
+    ":hover": {
+      border: `1px solid ${vars.color.formBg}`,
+      backgroundColor: vars.color.formBg,
+      opacity: 1,
+    },
   },
 });
 

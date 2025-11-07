@@ -37,7 +37,7 @@ export default function ResumeTitle({
         {mode !== "list" && (
           <Button
             text=""
-            color="none"
+            color="gray"
             widthStyle="fit"
             icon="PREV"
             callback={() => {
@@ -76,6 +76,8 @@ export default function ResumeTitle({
               text="저장하기"
               color="blue"
               widthStyle="fit"
+              buttonType="submit"
+              form="resumeForm"
               callback={() => {
                 handleSubmit();
               }}
