@@ -4,9 +4,11 @@ import { vars } from "@/design-system";
 import Layout from "@/components/Layout/Layout";
 
 import Landing from "@/pages/Landing";
-import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Profile from "@/pages/Profile";
+
+import Login from "@/pages/Login";
+import GoogleCallback from "@/pages/Login/GoogleCallback";
 
 import Resume from "@/pages/Resume";
 import ResumeList from "@/pages/Resume/ResumeList";
@@ -85,6 +87,7 @@ function App() {
     <Routes>
       <Route path="/landing" element={<Landing />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/login/googleCallback" element={<GoogleCallback />} />
       
       <Route path="/" element={loginToken ? (
         <Layout>
