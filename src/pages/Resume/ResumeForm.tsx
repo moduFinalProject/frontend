@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import ResumeCard from "./components/ResumeCard";
-import ResumeCardRow from "./components/ResumeCardRow";
+import ResumeCard from "./components/card/ResumeCard";
+import ResumeCardRow from "./components/card/ResumeCardRow";
 import { flex } from "./ResumeDetail.css.ts";
 
 import { useForm } from "@tanstack/react-form";
