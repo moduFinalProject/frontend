@@ -931,7 +931,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   input={
                     <Textarea
                       label="경력 기술서 (담당 업무 및 성과)"
-                      value={field.state.value}
+                      value={field.state.value ?? ""}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
                       error={field.state.meta.errors.join(", ")}
@@ -1068,7 +1068,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   input={
                     <Textarea
                       label="프로젝트 설명"
-                      value={field.state.value}
+                      value={field.state.value ?? ""}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
                       error={field.state.meta.errors.join(", ")}
@@ -1198,7 +1198,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   input={
                     <Textarea
                       label="활동 설명"
-                      value={field.state.value}
+                      value={field.state.value ?? ""}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
                       error={field.state.meta.errors.join(", ")}
@@ -1216,40 +1216,53 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
             name="technology_stack"
             validators={{
               onChange: ({ value }) => {
-                const result = z
-                  .string()
-                  .min(2, "이름은 2글자 이상이어야 합니다.")
-                  .safeParse(value);
-                return result.success
-                  ? undefined
-                  : result.error.issues[0].message;
+                if (!value) return undefined;
+
+                // ',' 기준으로 나누기
+                const items = value
+                  .split(",")
+                  .map((v) => v.trim())
+                  .filter((v) => v.length > 0);
+
+                // 2중복 여부 확인
+                const duplicates = items.filter(
+                  (item, idx) => items.indexOf(item) !== idx
+                );
+
+                // 중복이 있으면 에러 메시지 리턴
+                if (duplicates.length > 0) {
+                  return `중복된 항목이 있습니다: ${[
+                    ...new Set(duplicates),
+                  ].join(", ")}`;
+                }
+
+                // 통과
+                return undefined;
               },
             }}
           >
-            {(field) => (
-              <>
-                <ResumeCardRow
-                  widthType="full"
-                  input={
-                    <Text
-                      // label="이력서 제목"
-                      isBtn={true}
-                      onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
-                      placeholder="기술명을 입력하고 Enter 또는 추가 버튼을 눌러주세요"
-                    />
-                  }
-                />
-                <ResumeCardRow
-                  widthType="full"
-                  subTile={
-                    field.state.value === null && "추가된 기술 스택이 없습니다"
-                  }
-                  keyword={field.state.value?.slice(",")}
-                />
-              </>
-            )}
+            {(field) => {
+              const inputData = "";
+              const array = field.state.value;
+
+              return (
+                <>
+                  <ResumeCardRow
+                    widthType="full"
+                    input={
+                      <Text
+                        // label="이력서 제목"
+                        value={array}
+                        onChange={field.handleChange}
+                        onBlur={field.handleBlur}
+                        error={field.state.meta.errors.join(", ")}
+                        placeholder="기술명을 입력하고 Enter 또는 추가 버튼을 눌러주세요"
+                      />
+                    }
+                  />
+                </>
+              );
+            }}
           </basicInfoForm.Field>
         </ResumeCard>
         <ResumeCard title="자격증 및 어학" useButton={true}>
