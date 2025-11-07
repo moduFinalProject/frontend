@@ -32,3 +32,7 @@ export const header = style({
     },
   },
 });
+
+export const innerContainer = style({
+  paddingTop: 0,
+});

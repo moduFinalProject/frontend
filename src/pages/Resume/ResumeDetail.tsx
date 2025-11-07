@@ -3,7 +3,7 @@ import ResumeCard from "./components/card/ResumeCard";
 import ResumeCardRow from "./components/card/ResumeCardRow";
 import { Fragment } from "react/jsx-runtime";
 import { useEffect } from "react";
-import { container } from "./index.css.ts";
+import { container, innerContainer } from "./index.css.ts";
 
 type ResumeData = {
   id: string;
@@ -165,7 +165,7 @@ export default function ResumeDetail() {
   useEffect(() => {}, [id]);
 
   return (
-    <div className={container}>
+    <div className={`${container} ${innerContainer}`}>
       <ResumeCard title="증명사진">
         <ResumeCardRow
           imgUrl={resumeData.imgUrl}
