@@ -1,32 +1,32 @@
-import { Link } from "react-router-dom";
-import { useForm } from "@tanstack/react-form";
+// import { Link } from "react-router-dom";
+// import { useForm } from "@tanstack/react-form";
 import {  } from "./SocialSignIn.css";
-import Button from "@/components/Button/Button";
-import logo from "@/assets/logo/logo.svg";
+// import Button from "@/components/Button/Button";
+// import logo from "@/assets/logo/logo.svg";
 
-interface UserDetailForm {
+// interface UserDetailForm {
   
-}
+// }
 
-function loginProcess(formData: UserDetailForm): void {
-  // 로그인 로직
-  console.log("로그인 시도:", formData);
-}
+// function loginProcess(formData: UserDetailForm): void {
+//   // 로그인 로직
+//   console.log("로그인 시도:", formData);
+// }
 
 
 export default function SocialSignIn() {
-  const form = useForm({
-    defaultValues: {
+//   const form = useForm({
+//     defaultValues: {
       
-    } as UserDetailForm,
-    onSubmit: async ({ value }) => {
-      // 백엔드 api 요청
-    },
-  });
+//     } as UserDetailForm,
+//     onSubmit: async ({ value }) => {
+//       // 백엔드 api 요청
+//     },
+//   });
 
   return (
     <>
-        
+
     </>
     // <div className={loginContainer}>
     //   <div className={formWrapper}>
