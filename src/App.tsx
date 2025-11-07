@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import { vars } from "@/design-system";
 
 import Layout from "@/components/Layout/Layout";
 
@@ -22,7 +21,7 @@ const Dashboard = () => (
     style={{
       marginLeft: "15%",
       width: "85%",
-      padding: "20px",      
+      padding: "20px",
     }}
   >
     대시보드 페이지
@@ -33,7 +32,7 @@ const JobPost = () => (
     style={{
       marginLeft: "15%",
       width: "85%",
-      padding: "20px",      
+      padding: "20px",
     }}
   >
     채용공고 관리 페이지
@@ -44,7 +43,7 @@ const ResumeFeedbackHis = () => (
     style={{
       marginLeft: "15%",
       width: "85%",
-      padding: "20px",      
+      padding: "20px",
     }}
   >
     공고별 첨삭 이력 페이지
@@ -55,7 +54,7 @@ const Interview = () => (
     style={{
       marginLeft: "15%",
       width: "85%",
-      padding: "20px",      
+      padding: "20px",
     }}
   >
     AI면접
@@ -66,7 +65,7 @@ const StudyGuide = () => (
     style={{
       marginLeft: "15%",
       width: "85%",
-      padding: "20px",      
+      padding: "20px",
     }}
   >
     학습가이드
@@ -74,7 +73,7 @@ const StudyGuide = () => (
 );
 
 function App() {
-  let loginToken: boolean = true;
+  const loginToken: boolean = true;
 
   const ProtectedRoute = ({ element }: { element: React.ReactNode }) => {
     if (!loginToken) {
@@ -88,24 +87,45 @@ function App() {
       <Route path="/landing" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/login/googleCallback" element={<GoogleCallback />} />
-      
-      <Route path="/" element={loginToken ? (
-        <Layout>
-          <ProtectedRoute element={<Dashboard />} />
-        </Layout>
-      ) : <Landing />} />
 
-      <Route path="/dashboard" element={loginToken ? (
-        <Layout>
-          <ProtectedRoute element={<Dashboard />} />
-        </Layout>
-      ) : <Landing />} />
+      <Route
+        path="/"
+        element={
+          loginToken ? (
+            <Layout>
+              <ProtectedRoute element={<Dashboard />} />
+            </Layout>
+          ) : (
+            <Landing />
+          )
+        }
+      />
 
-      <Route path="/resume" element={loginToken ? (
-        <Layout>
-          <Resume />
-        </Layout>
-      ) : <Landing />}>
+      <Route
+        path="/dashboard"
+        element={
+          loginToken ? (
+            <Layout>
+              <ProtectedRoute element={<Dashboard />} />
+            </Layout>
+          ) : (
+            <Landing />
+          )
+        }
+      />
+
+      <Route
+        path="/resume"
+        element={
+          loginToken ? (
+            <Layout>
+              <Resume />
+            </Layout>
+          ) : (
+            <Landing />
+          )
+        }
+      >
         <Route index element={<ResumeList />} />
         <Route path="new" element={<ResumeForm mode="create" />} />
         <Route path=":id" element={<ResumeDetail />} />
@@ -113,35 +133,70 @@ function App() {
         <Route path=":id/correction" element={<ResumeCorrection />} />
       </Route>
 
-      <Route path="/jobPost" element={loginToken ? (
-        <Layout>
-          <ProtectedRoute element={<JobPost />} />
-        </Layout>
-      ) : <Landing />} />
+      <Route
+        path="/jobPost"
+        element={
+          loginToken ? (
+            <Layout>
+              <ProtectedRoute element={<JobPost />} />
+            </Layout>
+          ) : (
+            <Landing />
+          )
+        }
+      />
 
-      <Route path="/resumeFeedbackHis" element={loginToken ? (
-        <Layout>
-          <ProtectedRoute element={<ResumeFeedbackHis />} />
-        </Layout>
-      ) : <Landing />} />
+      <Route
+        path="/resumeFeedbackHis"
+        element={
+          loginToken ? (
+            <Layout>
+              <ProtectedRoute element={<ResumeFeedbackHis />} />
+            </Layout>
+          ) : (
+            <Landing />
+          )
+        }
+      />
 
-      <Route path="/interview" element={loginToken ? (
-        <Layout>
-          <ProtectedRoute element={<Interview />} />
-        </Layout>
-      ) : <Landing />} />
+      <Route
+        path="/interview"
+        element={
+          loginToken ? (
+            <Layout>
+              <ProtectedRoute element={<Interview />} />
+            </Layout>
+          ) : (
+            <Landing />
+          )
+        }
+      />
 
-      <Route path="/studyGuide" element={loginToken ? (
-        <Layout>
-          <ProtectedRoute element={<StudyGuide />} />
-        </Layout>
-      ) : <Landing />} />
+      <Route
+        path="/studyGuide"
+        element={
+          loginToken ? (
+            <Layout>
+              <ProtectedRoute element={<StudyGuide />} />
+            </Layout>
+          ) : (
+            <Landing />
+          )
+        }
+      />
 
-      <Route path="/profile" element={loginToken ? (
-        <Layout>
-          <ProtectedRoute element={<Profile />} />
-        </Layout>
-      ) : <Landing />} />
+      <Route
+        path="/profile"
+        element={
+          loginToken ? (
+            <Layout>
+              <ProtectedRoute element={<Profile />} />
+            </Layout>
+          ) : (
+            <Landing />
+          )
+        }
+      />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

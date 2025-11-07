@@ -15,7 +15,6 @@ export default function ResumCard({
   children,
   isMust = false,
   useButton = false,
-  span = 1,
 }: rowData) {
   return (
     <section className={card} style={{ gridColumn: "span 2" }}>

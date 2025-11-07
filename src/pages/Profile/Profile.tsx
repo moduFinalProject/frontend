@@ -3,12 +3,10 @@ import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/Button";
-import IconPrev from "@/assets/icons/Icon-prev.svg";
 import {
   profileContainer,
   profileContent,
   profileHeader,
-  backButton,
   headerText,
   headerTitle,
   headerSubtitle,
@@ -94,10 +92,6 @@ export default function Profile() {
       }
     },
   });
-
-  const handleBack = () => {
-    navigate(-1);
-  };
 
   const handleDeleteAccount = () => {
     if (
