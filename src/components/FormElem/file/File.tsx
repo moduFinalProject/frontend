@@ -31,7 +31,7 @@ export default function File({
     if (imgWrap && value) {
       imgWrap.innerHTML = `<img src="${value}" alt="증명사진" />`;
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleButtonClick = () => {
     fileRef.current?.click();

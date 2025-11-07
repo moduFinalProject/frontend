@@ -2,7 +2,10 @@ import { FieldApi } from "@tanstack/react-form";
 import { Plus, Trash2 } from "lucide-react";
 
 interface EducationSectionProps {
-  form: any;
+  form: {
+    pushFieldValue: (name: string, value: unknown) => void;
+    removeFieldValue: (name: string, index: number) => void;
+  };
 }
 
 export function EducationSection({ form }: EducationSectionProps) {
