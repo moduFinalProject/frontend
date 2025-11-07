@@ -7,7 +7,10 @@ type rowData = {
   title?: string;
   isMust?: boolean;
   useButton?: boolean;
+  btnType?: "PLUSBLACK" | "DEL";
   span?: number;
+  onAdd?: () => void;
+  onDelete?: () => void;
 };
 
 export default function ResumCard({
@@ -15,6 +18,9 @@ export default function ResumCard({
   children,
   isMust = false,
   useButton = false,
+  btnType,
+  onAdd,
+  onDelete,
 }: rowData) {
   return (
     <section className={card} style={{ gridColumn: "span 2" }}>
@@ -26,13 +32,19 @@ export default function ResumCard({
         {useButton && (
           <div>
             <Button
-              callback={() => {
-                alert("개발중입니다.");
-              }}
-              color="white"
-              text="추가"
+              callback={
+                onAdd
+                  ? onAdd
+                  : onDelete
+                  ? onDelete
+                  : () => {
+                      alert("개발중입니다.");
+                    }
+              }
+              color={btnType !== "DEL" ? "white" : "gray"}
+              text={btnType !== "DEL" ? "추가" : ""}
               widthStyle="fit"
-              icon="PLUSBLACK"
+              icon={btnType}
             />
           </div>
         )}
