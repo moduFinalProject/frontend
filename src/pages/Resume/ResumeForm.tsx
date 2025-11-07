@@ -11,6 +11,16 @@ import { container, innerContainer } from "./index.css.ts";
 import { basicInfoSchema } from "./components/form/validators";
 import Select from "@/components/FormElem/text/Select.tsx";
 
+import {
+  FIELD_LABELS,
+  USER_INFO_LABELS,
+  EDUCATION_LABELS,
+  EXPERIENCE_LABELS,
+  PROJECT_LABELS,
+  ACTIVITY_LABELS,
+  QUALIFICATIONS_LABELS,
+} from "@/constants/fieldLabels.ts";
+
 interface ResumeFormProps {
   mode: "create" | "edit";
 }
@@ -304,7 +314,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     if (!isEditMode && key === "url") return null;
     if (key === "photoUrl")
       return (
-        <ResumeCard key={key} title={key} isMust>
+        <ResumeCard key={key} title={FIELD_LABELS[key]} isMust>
           <form.Field name={key}>
             {(field) => (
               <ResumeCardRow
@@ -327,7 +337,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
       );
 
     return (
-      <ResumeCard key={key} title={key} isMust={key === "title"}>
+      <ResumeCard key={key} title={FIELD_LABELS[key]} isMust={key === "title"}>
         <form.Field name={key}>
           {(field) => (
             <ResumeCardRow
@@ -365,7 +375,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     value: Record<string, any>
   ) {
     return (
-      <ResumeCard key={key} title={key} isMust>
+      <ResumeCard key={key} title={FIELD_LABELS[key]} isMust>
         {Object.entries(value).map(([subKey, subValue], idx) => (
           <form.Field key={subKey} name={`${key}.${subKey}`}>
             {(field) => (
@@ -375,7 +385,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   subKey === "gender" ? (
                     <Select
                       isMust
-                      label={subKey}
+                      label={USER_INFO_LABELS[subKey]}
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
@@ -389,7 +399,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   ) : subKey === "military_service" ? (
                     <Select
                       isMust
-                      label={subKey}
+                      label={USER_INFO_LABELS[subKey]}
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
@@ -404,7 +414,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   ) : (
                     <Text
                       isMust
-                      label={subKey}
+                      label={USER_INFO_LABELS[subKey]}
                       type={
                         subKey === "email"
                           ? "email"
@@ -431,7 +441,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   function renderArrayField(form: any, key: string, value: any[]) {
     if (key === "technology_stack")
       return (
-        <ResumeCard key={key} title="technology_stack">
+        <ResumeCard key={key} title={FIELD_LABELS[key]}>
           <form.Field
             name="technology_stack"
             // validators={{ onChange: validateTechStack }}
@@ -487,7 +497,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           return (
             <ResumeCard
               key={key}
-              title={key}
+              title={FIELD_LABELS[key]}
               useButton={true}
               btnType="PLUSBLACK"
               onAdd={handleAddItem}
@@ -497,7 +507,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
               {fieldArrayValue.map((item, idx) => (
                 <ResumeCard
                   key={idx}
-                  title={`${key} #${idx + 1}`}
+                  title={`${FIELD_LABELS[key]} #${idx + 1}`}
                   useButton={true}
                   btnType="DEL"
                   onDelete={
@@ -524,7 +534,17 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                               />
                             ) : (
                               <Text
-                                label={k}
+                                label={
+                                  key === "education"
+                                    ? EDUCATION_LABELS[k]
+                                    : key === "experience"
+                                    ? EXPERIENCE_LABELS[k]
+                                    : key === "project"
+                                    ? PROJECT_LABELS[k]
+                                    : key === "activity"
+                                    ? ACTIVITY_LABELS[k]
+                                    : QUALIFICATIONS_LABELS[k]
+                                }
                                 isMust={[
                                   "organ",
                                   "department",
