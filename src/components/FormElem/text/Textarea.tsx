@@ -11,7 +11,7 @@ interface InputProps {
   rows?: number;
 }
 
-export default function Text({
+export default function Textarea({
   label: labelText,
   placeholder,
   value,
@@ -21,8 +21,6 @@ export default function Text({
   disabled = false,
   rows = 5,
 }: InputProps) {
-  console.log(value);
-
   return (
     <div className={inputContainer}>
       <>
