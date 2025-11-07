@@ -113,13 +113,16 @@ export default function Profile() {
       <div className={profileContent}>
         {/* 헤더 */}
         <div className={profileHeader}>
-          <button
-            className={backButton}
-            onClick={handleBack}
-            aria-label="뒤로가기"
-          >
-            <img src={IconPrev} alt="" width="16" height="16" />
-          </button>
+          <Button
+            text=""
+            color="gray"
+            widthStyle="fit"
+            icon="PREV"
+            callback={() => {
+              navigate(-1);
+            }}
+          />
+
           <div className={headerText}>
             <h1 className={headerTitle}>프로필 설정</h1>
             <p className={headerSubtitle}>계정 정보 및 설정을 관리하세요</p>
