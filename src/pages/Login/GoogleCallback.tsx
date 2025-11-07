@@ -38,7 +38,7 @@ export default function GoogleCallback() {
           return;
         }
 
-        // Send code to backend for token exchange
+        // 서버에 토큰 인증 및 로그인 요청
         const response = await fetch("https://gaechwi.duckdns.org/auth/google", {
           method: "POST",
           headers: {
@@ -55,17 +55,24 @@ export default function GoogleCallback() {
           return;
         }
 
-        // Login success: save token and redirect to dashboard
+        // 로그인 성공 시 토큰 저장
         localStorage.setItem("access_token", data.accessToken);
         localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.removeItem("oauth2-state"); // Remove state value
+        localStorage.removeItem("oauth2-state"); 
 
-        // Redirect to dashboard
+        // 최초 사용자는 추가정보 입력 페이지 이동
+        // if(response.?) {
+        //     navigate("/login/socialSignIn");
+        // }
+
+        // 기존 사용자면 대시보드 이동
         navigate("/");
       } catch (err) {
         console.error("Error processing Google callback:", err);
         setError("An error occurred during login processing");
         setLoading(false);
+
+        navigate("/login");
       }
     };
 
