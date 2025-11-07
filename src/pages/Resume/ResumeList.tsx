@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { resumeList } from "./ResumeList.css.ts";
 import ResumeItem from "./components/ResumeItem.tsx";
+import Search from "./components/form/Search.tsx";
 
 type Resume = {
   id: string;
@@ -66,13 +67,16 @@ export default function ResumeList() {
   }, []);
 
   return (
-    <div>
-      <h3 className="a11y-hidden">이력서 목록</h3>
-      <ul className={resumeList}>
-        {resumes.map((resume) => (
-          <ResumeItem resume={resume} key={resume.id} />
-        ))}
-      </ul>
-    </div>
+    <>
+      <Search />
+      <div>
+        <h3 className="a11y-hidden">이력서 목록</h3>
+        <ul className={resumeList}>
+          {resumes.map((resume) => (
+            <ResumeItem resume={resume} key={resume.id} />
+          ))}
+        </ul>
+      </div>
+    </>
   );
 }
