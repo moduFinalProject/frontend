@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ResumeCard from "./components/card/ResumeCard";
 import ResumeCardRow from "./components/card/ResumeCardRow";
@@ -8,30 +8,49 @@ import { z } from "zod";
 import Text, { Textarea } from "@/components/FormElem/text";
 import File from "@/components/FormElem/file/File";
 import { container, innerContainer } from "./index.css.ts";
-import {
-  basicInfoSchema,
-  validateTechStack,
-} from "./components/form/validators";
-
-// const basicInfoSchema = z.object({
-//   user_info: {
-//     name: z.string().min(2, "이름은 2글자 이상이어야 합니다."),
-//     email: z.string().email("올바른 이메일 형식이 아닙니다."),
-//     phone: z
-//       .string()
-//       .regex(
-//         /^010-\d{4}-\d{4}$/,
-//         "올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)"
-//       ),
-//   },
-//   url: z.string().min(2, "url은 http/https부터 입력해야 합니다."),
-// });
+import { basicInfoSchema } from "./components/form/validators";
+import Select from "@/components/FormElem/text/Select.tsx";
+// import EducationSection from "./components/form/EducationSection.tsx";
 
 interface ResumeFormProps {
   mode: "create" | "edit";
 }
 
-type ResumeData = {
+type ExperienceItem = {
+  title: string;
+  department: string;
+  position: string;
+  start_date: string;
+  end_date: string;
+  description: string;
+};
+type EducationItem = {
+  organ: string;
+  department: string;
+  degree_level: string;
+  start_date: string;
+  end_date: string;
+  score: string;
+};
+type ProjectItem = {
+  title: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+};
+type ActivityItem = {
+  title: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+};
+type QualificationItem = {
+  qua_title: string;
+  organ: string;
+  acquisition_date: string;
+  score?: string;
+};
+type ResumeFormValues = {
   id: string;
   title: string;
   photoUrl: string;
@@ -45,44 +64,15 @@ type ResumeData = {
     military_service: string;
   };
   self_introduction: string;
-  experience?: {
-    title: string;
-    department: string;
-    position: string;
-    start_date: string;
-    end_date: string;
-    description: string;
-  }[];
-  education?: {
-    organ: string;
-    department: string;
-    degree_level: string;
-    start_date: string;
-    end_date: string;
-    score: string;
-  }[];
-  project?: {
-    title: string;
-    description: string;
-    start_date: string;
-    end_date: string;
-  }[];
-  activity?: {
-    title: string;
-    description: string;
-    start_date: string;
-    end_date: string;
-  }[];
+  experience?: ExperienceItem[];
+  education?: EducationItem[];
+  project?: ProjectItem[];
+  activity?: ActivityItem[];
   technology_stack?: string[];
-  qualifications?: {
-    qua_title: string;
-    organ: string;
-    acquisition_date: string;
-    score?: string;
-  }[];
+  qualifications?: QualificationItem[];
 };
 
-const resumeData: ResumeData = {
+const resumeDataSample: ResumeFormValues = {
   id: "1",
   title: "기본 이력서",
   photoUrl:
@@ -94,7 +84,7 @@ const resumeData: ResumeData = {
     phone: "010-0000-0000",
     gender: "남",
     address: "서울시 강남구",
-    military_service: "현역",
+    military_service: "군필",
   },
   education: [
     {
@@ -199,8 +189,9 @@ const resumeData: ResumeData = {
 export default function ResumeForm({ mode }: ResumeFormProps) {
   const { id } = useParams();
   const isEditMode = Boolean(id);
+
   const defaultValues = isEditMode
-    ? resumeData
+    ? resumeDataSample
     : {
         title: "",
         url: "",
@@ -232,7 +223,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
       };
 
   // 기본 정보 폼
-  const form = useForm({
+  const form = useForm<ResumeFormValues>({
     defaultValues,
     onSubmit: async ({ value }) => {
       try {
@@ -250,7 +241,6 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
       }
     },
   });
-  // const [form, setForm] = useState<ResumeData>({} as ResumeData);
 
   useEffect(() => {
     if (isEditMode) {
@@ -349,27 +339,59 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     value: Record<string, any>
   ) {
     return (
-      <ResumeCard key={key} title={key} isMust={["user_info"].includes(key)}>
+      <ResumeCard key={key} title={key} isMust>
         {Object.entries(value).map(([subKey, subValue], idx) => (
           <form.Field key={subKey} name={`${key}.${subKey}`}>
             {(field) => (
               <ResumeCardRow
                 widthType="half"
                 input={
-                  <Text
-                    label={subKey}
-                    type={
-                      subKey === "email"
-                        ? "email"
-                        : subKey === "phone"
-                        ? "tel"
-                        : subKey.includes("date")
-                        ? "month"
-                        : "text"
-                    }
-                    value={field.state.value || subValue}
-                    onChange={field.handleChange}
-                  />
+                  subKey === "gender" ? (
+                    <Select
+                      isMust
+                      label={subKey}
+                      value={field.state.value}
+                      onChange={field.handleChange}
+                      onBlur={field.handleBlur}
+                      error={field.state.meta.errors.join(", ")}
+                      placeholder="남/여"
+                      options={[
+                        { value: "남", label: "남" },
+                        { value: "야", label: "여" },
+                      ]}
+                    />
+                  ) : subKey === "military_service" ? (
+                    <Select
+                      isMust
+                      label={subKey}
+                      value={field.state.value}
+                      onChange={field.handleChange}
+                      onBlur={field.handleBlur}
+                      error={field.state.meta.errors.join(", ")}
+                      placeholder="미필/군필/해당없음"
+                      options={[
+                        { value: "미필", label: "미필" },
+                        { value: "군필", label: "군필" },
+                        { value: "해당없음", label: "해당없음" },
+                      ]}
+                    />
+                  ) : (
+                    <Text
+                      isMust
+                      label={subKey}
+                      type={
+                        subKey === "email"
+                          ? "email"
+                          : subKey === "phone"
+                          ? "tel"
+                          : subKey.includes("date")
+                          ? "month"
+                          : "text"
+                      }
+                      value={field.state.value || subValue}
+                      onChange={field.handleChange}
+                    />
+                  )
                 }
               />
             )}
@@ -383,14 +405,10 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   function renderArrayField(form: any, key: string, value: any[]) {
     if (key === "technology_stack")
       return (
-        <ResumeCard
-          key={key}
-          title="technology_stack"
-          isMust={["education"].includes(key)}
-        >
+        <ResumeCard key={key} title="technology_stack">
           <form.Field
             name="technology_stack"
-            validators={{ onChange: validateTechStack }}
+            // validators={{ onChange: validateTechStack }}
           >
             {(field) => (
               <ResumeCardRow
@@ -399,7 +417,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   <Text
                     value={field.state.value}
                     onChange={field.handleChange}
-                    placeholder="React, TypeScript, ..."
+                    placeholder="사용 가능한 스텍을 중복 없이 콤마(,)를 이용하여 작성해주세요. 예) React, TypeScript, ..."
                     error={field.state.meta.errors.join(", ")}
                   />
                 }
@@ -411,7 +429,12 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
 
     // experience, project 등
     return (
-      <ResumeCard key={key} title={key} useButton={true}>
+      <ResumeCard
+        key={key}
+        title={key}
+        useButton={true}
+        isMust={"education".includes(key)}
+      >
         {value.length === 0 && <p>등록된 항목이 없습니다.</p>}
         {value.map((item, idx) => (
           <ResumeCard key={idx} title={`${key} #${idx + 1}`}>
@@ -432,6 +455,12 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                       ) : (
                         <Text
                           label={k}
+                          isMust={[
+                            "organ",
+                            "department",
+                            "start_date",
+                            "end_date",
+                          ].includes(k)}
                           type={k.includes("date") ? "month" : "text"}
                           value={field.state.value || v}
                           onChange={field.handleChange}
