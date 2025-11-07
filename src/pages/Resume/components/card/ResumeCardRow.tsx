@@ -87,15 +87,6 @@ export default function ResumeCardRow({
           ))}
         </div>
       )}
-      {Array.isArray(keyword) && (
-        <div className={stackWrap}>
-          {keyword.map((item) => (
-            <span key={item} className={stack}>
-              {item}
-            </span>
-          ))}
-        </div>
-      )}
       <div className={imgRow}>
         {isPhoto && (
           <div id="imgWrap" className={imgWrap}>
@@ -111,6 +102,15 @@ export default function ResumeCardRow({
         )}
         {input && input}
       </div>
+      {Array.isArray(keyword) && (
+        <div className={stackWrap}>
+          {keyword.map((item) => (
+            <span key={item} className={stack}>
+              {item}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
