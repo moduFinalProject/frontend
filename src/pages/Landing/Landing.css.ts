@@ -51,11 +51,21 @@ export const mainSection = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+
+  "@media": {
+    "screen and (max-width: 768px)": {
+      padding: "40px 24px",
+    },
+    "screen and (max-width: 1024px)": {
+      padding: "80px 24px",
+    },
+  },
 });
 
 export const mainContainer = style({
   maxWidth: "1280px",
   width: "100%",
+  minHeight: "600px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -66,6 +76,14 @@ export const bannerContainer = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  "@media": {
+    "screen and (max-width: 768px)": {
+      flexDirection: "column",
+    },
+    "screen and (max-width: 1024px)": {
+      flexDirection: "column",
+    },
+  },
 });
 
 export const bannerContent = style({
@@ -73,12 +91,32 @@ export const bannerContent = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.lg,
+  "@media": {
+    "screen and (max-width: 768px)": {
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    "screen and (max-width: 1024px)": {
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  },
 });
 
 export const bannerHeader = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.lg, // 동일한 24px gap 적용
+  "@media": {
+    "screen and (max-width: 768px)": {
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    "screen and (max-width: 1024px)": {
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  },
 });
 
 export const bannerTag = style({
@@ -92,12 +130,28 @@ export const bannerTitle = style({
   fontWeight: vars.typography.fontWeight.bold,
   fontSize: "40px",
   lineHeight: 1.2, // 120% = 1.2
+  "@media": {
+    "screen and (max-width: 768px)": {
+      textAlign: "center",
+    },
+    "screen and (max-width: 1024px)": {
+      textAlign: "center",
+    },
+  },
 });
 
 export const bannerDescription = style({
   fontSize: vars.typography.fontSize.md, // 16px
   lineHeight: 1.375, // 22px ÷ 16px = 1.375
   color: vars.color.defaultText,
+  "@media": {
+    "screen and (max-width: 768px)": {
+      textAlign: "center",
+    },
+    "screen and (max-width: 1024px)": {
+      textAlign: "center",
+    },
+  },
 });
 
 export const bannerButtonContainer = style({
@@ -109,10 +163,16 @@ export const bannerButtonContainer = style({
 
 export const bannerImageContainer = style({
   flex: 1,
-  height: "100%",
+
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  "@media": {
+    "screen and (max-width: 768px)": {
+      minHeight: "200px",
+    },
+    "screen and (max-width: 1024px)": {},
+  },
 });
 
 export const bannerImage = style({
@@ -120,6 +180,16 @@ export const bannerImage = style({
   height: "100%",
   objectFit: "cover",
   borderRadius: "10px",
+  // "@media": {
+  //   "screen and (max-width: 768px)": {
+  //     width: "100%",
+  //     height: "auto",
+  //   },
+  //   "screen and (max-width: 1024px)": {
+  //     width: "70%",
+  //     height: "auto",
+  //   },
+  // },
 });
 
 // Footer Styles
