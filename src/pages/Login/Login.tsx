@@ -16,7 +16,7 @@ function loginProcess(formData: LoginForm): void {
 
 // Google OAuth 2.0 설정
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '62731178017-jjj8blkivn8agl7gi99981km5ro2jpbp.apps.googleusercontent.com';
-const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || window.location.origin + '/login/googleCallback';
+const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || window.location.origin + '/frontend/googleCallback';
 
 // 랜덤 state 값 생성 (CSRF 공격 방지)
 function generateCryptoRandomState(): string {

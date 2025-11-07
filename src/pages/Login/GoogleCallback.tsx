@@ -14,7 +14,7 @@ export default function GoogleCallback() {
         const code = searchParams.get("code");
         const state = searchParams.get("state");
         const errorParam = searchParams.get("error");
-
+        
         // Error handling
         if (errorParam) {
           setError(`Google login failed: ${errorParam}`);

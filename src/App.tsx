@@ -86,7 +86,7 @@ function App() {
     <Routes>
       <Route path="/landing" element={<Landing />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/login/googleCallback" element={<GoogleCallback />} />
+      <Route path="/googleCallback" element={<GoogleCallback />} />
 
       <Route
         path="/"
