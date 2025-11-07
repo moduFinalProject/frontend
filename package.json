@@ -6,7 +6,7 @@
   "homepage": "https://moduFinalProject.github.io/frontend/",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run lint && tsc -b && vite build",
     "build:skip-ts": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
