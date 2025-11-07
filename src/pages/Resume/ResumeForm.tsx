@@ -4,7 +4,7 @@ import ResumeCard from "./components/card/ResumeCard";
 import ResumeCardRow from "./components/card/ResumeCardRow";
 
 import { useForm } from "@tanstack/react-form";
-import { keyof, z } from "zod";
+import { z } from "zod";
 import Text, { Textarea } from "@/components/FormElem/text";
 import File from "@/components/FormElem/file/File";
 import { container, innerContainer } from "./index.css.ts";
