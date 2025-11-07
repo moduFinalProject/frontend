@@ -2,22 +2,24 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ResumeCard from "./components/card/ResumeCard";
 import ResumeCardRow from "./components/card/ResumeCardRow";
-import { flex } from "./ResumeDetail.css.ts";
 
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import Text, { Textarea } from "@/components/FormElem/text";
 import File from "@/components/FormElem/file/File";
+import { container } from "./index.css.ts";
 
 const basicInfoSchema = z.object({
-  name: z.string().min(2, "이름은 2글자 이상이어야 합니다."),
-  email: z.string().email("올바른 이메일 형식이 아닙니다."),
-  phone: z
-    .string()
-    .regex(
-      /^010-\d{4}-\d{4}$/,
-      "올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)"
-    ),
+  user_info: {
+    name: z.string().min(2, "이름은 2글자 이상이어야 합니다."),
+    email: z.string().email("올바른 이메일 형식이 아닙니다."),
+    phone: z
+      .string()
+      .regex(
+        /^010-\d{4}-\d{4}$/,
+        "올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)"
+      ),
+  },
   url: z.string().min(2, "url은 http/https부터 입력해야 합니다."),
 });
 
@@ -27,16 +29,17 @@ interface ResumeFormProps {
 
 type ResumeData = {
   id: string;
-  url?: string;
-  imgUrl: string;
-  photoUrl: string;
   title: string;
-  name: string;
-  email: string;
-  phone: string;
-  gender: string;
-  address: string;
-  military_service: string;
+  photoUrl: string;
+  url?: string;
+  user_info: {
+    name: string;
+    email: string;
+    phone: string;
+    gender: string;
+    address: string;
+    military_service: string;
+  };
   self_introduction: string;
   experience?: {
     job_title: string;
@@ -78,17 +81,18 @@ type ResumeData = {
 
 const resumeData: ResumeData = {
   id: "1",
-  url: "https://career.example.com/job/123456",
-  imgUrl:
-    "https://i.pinimg.com/736x/95/f0/8a/95f08adb4d08c76eda72fd488700bd3a.jpg",
-  photoUrl: "",
   title: "기본 이력서",
-  name: "김취업",
-  email: "email.email.com",
-  phone: "010-0000-0000",
-  gender: "남",
-  address: "서울시 강남구",
-  military_service: "현역",
+  photoUrl:
+    "https://i.pinimg.com/736x/95/f0/8a/95f08adb4d08c76eda72fd488700bd3a.jpg",
+  url: "https://career.example.com/job/123456",
+  user_info: {
+    name: "김취업",
+    email: "email@email.com",
+    phone: "010-0000-0000",
+    gender: "남",
+    address: "서울시 강남구",
+    military_service: "현역",
+  },
   self_introduction:
     "안녕하세요. 3년차 웹 개발자 김취업입니다.\n\n사용자 중심의 인터페이스 설계와 효율적인 코드 작성에 관심이 많으며, 항상 새로운 기술을 배우고 적용하는 것을 즐깁니다. 팀원들과의 원활한 소통을 통해 프로젝트를 성공적으로 이끌어 낸 경험이 있으며, 문제 해결 능력과 책임감을 바탕으로 맡은 업무를 완수하는 것을 목표로 하고 있습니다.\n\n지속적인 학습과 성장을 통해 더 나은 개발자가 되고자 노력하고 있습니다.",
   experience: [
@@ -185,12 +189,17 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   const defaultValues = isEditMode
     ? resumeData
     : {
-        name: "",
-        email: "",
-        phone: "",
-        gender: "",
-        address: "",
-        military_service: "",
+        title: "",
+        url: "",
+        photoUrl: "",
+        user_info: {
+          name: "",
+          email: "",
+          phone: "",
+          gender: "",
+          address: "",
+          military_service: "",
+        },
         self_introduction: "",
         experience: [],
         education: {
@@ -254,13 +263,18 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         basicInfoForm.handleSubmit();
       }}
     >
-      <div className={flex}>
+      <div className={container}>
         <ResumeCard isMust={true}>
           <ResumeCardRow
             value="표시는 필수 항목입니다. (증명사진, 기본정보, 경력, 학력)"
             widthType="full"
           />
         </ResumeCard>
+
+        {/* {defaultValues.map((card) => {
+          return card;
+        })} */}
+
         <ResumeCard title="이력서 제목" isMust={true}>
           <basicInfoForm.Field
             name="title"
@@ -295,7 +309,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         </ResumeCard>
         <ResumeCard title="증명사진" isMust={true}>
           <basicInfoForm.Field
-            name="imgUrl"
+            name="photoUrl"
             validators={{
               onChange: ({ value }) => {
                 const result = z
@@ -364,7 +378,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         )}
         <ResumeCard title="기본정보" isMust={true}>
           <basicInfoForm.Field
-            name="name"
+            name="user_info.name"
             validators={{
               onChange: ({ value }) => {
                 const result = z
@@ -395,12 +409,12 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
             )}
           </basicInfoForm.Field>
           <basicInfoForm.Field
-            name="email"
+            name="user_info.email"
             validators={{
               onChange: ({ value }) => {
                 const result = z
                   .string()
-                  .min(2, "이름은 2글자 이상이어야 합니다.")
+                  .email("올바른 이메일 형식이 아닙니다.")
                   .safeParse(value);
                 return result.success
                   ? undefined
@@ -427,12 +441,15 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
             )}
           </basicInfoForm.Field>
           <basicInfoForm.Field
-            name="phone"
+            name="user_info.phone"
             validators={{
               onChange: ({ value }) => {
                 const result = z
                   .string()
-                  .min(2, "이름은 2글자 이상이어야 합니다.")
+                  .regex(
+                    /^010-\d{4}-\d{4}$/,
+                    "올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)"
+                  )
                   .safeParse(value);
                 return result.success
                   ? undefined
@@ -452,14 +469,14 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     onChange={field.handleChange}
                     onBlur={field.handleBlur}
                     error={field.state.meta.errors.join(", ")}
-                    placeholder="email@example.com"
+                    placeholder="010-0000-0000"
                   />
                 }
               />
             )}
           </basicInfoForm.Field>
           <basicInfoForm.Field
-            name="gender"
+            name="user_info.gender"
             validators={{
               onChange: ({ value }) => {
                 const result = z
@@ -490,7 +507,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
             )}
           </basicInfoForm.Field>
           <basicInfoForm.Field
-            name="address"
+            name="user_info.address"
             validators={{
               onChange: ({ value }) => {
                 const result = z
@@ -521,7 +538,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
             )}
           </basicInfoForm.Field>
           <basicInfoForm.Field
-            name="military_service"
+            name="user_info.military_service"
             validators={{
               onChange: ({ value }) => {
                 const result = z
@@ -1241,28 +1258,22 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
               },
             }}
           >
-            {(field) => {
-              const inputData = "";
-              const array = field.state.value;
-
-              return (
-                <>
-                  <ResumeCardRow
-                    widthType="full"
-                    input={
-                      <Text
-                        // label="이력서 제목"
-                        value={array}
-                        onChange={field.handleChange}
-                        onBlur={field.handleBlur}
-                        error={field.state.meta.errors.join(", ")}
-                        placeholder="기술명을 입력하고 Enter 또는 추가 버튼을 눌러주세요"
-                      />
-                    }
-                  />
-                </>
-              );
-            }}
+            {(field) => (
+              <>
+                <ResumeCardRow
+                  widthType="full"
+                  input={
+                    <Text
+                      value={field.state.value}
+                      onChange={field.handleChange}
+                      onBlur={field.handleBlur}
+                      error={field.state.meta.errors.join(", ")}
+                      placeholder="기술명을 중복이 되지 않도록 콤마(,)로 구분하여 입력하세요"
+                    />
+                  }
+                />
+              </>
+            )}
           </basicInfoForm.Field>
         </ResumeCard>
         <ResumeCard title="자격증 및 어학" useButton={true}>

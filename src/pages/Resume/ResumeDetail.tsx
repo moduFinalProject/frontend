@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import ResumeCard from "./components/card/ResumeCard";
 import ResumeCardRow from "./components/card/ResumeCardRow";
-import { flex } from "./ResumeDetail.css.ts";
 import { Fragment } from "react/jsx-runtime";
 import { useEffect } from "react";
+import { container } from "./index.css.ts";
 
 type ResumeData = {
   id: string;
@@ -165,7 +165,7 @@ export default function ResumeDetail() {
   useEffect(() => {}, [id]);
 
   return (
-    <div className={flex}>
+    <div className={container}>
       <ResumeCard title="증명사진">
         <ResumeCardRow
           imgUrl={resumeData.imgUrl}
