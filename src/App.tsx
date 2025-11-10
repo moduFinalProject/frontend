@@ -6,8 +6,7 @@ import Landing from "@/pages/Landing";
 import NotFound from "@/pages/NotFound";
 import Profile from "@/pages/Profile";
 
-import Login from "@/pages/Login";
-import GoogleCallback from "@/pages/Login/GoogleCallback";
+import { Login, GoogleCallback, SocialSignUp } from "@/pages/Login";
 
 import Resume from "@/pages/Resume";
 import ResumeList from "@/pages/Resume/ResumeList";
@@ -87,6 +86,7 @@ function App() {
       <Route path="/landing" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/googleCallback" element={<GoogleCallback />} />
+      <Route path="/SocialSignUp" element={<SocialSignUp />} />
 
       <Route
         path="/"

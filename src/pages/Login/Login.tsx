@@ -1,17 +1,45 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "@tanstack/react-form";
-import { loginContainer, formWrapper, formContent, logoSection, titleSection, formSection, formGroup, linkSection, linkSignup, linkForgot, dividerSection, dividerText, socialSection, heading, subHeading, formLabel, formInput, fieldsetStyle } from "./Login.css";
+import { z } from "zod";
+import { useState } from "react";
+import { loginContainer, formWrapper, formContent, logoSection, titleSection, formSection, linkSection, linkSignup, linkForgot, dividerSection, dividerText, socialSection, heading, subHeading, fieldsetStyle } from "./Login.css";
 import Button from "@/components/Button/Button";
+import Text from "@/components/FormElem/text/Text";
 import logo from "@/assets/logo/logo.svg";
+import { loginWithEmail } from "@/services/api";
 
-interface LoginForm {
-  email: string;
-  password: string;
-}
+// Zod 스키마 정의
+const loginSchema = z.object({
+  email: z.string()
+    .min(1, "이메일을 입력해주세요")
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "올바른 이메일 형식을 입력해주세요"),
+  password: z.string()
+    .min(1, "비밀번호를 입력해주세요")
+    .min(6, "비밀번호는 최소 6자 이상이어야 합니다"),
+});
 
-function loginProcess(formData: LoginForm): void {
-  // 로그인 로직
-  console.log("로그인 시도:", formData);
+type LoginForm = z.infer<typeof loginSchema>;
+
+async function loginProcess(formData: LoginForm, navigate: ReturnType<typeof useNavigate>, setError: (error: string | null) => void, setLoading: (loading: boolean) => void): Promise<void> {
+  try {
+    setError(null);
+    setLoading(true);
+
+    const response = await loginWithEmail(formData.email, formData.password);
+
+    // 로그인 성공 시 토큰 저장
+    localStorage.setItem("access_token", response.accessToken);
+    localStorage.setItem("user", JSON.stringify(response.user));
+
+    // 대시보드로 이동
+    navigate("/");
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "로그인에 실패했습니다";
+    setError(errorMessage);
+    console.error("Login error:", err);
+  } finally {
+    setLoading(false);
+  }
 }
 
 // Google OAuth 2.0 설정
@@ -73,13 +101,20 @@ function googleOAuth2SignIn(): void {
 }
 
 export default function Login() {
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const form = useForm({
     defaultValues: {
       email: '',
       password: '',
     } as LoginForm,
+    validators: {
+      onChange: loginSchema,
+    },
     onSubmit: async ({ value }) => {
-      loginProcess(value);
+      loginProcess(value, navigate, setError, setLoading);
     },
   });
 
@@ -107,82 +142,48 @@ export default function Login() {
               <fieldset className={fieldsetStyle}>
                 <form.Field
                   name="email"
-                  validators={{
-                    onChange: ({ value }) => {
-                      if (!value) {
-                        return '이메일을 입력해주세요';
-                      }
-                      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                        return '올바른 이메일 형식을 입력해주세요';
-                      }
-                      return undefined;
-                    },
-                  }}
                   children={(field) => (
-                    <div className={formGroup}>
-                      <label htmlFor="email" className={formLabel}>이메일</label>
-                      <input
-                        id="email"
-                        name={field.name}
-                        type="email"
-                        placeholder="your@email.com"
-                        className={formInput}
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        onBlur={field.handleBlur}
-                      />
-                      {field.state.meta.errors && (
-                        <div style={{ color: '#D4183D', fontSize: '12px', marginTop: '4px' }}>
-                          {field.state.meta.errors.join(', ')}
-                        </div>
-                      )}
-                    </div>
+                    <Text
+                      label="이메일"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={field.state.value}
+                      onChange={field.handleChange}
+                      onBlur={field.handleBlur}
+                      error={field.state.meta.errors.join(', ')}
+                    />
                   )}
                 />
 
                 <form.Field
                   name="password"
-                  validators={{
-                    onChange: ({ value }) => {
-                      if (!value) {
-                        return '비밀번호를 입력해주세요';
-                      }
-                      if (value.length < 6) {
-                        return '비밀번호는 최소 6자 이상이어야 합니다';
-                      }
-                      return undefined;
-                    },
-                  }}
                   children={(field) => (
-                    <div className={formGroup}>
-                      <label htmlFor="password" className={formLabel}>비밀번호</label>
-                      <input
-                        id="password"
-                        name={field.name}
-                        type="password"
-                        placeholder="••••••••"
-                        className={formInput}
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        onBlur={field.handleBlur}
-                      />
-                      {field.state.meta.errors && (
-                        <div style={{ color: '#D4183D', fontSize: '12px', marginTop: '4px' }}>
-                          {field.state.meta.errors.join(', ')}
-                        </div>
-                      )}
-                    </div>
+                    <Text
+                      label="비밀번호"
+                      type="password"
+                      placeholder="••••••••"
+                      value={field.state.value}
+                      onChange={field.handleChange}
+                      onBlur={field.handleBlur}
+                      error={field.state.meta.errors.join(', ')}
+                    />
                   )}
                 />
               </fieldset>
 
+              {error && (
+                <div style={{ color: '#ef4444', marginBottom: '16px', fontSize: '14px', textAlign: 'center' }}>
+                  {error}
+                </div>
+              )}
+
               <Button
                 widthStyle="full"
                 color="blue"
-                text="로그인"
+                text={loading ? "로그인 중..." : "로그인"}
                 callback={() => {}}
                 buttonType="submit"
-                disabled={!form.state.isValid}
+                disabled={!form.state.isValid || loading}
               />
             </form>
           </section>
