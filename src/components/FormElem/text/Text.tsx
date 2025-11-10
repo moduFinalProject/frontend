@@ -13,6 +13,7 @@ interface InputProps {
   label?: string;
   type?: "text" | "email" | "password" | "tel" | "date" | "month";
   placeholder?: string;
+  name: string;
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
@@ -28,6 +29,7 @@ const Text = forwardRef<HTMLInputElement, InputProps>(function Text(
     label: labelText,
     type = "text",
     placeholder,
+    name,
     value,
     onChange,
     onBlur,
@@ -49,6 +51,7 @@ const Text = forwardRef<HTMLInputElement, InputProps>(function Text(
       )}
       <div className={useBtn}>
         <input
+          name={name}
           ref={ref}
           type={type}
           className={inputBase}
@@ -67,7 +70,11 @@ const Text = forwardRef<HTMLInputElement, InputProps>(function Text(
           />
         )}
       </div>
-      {error && <span className={errorMessage}>{error}</span>}
+      {error && (
+        <span id={name} className={errorMessage}>
+          {error}
+        </span>
+      )}
     </div>
   );
 });

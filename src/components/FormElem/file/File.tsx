@@ -9,6 +9,7 @@ interface InputProps {
   label?: string;
   type?: string;
   placeholder?: string;
+  name: string;
   value: string;
   onChange?: (value: string | File) => void;
   onBlur?: () => void;
@@ -19,6 +20,7 @@ interface InputProps {
 export default function File({
   label: labelText,
   type = "img",
+  name,
   value,
   placeholder,
   onChange,
@@ -77,6 +79,7 @@ export default function File({
         />
       )}
       <input
+        name={name}
         id="fileInput"
         className="a11y-hidden"
         type="file"
@@ -87,7 +90,11 @@ export default function File({
         accept={type === "img" ? "image/*" : ".pdf, application/pdf"}
       />
       {placeholder && <p>{placeholder}</p>}
-      {error && <span className={errorMessage}>{error}</span>}
+      {error && (
+        <span id={name} className={errorMessage}>
+          {error}
+        </span>
+      )}
     </div>
   );
 }
