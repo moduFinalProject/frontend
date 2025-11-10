@@ -35,6 +35,10 @@ export const titleRow = style({
   gap: vars.spacing.sm,
   cursor: "pointer",
 
+  a: {
+    color: "inherit",
+    textDecoration: "none",
+  },
   h4: {
     fontSize: vars.typography.fontSize.m,
     margin: 0,

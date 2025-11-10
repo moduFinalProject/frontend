@@ -8,7 +8,7 @@ import {
   dropdownStyle,
 } from "./ResumeItem.css.ts";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type Resume = {
   id: string;
@@ -62,13 +62,10 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
     <li className={resumeItem}>
       <div className={title}>
         <div>
-          <div
-            className={titleRow}
-            onClick={() => {
-              navigate(`./${resume.id}`);
-            }}
-          >
-            <h4>{resume.name}</h4>
+          <div className={titleRow}>
+            <Link to={`./${resume.id}`}>
+              <h4>{resume.name}</h4>
+            </Link>
             {resume.url && <span>공고맞춤</span>}
           </div>
           <p>{resume.desc}</p>
