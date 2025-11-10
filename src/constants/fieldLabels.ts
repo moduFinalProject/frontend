@@ -68,6 +68,7 @@ export const EXPERIENCE_LABELS: Record<string, labelPlaceholderSet> = {
   position: { label: "직무", placeholder: "직무를 입력하세요" },
   start_date: { label: "입사일" },
   end_date: { label: "퇴사일" },
+  employmont_status: { label: "현재 재직중" },
   description: {
     label: "경력 기술서 (담당 업무 및 성과)",
     placeholder:
