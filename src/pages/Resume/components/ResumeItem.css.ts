@@ -28,7 +28,7 @@ export const title = style({
     color: vars.color.subText,
     margin: `${vars.spacing.sm} 0 0`,
   },
-  button: {
+  "> div > button": {
     padding: vars.spacing.sm,
   },
 });
