@@ -10,6 +10,7 @@ export const resumeItem = style({
   gap: vars.spacing.lg,
   border: `1px solid ${vars.color.line}`,
   borderRadius: vars.borderRadius.lg,
+  backgroundColor: vars.color.white,
 
   ":hover": {
     boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,

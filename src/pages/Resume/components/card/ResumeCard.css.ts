@@ -5,6 +5,7 @@ export const card = style({
   padding: vars.spacing.lg,
   border: `1px solid ${vars.color.line}`,
   borderRadius: vars.borderRadius.lg,
+  backgroundColor: vars.color.white,
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.lg,
