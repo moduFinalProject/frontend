@@ -6,7 +6,6 @@ import Landing from "@/pages/Landing";
 import NotFound from "@/pages/NotFound";
 import Profile from "@/pages/Profile";
 import Dashboard from "@/pages/Dashboard";
-
 import { Login, GoogleCallback, SocialSignUp } from "@/pages/Login";
 
 import Resume from "@/pages/Resume";
@@ -15,18 +14,12 @@ import ResumeDetail from "@/pages/Resume/ResumeDetail";
 import ResumeCorrection from "@/pages/Resume/ResumeCorrection";
 import ResumeForm from "@/pages/Resume/ResumeForm";
 
+import Jobs from "@/pages/Jobs";
+import JobList from "@/pages/Jobs/JobList";
+import JobDetail from "@/pages/Jobs/JobDetail";
+import JobForm from "@/pages/Jobs/JobForm";
+
 // 임시 페이지
-const JobPost = () => (
-  <div
-    style={{
-      marginLeft: "15%",
-      width: "85%",
-      padding: "20px",
-    }}
-  >
-    채용공고 관리 페이지
-  </div>
-);
 const ResumeFeedbackHis = () => (
   <div
     style={{
@@ -124,17 +117,22 @@ function App() {
       </Route>
 
       <Route
-        path="/jobPost"
+        path="/jobs"
         element={
           loginToken ? (
             <Layout>
-              <ProtectedRoute element={<JobPost />} />
+              <Jobs />
             </Layout>
           ) : (
             <Landing />
           )
         }
-      />
+      >
+        <Route index element={<JobList />} />
+        <Route path="new" element={<JobForm mode="create" />} />
+        <Route path=":id" element={<JobDetail />} />
+        <Route path=":id/edit" element={<JobForm mode="edit" />} />
+      </Route>
 
       <Route
         path="/resumeFeedbackHis"
