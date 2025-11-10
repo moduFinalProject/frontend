@@ -6,6 +6,7 @@ import {
   desc,
   btns,
   dropdownStyle,
+  descTitle,
 } from "./ResumeItem.css.ts";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -102,17 +103,17 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       </div>
       <div className={desc}>
         <div>
-          <p>최근 수정</p>
+          <p className={descTitle}>최근 수정</p>
           <p>{resume.date}</p>
         </div>
         {resume.url && (
           <>
             <div>
-              <p>맞춤 공고</p>
+              <p className={descTitle}>맞춤 공고</p>
               <span>1개</span>
             </div>
             <div>
-              <p>마감일</p>
+              <p className={descTitle}>마감일</p>
               <p>~ {resume.end_date}</p>
             </div>
           </>

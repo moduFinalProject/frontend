@@ -91,6 +91,10 @@ export const btns = style({
   },
 });
 
+export const descTitle = style({
+  color: vars.color.subText,
+});
+
 export const dropdownStyle = style({
   position: "absolute",
   display: "flex",
