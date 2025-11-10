@@ -15,6 +15,7 @@ import {
   imgWrap,
   noImg,
   imgRow,
+  innerGrid,
 } from "./ResumeCardRow.css.ts";
 
 import type { ReactNode } from "react";
@@ -31,6 +32,7 @@ type rowData = {
   isLisence?: boolean;
   isUrl?: boolean;
   isPhoto?: boolean;
+  isInner?: boolean;
   input?: ReactNode;
   widthType: "half" | "full";
 };
@@ -46,11 +48,16 @@ export default function ResumeCardRow({
   isLisence = false,
   isUrl = false,
   isPhoto = false,
+  isInner = false,
   input,
   widthType,
 }: rowData) {
   return (
-    <div className={`${row} ${widthStyle[widthType]}`}>
+    <div
+      className={`${row} ${widthStyle[widthType]} ${
+        isInner ? innerGrid[widthType] : ""
+      }`}
+    >
       {(value || subTile) && (
         <div className={topTitle}>
           <div className={topTitleText}>

@@ -23,7 +23,7 @@ export default function ResumCard({
   onDelete,
 }: rowData) {
   return (
-    <section className={card} style={{ gridColumn: "span 2" }}>
+    <section className={card}>
       <div className={titleWrap}>
         <h3>
           {title}

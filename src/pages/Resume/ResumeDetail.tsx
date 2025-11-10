@@ -23,7 +23,7 @@ type ResumeData = {
     position: string;
     department: string;
     start_date: string;
-    end_date: string;
+    end_date?: string;
     job_description: string;
     employment_status: "Y" | "N";
   }[];
@@ -32,7 +32,7 @@ type ResumeData = {
     department: string;
     degree_level: string;
     start_date: string;
-    end_date: string;
+    end_date?: string;
     score: string;
   };
   project?: {

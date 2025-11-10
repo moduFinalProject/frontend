@@ -9,7 +9,7 @@ interface InputProps {
   type?: string;
   placeholder?: string;
   value: string;
-  onChange?: (value: string) => void;
+  onChange?: (value: string | File) => void;
   onBlur?: () => void;
   error?: string;
   disabled?: boolean;
@@ -44,12 +44,13 @@ export default function File({
     if (file) {
       // 파일 객체 전체 출력
       console.log(file);
+      onChange(file);
 
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
         // onChange로 부모 컴포넌트에 파일 URL 전달
-        onChange(result);
+        // onChange(result);
 
         // 이미지 미리보기 업데이트
         const imgWrap = document.getElementById("imgWrap");

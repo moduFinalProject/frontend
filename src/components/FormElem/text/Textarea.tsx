@@ -9,6 +9,7 @@ interface InputProps {
   error?: string;
   disabled?: boolean;
   rows?: number;
+  isMust?: boolean;
 }
 
 export default function Textarea({
@@ -20,11 +21,17 @@ export default function Textarea({
   error,
   disabled = false,
   rows = 5,
+  isMust = false,
 }: InputProps) {
   return (
     <div className={inputContainer}>
       <>
-        {labelText && <label className={label}>{labelText}</label>}
+        {labelText && (
+          <label className={label}>
+            {labelText}
+            {isMust && <span> *</span>}
+          </label>
+        )}
         <textarea
           style={{ resize: "none" }}
           className={inputBase}
