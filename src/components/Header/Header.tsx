@@ -40,10 +40,10 @@ export default function Header() {
       menuURL: "/resume"
     },
     {
-      id: "jobPost",
-      menuName: "채용공고 관리",
+      id: "jobs",
+      menuName: "채용공고",
       menuIcon: "JOB",
-      menuURL: "/jobPost"
+      menuURL: "/jobs"
     },
     {
       id: "resumeFeedbackHis",

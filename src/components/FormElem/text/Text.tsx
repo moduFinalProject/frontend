@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { Button } from "@/components/Button";
 import {
   inputContainer,
@@ -22,19 +23,22 @@ interface InputProps {
   isHidden?: boolean;
 }
 
-export default function Text({
-  label: labelText,
-  type = "text",
-  placeholder,
-  value,
-  onChange,
-  onBlur,
-  error,
-  disabled = false,
-  isMust = false,
-  isBtn = false,
-  isHidden = false,
-}: InputProps) {
+const Text = forwardRef<HTMLInputElement, InputProps>(function Text(
+  {
+    label: labelText,
+    type = "text",
+    placeholder,
+    value,
+    onChange,
+    onBlur,
+    error,
+    disabled = false,
+    isMust = false,
+    isBtn = false,
+    isHidden = false,
+  },
+  ref
+) {
   return (
     <div className={`${inputContainer} ${isHidden && hidden}`}>
       {labelText && (
@@ -45,6 +49,7 @@ export default function Text({
       )}
       <div className={useBtn}>
         <input
+          ref={ref}
           type={type}
           className={inputBase}
           placeholder={placeholder}
@@ -65,4 +70,6 @@ export default function Text({
       {error && <span className={errorMessage}>{error}</span>}
     </div>
   );
-}
+});
+
+export default Text;

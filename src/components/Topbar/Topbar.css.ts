@@ -8,7 +8,8 @@ export const topbar = style({
   justifyContent: "right",
   padding: vars.spacing.lg,
   backgroundColor: vars.color.white,
-  borderBottom: `1px solid ${vars.color.line}`
+  borderBottom: `1px solid ${vars.color.line}`,
+  alignItems: "center",
 });
 
 export const topbarRight = style({
@@ -22,19 +23,6 @@ export const userInfo = style({
   display: "flex",
   alignItems: "center",
   gap: vars.spacing.md
-});
-
-export const userAvatar = style({
-  width: "44px",
-  height: "44px",
-  borderRadius: "50%",
-  backgroundColor: vars.color.main,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: vars.color.white,
-  fontSize: vars.typography.fontSize.m,
-  fontWeight: vars.typography.fontWeight.bold
 });
 
 export const userDetails = style({
