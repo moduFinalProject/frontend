@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css";
+import { style, globalStyle } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
 
 export const container = style({
@@ -12,12 +12,6 @@ export const container = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.lg,
-  selectors: {
-    "& hr": {
-      color: vars.color.line,
-      gridColumn: "span 2",
-    },
-  },
 });
 
 export const header = style({
@@ -36,4 +30,9 @@ export const header = style({
 
 export const innerContainer = style({
   paddingTop: 0,
+});
+
+globalStyle(`${container} hr`, {
+  color: vars.color.line,
+  gridColumn: "span 2",
 });
