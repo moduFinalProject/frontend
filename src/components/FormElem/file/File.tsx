@@ -3,6 +3,7 @@
 import { Button } from "@/components/Button";
 import { useEffect, useRef, ChangeEvent } from "react";
 import { btnWrap } from "./File.css";
+import { errorMessage } from "../text/Input.css";
 
 interface InputProps {
   label?: string;
@@ -86,7 +87,7 @@ export default function File({
         accept={type === "img" ? "image/*" : ".pdf, application/pdf"}
       />
       {placeholder && <p>{placeholder}</p>}
-      {error && <span>{error}</span>}
+      {error && <span className={errorMessage}>{error}</span>}
     </div>
   );
 }
