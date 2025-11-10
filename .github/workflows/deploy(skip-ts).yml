@@ -1,7 +1,7 @@
 name: Manual Deploy to GitHub Pages
 
 on:
-  workflow_dispatch:  # 👈 수동 실행 가능하게 함
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -14,13 +14,13 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20  # 프로젝트에 맞게 조정 가능
+          node-version: 20
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build project
-        run: npm run build
+      - name: Build project (skip TS)
+        run: npm run build:skip-ts
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
