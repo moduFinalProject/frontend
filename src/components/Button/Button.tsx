@@ -30,7 +30,7 @@ export default function Button({
       onClick={callback}
       form={form}
     >
-      {icon && <img src={ICONS[icon]} />}
+      {icon && <img src={ICONS[icon]} alt="" />}
       {text}
     </button>
   );

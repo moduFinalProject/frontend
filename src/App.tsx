@@ -6,14 +6,19 @@ import Landing from "@/pages/Landing";
 import NotFound from "@/pages/NotFound";
 import Profile from "@/pages/Profile";
 
-import Login from "@/pages/Login";
-import GoogleCallback from "@/pages/Login/GoogleCallback";
+// import Login from "@/pages/Login";
+// import GoogleCallback from "@/pages/Login/GoogleCallback";
 
 import Resume from "@/pages/Resume";
 import ResumeList from "@/pages/Resume/ResumeList";
 import ResumeDetail from "@/pages/Resume/ResumeDetail";
 import ResumeCorrection from "@/pages/Resume/ResumeCorrection";
 import ResumeForm from "@/pages/Resume/ResumeForm";
+
+import Jobs from "@/pages/Jobs";
+import JobList from "@/pages/Jobs/JobList";
+import JobDetail from "@/pages/Jobs/JobDetail";
+import JobForm from "@/pages/Jobs/JobForm";
 
 // 임시 페이지
 const Dashboard = () => (
@@ -25,17 +30,6 @@ const Dashboard = () => (
     }}
   >
     대시보드 페이지
-  </div>
-);
-const JobPost = () => (
-  <div
-    style={{
-      marginLeft: "15%",
-      width: "85%",
-      padding: "20px",
-    }}
-  >
-    채용공고 관리 페이지
   </div>
 );
 const ResumeFeedbackHis = () => (
@@ -85,8 +79,8 @@ function App() {
   return (
     <Routes>
       <Route path="/landing" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/login/googleCallback" element={<GoogleCallback />} />
+      {/* <Route path="/login" element={<Login />} />
+      <Route path="/login/googleCallback" element={<GoogleCallback />} /> */}
 
       <Route
         path="/"
@@ -134,17 +128,22 @@ function App() {
       </Route>
 
       <Route
-        path="/jobPost"
+        path="/jobs"
         element={
           loginToken ? (
             <Layout>
-              <ProtectedRoute element={<JobPost />} />
+              <Jobs />
             </Layout>
           ) : (
             <Landing />
           )
         }
-      />
+      >
+        <Route index element={<JobList />} />
+        <Route path="new" element={<JobForm mode="create" />} />
+        <Route path=":id" element={<JobDetail />} />
+        <Route path=":id/edit" element={<JobForm mode="edit" />} />
+      </Route>
 
       <Route
         path="/resumeFeedbackHis"
