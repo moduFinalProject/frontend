@@ -351,7 +351,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     if (!isEditMode && key === "url") return null;
     if (key === "photoUrl")
       return (
-        <ResumeCard key={key} title={FIELD_LABELS[key]} isMust>
+        <ResumeCard key={key} title={FIELD_LABELS[key].label} isMust>
           <form.Field name={key}>
             {(field) => (
               <ResumeCardRow
@@ -364,7 +364,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     value={field.state.value}
                     onChange={field.handleChange}
                     onBlur={field.handleBlur}
-                    placeholder="권장 크기: 3:4 비율 (예: 300x400px)"
+                    placeholder={FIELD_LABELS[key].placeholder}
                   />
                 }
               />
@@ -374,7 +374,11 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
       );
 
     return (
-      <ResumeCard key={key} title={FIELD_LABELS[key]} isMust={key === "title"}>
+      <ResumeCard
+        key={key}
+        title={FIELD_LABELS[key].label}
+        isMust={key === "title"}
+      >
         <form.Field name={key}>
           {(field) => (
             <ResumeCardRow
@@ -386,14 +390,14 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     value={field.state.value}
                     onChange={field.handleChange}
                     onBlur={field.handleBlur}
-                    placeholder="내용을 입력하세요"
+                    placeholder={FIELD_LABELS[key].placeholder}
                   />
                 ) : (
                   <Text
                     value={field.state.value}
                     onChange={field.handleChange}
                     onBlur={field.handleBlur}
-                    placeholder={key}
+                    placeholder={FIELD_LABELS[key].placeholder}
                     disabled={key === "url"}
                   />
                 )
@@ -412,7 +416,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     value: Record<string, any>
   ) {
     return (
-      <ResumeCard key={key} title={FIELD_LABELS[key]} isMust>
+      <ResumeCard key={key} title={FIELD_LABELS[key].label} isMust>
         {Object.entries(value).map(([subKey, subValue], idx) => (
           <form.Field key={subKey} name={`${key}.${subKey}`}>
             {(field) => (
@@ -422,12 +426,12 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   subKey === "gender" ? (
                     <Select
                       isMust
-                      label={USER_INFO_LABELS[subKey]}
+                      label={USER_INFO_LABELS[subKey].label}
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
                       error={field.state.meta.errors.join(", ")}
-                      placeholder="남/여"
+                      placeholder={USER_INFO_LABELS[subKey].placeholder}
                       options={[
                         { value: "1", label: "남" },
                         { value: "2", label: "여" },
@@ -436,12 +440,12 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   ) : subKey === "military_service" ? (
                     <Select
                       isMust
-                      label={USER_INFO_LABELS[subKey]}
+                      label={USER_INFO_LABELS[subKey].label}
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
                       error={field.state.meta.errors.join(", ")}
-                      placeholder="병역 여부 선택"
+                      placeholder={USER_INFO_LABELS[subKey].placeholder}
                       options={[
                         { value: "1", label: "면제" },
                         { value: "2", label: "군필" },
@@ -454,7 +458,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   ) : (
                     <Text
                       isMust
-                      label={USER_INFO_LABELS[subKey]}
+                      label={USER_INFO_LABELS[subKey].label}
                       type={
                         subKey === "email"
                           ? "email"
@@ -464,6 +468,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                           ? "month"
                           : "text"
                       }
+                      placeholder={USER_INFO_LABELS[subKey].placeholder}
                       value={field.state.value || subValue}
                       onChange={field.handleChange}
                     />
@@ -481,7 +486,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   function renderArrayField(form: any, key: string, value: any[]) {
     if (key === "technology_stack")
       return (
-        <ResumeCard key={key} title={FIELD_LABELS[key]}>
+        <ResumeCard key={key} title={FIELD_LABELS[key].label}>
           <form.Field
             name="technology_stack"
             // validators={{ onChange: validateTechStack }}
@@ -493,7 +498,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   <Text
                     value={field.state.value}
                     onChange={field.handleChange}
-                    placeholder="사용 가능한 스텍을 중복 없이 콤마(,)를 이용하여 작성해주세요. 예) React, TypeScript, ..."
+                    placeholder={FIELD_LABELS[key].placeholder}
                     error={field.state.meta.errors.join(", ")}
                   />
                 }
@@ -537,7 +542,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           return (
             <ResumeCard
               key={key}
-              title={FIELD_LABELS[key]}
+              title={FIELD_LABELS[key].label}
               useButton={true}
               btnType="PLUSBLACK"
               onAdd={handleAddItem}
@@ -547,7 +552,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
               {fieldArrayValue.map((item, idx) => (
                 <ResumeCard
                   key={idx}
-                  title={`${FIELD_LABELS[key]} #${idx + 1}`}
+                  title={`${FIELD_LABELS[key].label} #${idx + 1}`}
                   useButton={true}
                   btnType="DEL"
                   onDelete={
@@ -571,29 +576,40 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                               <Textarea
                                 label={
                                   key === "education"
-                                    ? EDUCATION_LABELS[k]
+                                    ? EDUCATION_LABELS[k].label
                                     : key === "experience"
-                                    ? EXPERIENCE_LABELS[k]
+                                    ? EXPERIENCE_LABELS[k].label
                                     : key === "project"
-                                    ? PROJECT_LABELS[k]
+                                    ? PROJECT_LABELS[k].label
                                     : key === "activity"
-                                    ? ACTIVITY_LABELS[k]
-                                    : QUALIFICATIONS_LABELS[k]
+                                    ? ACTIVITY_LABELS[k].label
+                                    : QUALIFICATIONS_LABELS[k].label
                                 }
                                 isMust={["description"].includes(k)}
                                 rows={8}
                                 value={field.state.value || v}
                                 onChange={field.handleChange}
+                                placeholder={
+                                  key === "education"
+                                    ? EDUCATION_LABELS[k].placeholder
+                                    : key === "experience"
+                                    ? EXPERIENCE_LABELS[k].placeholder
+                                    : key === "project"
+                                    ? PROJECT_LABELS[k].placeholder
+                                    : key === "activity"
+                                    ? ACTIVITY_LABELS[k].placeholder
+                                    : QUALIFICATIONS_LABELS[k].placeholder
+                                }
                               />
                             ) : k === "degree_level" ? (
                               <Select
                                 isMust
-                                label={EDUCATION_LABELS[k]}
+                                label={EDUCATION_LABELS[k].label}
                                 value={field.state.value}
                                 onChange={field.handleChange}
                                 onBlur={field.handleBlur}
                                 error={field.state.meta.errors.join(", ")}
-                                placeholder="학위 선택"
+                                placeholder={EDUCATION_LABELS[k].placeholder}
                                 options={[
                                   { value: "1", label: "고졸" },
                                   { value: "2", label: "전문학사" },
@@ -606,21 +622,34 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                               <Text
                                 label={
                                   key === "education"
-                                    ? EDUCATION_LABELS[k]
+                                    ? EDUCATION_LABELS[k].label
                                     : key === "experience"
-                                    ? EXPERIENCE_LABELS[k]
+                                    ? EXPERIENCE_LABELS[k].label
                                     : key === "project"
-                                    ? PROJECT_LABELS[k]
+                                    ? PROJECT_LABELS[k].label
                                     : key === "activity"
-                                    ? ACTIVITY_LABELS[k]
-                                    : QUALIFICATIONS_LABELS[k]
+                                    ? ACTIVITY_LABELS[k].label
+                                    : QUALIFICATIONS_LABELS[k].label
+                                }
+                                placeholder={
+                                  key === "education"
+                                    ? EDUCATION_LABELS[k].placeholder
+                                    : key === "experience"
+                                    ? EXPERIENCE_LABELS[k].placeholder
+                                    : key === "project"
+                                    ? PROJECT_LABELS[k].placeholder
+                                    : key === "activity"
+                                    ? ACTIVITY_LABELS[k].placeholder
+                                    : QUALIFICATIONS_LABELS[k].placeholder
                                 }
                                 isMust={[
+                                  "qua_title",
                                   "title",
                                   "organ",
                                   "department",
                                   "start_date",
                                   "end_date",
+                                  "acquisition_date",
                                 ].includes(k)}
                                 type={k.includes("date") ? "month" : "text"}
                                 value={field.state.value || v}
