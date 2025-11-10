@@ -8,7 +8,6 @@ import { z } from "zod";
 import Text, { Textarea } from "@/components/FormElem/text";
 import FileElem from "@/components/FormElem/file/File";
 import { container, innerContainer } from "./index.css.ts";
-import { basicInfoSchema } from "./components/form/validators";
 import Select from "@/components/FormElem/text/Select.tsx";
 
 import {
@@ -36,7 +35,7 @@ type ExperienceItem = {
 type EducationItem = {
   organ: string;
   department?: string;
-  degree_level?: 1 | 2 | 3 | 4 | 5;
+  degree_level?: "1" | "2" | "3" | "4" | "5";
   score: string;
   start_date: string;
   end_date: string;
@@ -68,9 +67,9 @@ type ResumeFormValues = {
     name: string;
     email: string;
     phone: string;
-    gender: 1 | 2;
+    gender: "1" | "2";
     address: string;
-    military_service: 1 | 2 | 3 | 4 | 5 | 6;
+    military_service: "1" | "2" | "3" | "4" | "5" | "6";
   };
   education?: EducationItem[];
   self_introduction: string;
@@ -91,24 +90,24 @@ const resumeDataSample: ResumeFormValues = {
     name: "김취업",
     email: "email@email.com",
     phone: "010-0000-0000",
-    gender: 1,
+    gender: "1",
     address: "서울시 강남구",
-    military_service: 2,
+    military_service: "2",
   },
   education: [
     {
       organ: "한국대학교",
-      department: "컴퓨터공학",
-      degree_level: 3,
-      score: "3.8 / 4.5",
+      department: "컴퓨터공학과",
+      degree_level: "3",
+      score: "3.8 / 4.5점",
       start_date: "2020-06",
       end_date: "2022-02",
     },
     {
       organ: "한국대학교",
-      department: "컴퓨터공학",
-      degree_level: 3,
-      score: "3.8 / 4.5",
+      department: "컴퓨터공학과",
+      degree_level: "3",
+      score: "3.8 / 4.5점",
       start_date: "2020-06",
       end_date: "2022-02",
     },
@@ -263,8 +262,11 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     defaultValues,
     onSubmit: async ({ value }) => {
       try {
-        basicInfoSchema.parse(value);
+        // basicInfoSchema.parse(value);
+        // const validatedData = await basicInfoSchema.parseAsync(value);
         console.log(`${mode === "edit" ? "수정" : "생성"} 데이터:`, value);
+
+        // console.log(`${mode === "edit" ? "수정" : "생성"} 데이터:`, value);
 
         // TODO: API 호출
         const resumeData: ResumeFormValues = value; // useForm에서 받은 값
@@ -296,6 +298,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         //     console.error("Error:", error);
         //   });
         // navigate("/resume");
+        alert(`${mode === "edit" ? "수정" : "생성"} 완료!`);
       } catch (error) {
         if (error instanceof z.ZodError) {
           console.error("검증 오류:", error.issues);
@@ -340,7 +343,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     return null;
   }
 
-  // text 필드
+  // text 필드 (이력서 제목, 증명사진, 자기소개)
   function renderTextField(
     form: any,
     key: string,
@@ -348,14 +351,36 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     isEditMode: boolean
   ) {
     if (!isEditMode && key === "url") return null;
+    // 증명사진
     if (key === "photoUrl")
       return (
         <ResumeCard key={key} title={FIELD_LABELS[key].label} isMust>
           <form.Field
             name={key}
             validators={{
-              onSubmit: ({ value }: { value: string }) =>
-                basicInfoSchema.parseAsync(value),
+              onSubmit: ({ value }: { value: string }) => {
+                // basicInfoSchema.parseAsync(value);
+                const photoUrlStringSchema = z
+                  .string()
+                  .refine(
+                    (val) =>
+                      val.startsWith("data:image/") || val.startsWith("http"),
+                    "올바른 이미지 URL 형식(data:image/ 또는 http)을 선택해주세요"
+                  );
+                const photoUrlFileSchema = z
+                  .instanceof(File)
+                  .refine(
+                    (file) => file.type.startsWith("image/"),
+                    "이미지 파일만 업로드할 수 있습니다."
+                  );
+
+                const result = z
+                  .union([photoUrlStringSchema, photoUrlFileSchema])
+                  .safeParse(value);
+                return result.success
+                  ? undefined
+                  : result.error.issues[0].message;
+              },
             }}
           >
             {(field) => (
@@ -364,6 +389,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                 isPhoto
                 input={
                   <FileElem
+                    name={key}
                     label="사진 업로드"
                     type="img"
                     value={field.state.value}
@@ -379,6 +405,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         </ResumeCard>
       );
 
+    // 이력서 제목, 자기소개
     return (
       <ResumeCard
         key={key}
@@ -388,7 +415,25 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         <form.Field
           name={key}
           validators={{
-            onSubmit: ({ value }) => basicInfoSchema.parseAsync(value),
+            onSubmit: ({ value }) => {
+              // basicInfoSchema.parseAsync(value)
+              let result;
+              if (key === "title")
+                result = z
+                  .string()
+                  .min(1, "이력서 이름을 입력하세요.")
+                  .safeParse(value);
+              else if (key === "self_introduction")
+                result = z
+                  .string()
+                  .max(400, "400자 이하로 입력하세요.")
+                  .nullable()
+                  .optional()
+                  .safeParse(value);
+              return result?.success
+                ? undefined
+                : result?.error.issues[0].message;
+            },
           }}
         >
           {(field) => (
@@ -397,6 +442,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
               input={
                 key === "self_introduction" ? (
                   <Textarea
+                    name={key}
                     rows={8}
                     value={field.state.value}
                     onChange={field.handleChange}
@@ -406,6 +452,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   />
                 ) : (
                   <Text
+                    name={key}
                     value={field.state.value}
                     onChange={field.handleChange}
                     onBlur={field.handleBlur}
@@ -422,7 +469,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     );
   }
 
-  // 객체 필드
+  // 객체 필드(기본정보)
   function renderObjectField(
     form: any,
     key: string,
@@ -435,7 +482,52 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
             key={subKey}
             name={`${key}.${subKey}`}
             validators={{
-              onSubmit: ({ value }) => basicInfoSchema.parseAsync(value),
+              onSubmit: ({ value }) => {
+                // basicInfoSchema.parseAsync(value)
+                const userInfoSchema: {
+                  name: z.ZodString;
+                  email: z.ZodString;
+                  phone: z.ZodString;
+                  gender: z.ZodEnum<{
+                    1: "1";
+                    2: "2";
+                  }>;
+                  address: z.ZodString;
+                  military_service: z.ZodEnum<{
+                    1: "1";
+                    2: "2";
+                    3: "3";
+                    4: "4";
+                    5: "5";
+                    6: "6";
+                  }>;
+                } = {
+                  name: z.string().min(2, "이름은 두글자 이상 입력하세요."),
+                  email: z.string().email("올바른 이메일 형식이 아닙니다."),
+                  phone: z
+                    .string()
+                    .regex(
+                      /^010-\d{4}-\d{4}$/,
+                      "010-0000-0000 형식으로 입력하세요."
+                    ),
+                  gender: z.enum(["1", "2"], "성별을 선택해주세요"),
+                  address: z
+                    .string()
+                    .min(6, "주소를 입력해주세요")
+                    .regex(
+                      /^.+시\s+.+구/,
+                      "주소는 'OO시 OO구' 형식으로 입력해주세요"
+                    ),
+                  military_service: z.enum(
+                    ["1", "2", "3", "4", "5", "6"],
+                    "병역 여부를 선택해주세요"
+                  ),
+                };
+                const result = userInfoSchema[subKey].safeParse(value);
+                return result?.success
+                  ? undefined
+                  : result?.error.issues[0].message;
+              },
             }}
           >
             {(field) => (
@@ -444,6 +536,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                 input={
                   subKey === "gender" ? (
                     <Select
+                      name={`${key}.${subKey}`}
                       isMust
                       label={USER_INFO_LABELS[subKey].label}
                       value={field.state.value}
@@ -458,6 +551,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     />
                   ) : subKey === "military_service" ? (
                     <Select
+                      name={`${key}.${subKey}`}
                       isMust
                       label={USER_INFO_LABELS[subKey].label}
                       value={field.state.value}
@@ -476,6 +570,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     />
                   ) : (
                     <Text
+                      name={`${key}.${subKey}`}
                       isMust
                       label={USER_INFO_LABELS[subKey].label}
                       type={
@@ -502,15 +597,50 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     );
   }
 
-  // 배열 필드
+  // 배열 필드 (학력, 경력, 프로젝트, 대외활동, 자격증)
   function renderArrayField(form: any, key: string, value: any[]) {
+    // 스택
     if (key === "technology_stack")
       return (
         <ResumeCard key={key} title={FIELD_LABELS[key].label}>
           <form.Field
             name="technology_stack"
             validators={{
-              onSubmit: ({ value }) => basicInfoSchema.parseAsync(value),
+              onSubmit: ({ value }) => {
+                // basicInfoSchema.parseAsync(value);
+
+                const result = z
+                  .preprocess(
+                    (val) => {
+                      if (typeof val !== "string") {
+                        return val;
+                      }
+
+                      const processedArray = val
+                        .split(",")
+                        .map((item) => item.trim())
+                        .filter((item) => item.length > 0);
+
+                      return processedArray.length > 0
+                        ? processedArray
+                        : undefined;
+                    },
+
+                    z
+                      .array(z.string().min(1, "스킬 이름을 입력하세요."))
+                      .refine((items) => {
+                        const uniqueItems = new Set(items);
+                        return uniqueItems.size === items.length;
+                      }, "중복된 스킬 항목이 있습니다.")
+                      .nullable()
+                      .optional()
+                  )
+                  .safeParse(value);
+
+                return result.success
+                  ? undefined
+                  : result?.error.issues[0].message;
+              },
             }}
           >
             {(field) => (
@@ -518,6 +648,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                 widthType="full"
                 input={
                   <Text
+                    name="technology_stack"
                     value={field.state.value}
                     onChange={field.handleChange}
                     placeholder={FIELD_LABELS[key].placeholder}
@@ -531,13 +662,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
       );
 
     return (
-      <form.Field
-        key={key}
-        name={key}
-        validators={{
-          onSubmit: ({ value }) => basicInfoSchema.parseAsync(value),
-        }}
-      >
+      <form.Field key={key} name={key}>
         {(field) => {
           const fieldArrayValue = field.state.value as any[];
           // console.log(fieldArrayValue);
@@ -596,8 +721,131 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                       key={k}
                       name={`${key}[${idx}].${k}`}
                       validators={{
-                        onSubmit: ({ value }) =>
-                          basicInfoSchema.parseAsync(value),
+                        onSubmit: ({ value }) => {
+                          // basicInfoSchema.parseAsync(value)
+                          const itemSchema = {
+                            education: {
+                              organ: z
+                                .string()
+                                .min(1, "학교 이름을 입력하세요.")
+                                .regex(
+                                  /^.+학교/,
+                                  "oo학교 형식으로 입력하세요."
+                                ),
+                              department: z
+                                .string()
+                                .min(1, "학과를 입력하세요.")
+                                .regex(/^.+과/, "oo과 형식으로 입력하세요."),
+                              degree_level: z.enum(
+                                ["1", "2", "3", "4", "5"],
+                                "학위를 선택하세요."
+                              ),
+                              score: z
+                                .string()
+                                .regex(/^.+점/, "00점 형식으로 입력하세요.")
+                                .nullable()
+                                .optional(),
+                              start_date: z
+                                .string()
+                                .regex(
+                                  /^\d{4}-\d{2}$/,
+                                  "입학년월을 입력하세요."
+                                ),
+                              end_date: z
+                                .string()
+                                .regex(
+                                  /^\d{4}-\d{2}$/,
+                                  "졸업년월을 입력하세요."
+                                ),
+                            },
+                            experience: {
+                              title: z.string().min(1, "회사명을 입력하세요."),
+                              department: z
+                                .string()
+                                .min(1, "부서명을 입력하세요")
+                                .optional(),
+                              position: z.string().min(1, "직책을 입력하세요."),
+                              start_date: z
+                                .string()
+                                .regex(
+                                  /^\d{4}-\d{2}$/,
+                                  "입사년월을 입력하세요."
+                                ),
+                              description: z
+                                .string()
+                                .min(1, "주요 업무 및 성과를 입력하세요."),
+                            },
+                            project: {
+                              title: z
+                                .string()
+                                .min(1, "프로젝트 이름을 입력하세요."),
+                              description: z
+                                .string()
+                                .max(400, "400자 이내로 입력하세요."),
+                              start_date: z
+                                .string()
+                                .regex(
+                                  /^\d{4}-\d{2}$/,
+                                  "입학년월을 입력하세요."
+                                ),
+                              end_date: z
+                                .string()
+                                .regex(
+                                  /^\d{4}-\d{2}$/,
+                                  "졸업년월을 입력하세요."
+                                ),
+                            },
+                            activity: {
+                              title: z
+                                .string()
+                                .min(1, "활동 이름을 입력하세요."),
+                              description: z
+                                .string()
+                                .max(400, "400자 이내로 입력하세요."),
+                              start_date: z
+                                .string()
+                                .regex(
+                                  /^\d{4}-\d{2}$/,
+                                  "입학년월을 입력하세요."
+                                ),
+                              end_date: z
+                                .string()
+                                .regex(
+                                  /^\d{4}-\d{2}$/,
+                                  "졸업년월을 입력하세요."
+                                ),
+                            },
+                            qualifications: {
+                              qua_title: z
+                                .string()
+                                .min(1, "자격증 또는 어학 이름을 입력하세요."),
+                              organ: z
+                                .string()
+                                .min(1, "발급 및 주관기관을 입력하세요."),
+                              acquisition_date: z
+                                .string()
+                                .regex(
+                                  /^\d{4}-\d{2}$/,
+                                  "취득년월을 입력하세요."
+                                ),
+                              score: z
+                                .union([
+                                  z.literal(""), // 빈 문자열을 허용
+                                  z
+                                    .string()
+                                    .regex(
+                                      /^.+점$/,
+                                      "00점 형식으로 입력하세요."
+                                    ),
+                                ])
+                                .optional(),
+                            },
+                          };
+                          const result = itemSchema[key][k]?.safeParse(value);
+                          return result?.success
+                            ? undefined
+                            : result?.error.issues[0].message;
+                        },
                       }}
                     >
                       {(field) => (
@@ -611,6 +859,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                           input={
                             k === "description" ? (
                               <Textarea
+                                name={`${key}[${idx}].${k}`}
                                 label={
                                   key === "education"
                                     ? EDUCATION_LABELS[k].label
@@ -641,6 +890,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                               />
                             ) : k === "degree_level" ? (
                               <Select
+                                name={`${key}[${idx}].${k}`}
                                 isMust
                                 label={EDUCATION_LABELS[k].label}
                                 value={field.state.value}
@@ -658,6 +908,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                               />
                             ) : (
                               <Text
+                                name={`${key}[${idx}].${k}`}
                                 label={
                                   key === "education"
                                     ? EDUCATION_LABELS[k].label
@@ -684,6 +935,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   "qua_title",
                                   "title",
                                   "organ",
+                                  "position",
                                   "department",
                                   "start_date",
                                   "end_date",

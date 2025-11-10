@@ -15,6 +15,7 @@ interface SelectOption {
 interface SelectProps {
   label?: string;
   placeholder?: string;
+  name: string;
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
@@ -28,6 +29,7 @@ interface SelectProps {
 export default function Select({
   label: labelText,
   placeholder = "선택하세요",
+  name,
   value,
   onChange,
   onBlur,
@@ -47,6 +49,7 @@ export default function Select({
       )}
       <div className={useBtn}>
         <select
+          name={name}
           className={inputBase}
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -61,7 +64,11 @@ export default function Select({
           ))}
         </select>
       </div>
-      {error && <span className={errorMessage}>{error}</span>}
+      {error && (
+        <span id={name} className={errorMessage}>
+          {error}
+        </span>
+      )}
     </div>
   );
 }

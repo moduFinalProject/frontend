@@ -4,6 +4,7 @@ import { inputContainer, label, inputBase, errorMessage } from "./Input.css";
 interface InputProps {
   label?: string;
   placeholder?: string;
+  name: string;
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
@@ -17,6 +18,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, InputProps>(function Textarea(
   {
     label: labelText,
     placeholder,
+    name,
     value,
     onChange,
     onBlur,
@@ -36,6 +38,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, InputProps>(function Textarea(
         </label>
       )}
       <textarea
+        name={name}
         ref={ref}
         style={{ resize: "none" }}
         className={inputBase}
@@ -47,7 +50,11 @@ const Textarea = forwardRef<HTMLTextAreaElement, InputProps>(function Textarea(
         rows={rows}
       />
       <p>글자 수: {value?.length}</p>
-      {error && <span className={errorMessage}>{error}</span>}
+      {error && (
+        <span id={name} className={errorMessage}>
+          {error}
+        </span>
+      )}
     </div>
   );
 });
