@@ -28,6 +28,9 @@ export const title = style({
     color: vars.color.subText,
     margin: `${vars.spacing.sm} 0 0`,
   },
+  button: {
+    padding: vars.spacing.sm,
+  },
 });
 
 export const titleRow = style({
