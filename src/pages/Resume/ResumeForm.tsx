@@ -35,7 +35,7 @@ type ExperienceItem = {
 type EducationItem = {
   organ: string;
   department?: string;
-  degree_level?: "1" | "2" | "3" | "4" | "5";
+  degree_level?: "0" | "1" | "2" | "3" | "4" | "5";
   score: string;
   start_date: string;
   end_date: string;
@@ -67,9 +67,9 @@ type ResumeFormValues = {
     name: string;
     email: string;
     phone: string;
-    gender: "1" | "2";
+    gender: "0" | "1" | "2";
     address: string;
-    military_service: "1" | "2" | "3" | "4" | "5" | "6";
+    military_service: "0" | "1" | "2" | "3" | "4" | "5" | "6";
   };
   education?: EducationItem[];
   self_introduction: string;
@@ -202,7 +202,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   const emptyEducationItem: EducationItem = {
     organ: "",
     department: "",
-    degree_level: 1,
+    degree_level: "0",
     score: "",
     start_date: "",
     end_date: "",
@@ -244,9 +244,9 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           name: "",
           email: "",
           phone: "",
-          gender: "",
+          gender: "0",
           address: "",
-          military_service: "",
+          military_service: "0",
         },
         education: [emptyEducationItem],
         self_introduction: "",
@@ -871,7 +871,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     ? ACTIVITY_LABELS[k].label
                                     : QUALIFICATIONS_LABELS[k].label
                                 }
-                                isMust={["description"].includes(k)}
+                                isMust
                                 rows={8}
                                 value={field.state.value || v}
                                 onChange={field.handleChange}
@@ -931,16 +931,12 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     ? ACTIVITY_LABELS[k].placeholder
                                     : QUALIFICATIONS_LABELS[k].placeholder
                                 }
-                                isMust={[
-                                  "qua_title",
-                                  "title",
-                                  "organ",
-                                  "position",
-                                  "department",
-                                  "start_date",
-                                  "end_date",
-                                  "acquisition_date",
-                                ].includes(k)}
+                                isMust={
+                                  !(
+                                    key === "qualifications" &&
+                                    ["score"].includes(k)
+                                  )
+                                }
                                 type={k.includes("date") ? "month" : "text"}
                                 value={field.state.value || v}
                                 onChange={field.handleChange}
