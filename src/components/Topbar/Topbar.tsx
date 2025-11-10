@@ -1,11 +1,10 @@
-import { topbar, topbarRight, userInfo, userAvatar, userDetails, userName, userEmail } from "./Topbar.css";
+import { topbar, topbarRight, userInfo, userDetails, userName, userEmail } from "./Topbar.css";
 import { Button } from "@/components/Button";
 
 export default function Topbar() {
   const user = {
     name: "김취업",
     email: "kim@example.com",
-    initials: "김"
   };
 
   return (
@@ -19,9 +18,6 @@ export default function Topbar() {
           icon="ALAM"
         ></Button>
         <div className={userInfo}>
-          <div className={userAvatar}>
-            {user.initials}
-          </div>
           <div className={userDetails}>
             <p className={userName}>{user.name}</p>
             <p className={userEmail}>{user.email}</p>

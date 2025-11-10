@@ -1,4 +1,5 @@
 import { style } from "@vanilla-extract/css";
+import { vars } from "@/design-system";
 
 export const layoutContainer = style({
   display: "flex",
@@ -15,5 +16,7 @@ export const layoutMain = style({
   display: "flex",
   marginLeft: "256px",
   overflow: "auto",
-  flex: 1
+  flex: 1,
+  justifyContent: "center",
+  backgroundColor: vars.color.mainBg,
 });
