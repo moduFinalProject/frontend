@@ -34,6 +34,9 @@ const basicInfoSchema = z.object({
   gender: z.string().min(1, "성별을 선택해주세요"),
   address: z.string().min(1, "주소를 입력해주세요"),
   military_service: z.string().min(1, "군 복무 여부를 선택해주세요"),
+  user_type: z.string().optional(),
+  provider: z.string().optional(),
+  provider_id: z.string().optional(),
 });
 
 type ProfileData = z.infer<typeof basicInfoSchema>;
@@ -53,15 +56,22 @@ export default function SocialSignIn() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // localStorage에서 user 정보 가져오기
+  const userStr = localStorage.getItem('user');
+  const oauthUser = userStr ? JSON.parse(userStr) : {};
+
   // 폼 생성
   const form = useForm({
     defaultValues: {
-      name: "",
-      email: "",
+      name: oauthUser.name || "",
+      email: oauthUser.email || "",
       phone: "",
       gender: "",
       address: "",
       military_service: "",
+      user_type: "",
+      provider: "",
+      provider_id: "",
     } as ProfileData,
     validators: {
       onChange: basicInfoSchema,
@@ -74,7 +84,7 @@ export default function SocialSignIn() {
         const response = await signUpWithUserInfo(value);
 
         // 회원가입 성공 시 토큰 저장
-        localStorage.setItem("access_token", response.accessToken);
+        localStorage.setItem("access_token", response.access_token);
         localStorage.setItem("user", JSON.stringify(response.user));
 
         // 대시보드로 이동
@@ -116,6 +126,7 @@ export default function SocialSignIn() {
                 <ResumeCardRow widthType="half" input={
                   <Text
                     isMust
+                    name="name"
                     label={USER_INFO_LABELS.name}
                     type="text"
                     placeholder="이름을 입력해주세요"
@@ -135,6 +146,7 @@ export default function SocialSignIn() {
                 <ResumeCardRow widthType="half" input={
                   <Text
                     isMust
+                    name="email"
                     label={USER_INFO_LABELS.email}
                     type="email"
                     placeholder="이메일을 입력해주세요"
@@ -154,6 +166,7 @@ export default function SocialSignIn() {
                 <ResumeCardRow widthType="half" input={
                   <Text
                     isMust
+                    name="phone"
                     label={USER_INFO_LABELS.phone}
                     type="tel"
                     placeholder="010-0000-0000"
@@ -173,6 +186,7 @@ export default function SocialSignIn() {
                 <ResumeCardRow widthType="half" input={
                   <Select
                     isMust
+                    name="gender"
                     label={USER_INFO_LABELS.gender}
                     value={field.state.value}
                     onChange={field.handleChange}
@@ -180,8 +194,8 @@ export default function SocialSignIn() {
                     error={field.state.meta.errors.join(", ")}
                     placeholder="성별 선택"
                     options={[
-                      { value: "남", label: "남" },
-                      { value: "여", label: "여" },
+                      { value: "1", label: "남" },
+                      { value: "2", label: "여" },
                     ]}
                   />
                 } />
@@ -195,6 +209,7 @@ export default function SocialSignIn() {
                 <ResumeCardRow widthType="full" input={
                   <Text
                     isMust
+                    name="address"
                     label={USER_INFO_LABELS.address}
                     type="text"
                     placeholder="주소를 입력해주세요"
@@ -214,6 +229,7 @@ export default function SocialSignIn() {
                 <ResumeCardRow widthType="half" input={
                   <Select
                     isMust
+                    name="military_service"
                     label={USER_INFO_LABELS.military_service}
                     value={field.state.value}
                     onChange={field.handleChange}
@@ -221,22 +237,23 @@ export default function SocialSignIn() {
                     error={field.state.meta.errors.join(", ")}
                     placeholder="군 복무 여부 선택"
                     options={[
-                      { value: "미필", label: "미필" },
-                      { value: "군필", label: "군필" },
-                      { value: "해당없음", label: "해당없음" },
+                      { value: "1", label: "면제" },
+                      { value: "2", label: "미필" },
+                      { value: "3", label: "군필" },
+                      { value: "4", label: "공익" },
+                      { value: "5", label: "해당없음" },
                     ]}
                   />
                 } />
               )}
             />
           </ResumeCard>
-
         </form>
 
         {/* 제출 버튼 */}
         <div>
           {error && (
-            <div style={{ color: '#ef4444', marginBottom: '16px', fontSize: '14px', textAlign: 'center' }}>
+            <div style={{ color: "#ef4444", marginBottom: "16px", fontSize: "14px", textAlign: "center" }}>
               {error}
             </div>
           )}

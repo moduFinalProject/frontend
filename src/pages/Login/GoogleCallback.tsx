@@ -49,17 +49,24 @@ export default function GoogleCallback() {
 
         if (!response.ok) {
           throw new Error(data.message || "An error occurred during login processing");
-        }
+        }        
 
-        // 최초 사용자는 추가정보 입력 페이지 이동
-        if(data.is_new_user) {
-            navigate("/socialSignIn");
+        // 성공 시 유저정보 저장
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.removeItem("oauth2-state");
+
+        // 최초 사용자는 OAuth 정보를 localStorage에 저장
+        if(data["is_new_user"]) {
+            localStorage.setItem("oauth_provider", data.user.provider || "google");
+            localStorage.setItem("oauth_provider_id", data.user.provider_id || "");
+            localStorage.setItem("oauth_user_type", "job_seeker");
+            navigate("/socialSignUp");
+            return;
         }
 
         // 로그인 성공 시 토큰 저장
         localStorage.setItem("access_token", data.accessToken);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.removeItem("oauth2-state"); 
+        
         
         // 기존 사용자면 대시보드 이동
         navigate("/");
