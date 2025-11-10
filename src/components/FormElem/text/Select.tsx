@@ -5,6 +5,7 @@ import {
   errorMessage,
   useBtn,
   hidden,
+  errorInput,
 } from "./Input.css";
 
 interface SelectOption {
@@ -50,7 +51,7 @@ export default function Select({
       <div className={useBtn}>
         <select
           name={name}
-          className={inputBase}
+          className={`${inputBase} ${error && errorInput}`}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}

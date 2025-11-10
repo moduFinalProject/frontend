@@ -23,6 +23,10 @@ export const grid = style({
   gap: vars.spacing.lg,
 
   "@media": {
+    "(max-width: 1290px)": {
+      gridTemplateColumns: "repeat(auto-fill, minmax(500px, 1fr))",
+      gap: `${vars.spacing.lg} 0`,
+    },
     "(max-width: 768px)": {
       gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
       gap: `${vars.spacing.lg} 0`,

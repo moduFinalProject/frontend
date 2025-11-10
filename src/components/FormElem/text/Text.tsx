@@ -7,6 +7,7 @@ import {
   errorMessage,
   useBtn,
   hidden,
+  errorInput,
 } from "./Input.css";
 
 interface InputProps {
@@ -54,7 +55,7 @@ const Text = forwardRef<HTMLInputElement, InputProps>(function Text(
           name={name}
           ref={ref}
           type={type}
-          className={inputBase}
+          className={`${inputBase} ${error && errorInput}`}
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
