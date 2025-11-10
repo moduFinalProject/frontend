@@ -34,5 +34,5 @@ export const header = style({
 });
 
 export const innerContainer = style({
-  paddingTop: 0,
+  padding: 0,
 });

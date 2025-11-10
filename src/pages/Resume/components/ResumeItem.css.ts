@@ -28,6 +28,9 @@ export const title = style({
     color: vars.color.subText,
     margin: `${vars.spacing.sm} 0 0`,
   },
+  "> div > button": {
+    padding: vars.spacing.sm,
+  },
 });
 
 export const titleRow = style({
@@ -35,6 +38,10 @@ export const titleRow = style({
   gap: vars.spacing.sm,
   cursor: "pointer",
 
+  a: {
+    color: "inherit",
+    textDecoration: "none",
+  },
   h4: {
     fontSize: vars.typography.fontSize.m,
     margin: 0,
@@ -82,6 +89,10 @@ export const btns = style({
     fontSize: vars.typography.fontSize.sm,
     alignSelf: "auto",
   },
+});
+
+export const descTitle = style({
+  color: vars.color.subText,
 });
 
 export const dropdownStyle = style({
