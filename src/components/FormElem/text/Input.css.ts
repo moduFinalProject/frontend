@@ -42,6 +42,9 @@ export const inputBase = style({
   },
 });
 
+export const errorInput = style({
+  border: `1px solid ${vars.color.delete}`,
+});
 export const errorMessage = style({
   fontSize: vars.typography.fontSize.sm,
   color: vars.color.delete,

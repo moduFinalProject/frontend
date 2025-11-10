@@ -1,5 +1,11 @@
 import { forwardRef } from "react";
-import { inputContainer, label, inputBase, errorMessage } from "./Input.css";
+import {
+  inputContainer,
+  label,
+  inputBase,
+  errorMessage,
+  errorInput,
+} from "./Input.css";
 
 interface InputProps {
   label?: string;
@@ -41,7 +47,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, InputProps>(function Textarea(
         name={name}
         ref={ref}
         style={{ resize: "none" }}
-        className={inputBase}
+        className={`${inputBase} ${error && errorInput}`}
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
