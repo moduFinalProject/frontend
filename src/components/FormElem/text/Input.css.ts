@@ -62,3 +62,9 @@ export const useBtn = style({
     flexBasis: "auto",
   },
 });
+
+export const checkboxWrap = style({
+  display: "flex",
+  gap: vars.spacing.sm,
+  marginTop: vars.spacing.sm,
+});
