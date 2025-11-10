@@ -19,6 +19,7 @@ import {
   ACTIVITY_LABELS,
   QUALIFICATIONS_LABELS,
 } from "@/constants/fieldLabels.ts";
+import { trimObjectStrings } from "@/utils/trimOojectStrings.ts";
 
 interface ResumeFormProps {
   mode: "create" | "edit";
@@ -262,14 +263,18 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     defaultValues,
     onSubmit: async ({ value }) => {
       try {
+        const trimmedValue = trimObjectStrings(value);
         // basicInfoSchema.parse(value);
         // const validatedData = await basicInfoSchema.parseAsync(value);
-        console.log(`${mode === "edit" ? "수정" : "생성"} 데이터:`, value);
+        console.log(
+          `${mode === "edit" ? "수정" : "생성"} 데이터:`,
+          trimmedValue
+        );
 
         // console.log(`${mode === "edit" ? "수정" : "생성"} 데이터:`, value);
 
         // TODO: API 호출
-        const resumeData: ResumeFormValues = value; // useForm에서 받은 값
+        const resumeData: ResumeFormValues = trimmedValue;
 
         const photoUrlValue = resumeData.photoUrl;
         const photoFile: File | null =
@@ -362,6 +367,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                 // basicInfoSchema.parseAsync(value);
                 const photoUrlStringSchema = z
                   .string()
+                  .trim()
                   .refine(
                     (val) =>
                       val.startsWith("data:image/") || val.startsWith("http"),
@@ -421,11 +427,13 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
               if (key === "title")
                 result = z
                   .string()
+                  .trim()
                   .min(1, "이력서 이름을 입력하세요.")
                   .safeParse(value);
               else if (key === "self_introduction")
                 result = z
                   .string()
+                  .trim()
                   .max(400, "400자 이하로 입력하세요.")
                   .nullable()
                   .optional()
@@ -502,10 +510,17 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     6: "6";
                   }>;
                 } = {
-                  name: z.string().min(2, "이름은 두글자 이상 입력하세요."),
-                  email: z.string().email("올바른 이메일 형식이 아닙니다."),
+                  name: z
+                    .string()
+                    .trim()
+                    .min(2, "이름은 두글자 이상 입력하세요."),
+                  email: z
+                    .string()
+                    .trim()
+                    .email("올바른 이메일 형식이 아닙니다."),
                   phone: z
                     .string()
+                    .trim()
                     .regex(
                       /^010-\d{4}-\d{4}$/,
                       "010-0000-0000 형식으로 입력하세요."
@@ -513,6 +528,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   gender: z.enum(["1", "2"], "성별을 선택해주세요"),
                   address: z
                     .string()
+                    .trim()
                     .min(6, "주소를 입력해주세요")
                     .regex(
                       /^.+시\s+.+구/,
@@ -627,7 +643,9 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     },
 
                     z
-                      .array(z.string().min(1, "스킬 이름을 입력하세요."))
+                      .array(
+                        z.string().trim().min(1, "스킬 이름을 입력하세요.")
+                      )
                       .refine((items) => {
                         const uniqueItems = new Set(items);
                         return uniqueItems.size === items.length;
@@ -727,6 +745,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                             education: {
                               organ: z
                                 .string()
+                                .trim()
                                 .min(1, "학교 이름을 입력하세요.")
                                 .regex(
                                   /^.+학교/,
@@ -742,54 +761,70 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                               ),
                               score: z
                                 .string()
+                                .trim()
                                 .regex(/^.+점/, "00점 형식으로 입력하세요.")
                                 .nullable()
                                 .optional(),
                               start_date: z
                                 .string()
+                                .trim()
                                 .regex(
                                   /^\d{4}-\d{2}$/,
                                   "입학년월을 입력하세요."
                                 ),
                               end_date: z
                                 .string()
+                                .trim()
                                 .regex(
                                   /^\d{4}-\d{2}$/,
                                   "졸업년월을 입력하세요."
                                 ),
                             },
                             experience: {
-                              title: z.string().min(1, "회사명을 입력하세요."),
+                              title: z
+                                .string()
+                                .trim()
+                                .min(1, "회사명을 입력하세요."),
                               department: z
                                 .string()
+                                .trim()
                                 .min(1, "부서명을 입력하세요")
                                 .optional(),
-                              position: z.string().min(1, "직책을 입력하세요."),
+                              position: z
+                                .string()
+                                .trim()
+                                .min(1, "직책을 입력하세요."),
                               start_date: z
                                 .string()
+                                .trim()
                                 .regex(
                                   /^\d{4}-\d{2}$/,
                                   "입사년월을 입력하세요."
                                 ),
                               description: z
                                 .string()
+                                .trim()
                                 .min(1, "주요 업무 및 성과를 입력하세요."),
                             },
                             project: {
                               title: z
                                 .string()
+                                .trim()
                                 .min(1, "프로젝트 이름을 입력하세요."),
                               description: z
                                 .string()
+                                .trim()
                                 .max(400, "400자 이내로 입력하세요."),
                               start_date: z
                                 .string()
+                                .trim()
                                 .regex(
                                   /^\d{4}-\d{2}$/,
                                   "입학년월을 입력하세요."
                                 ),
                               end_date: z
                                 .string()
+                                .trim()
                                 .regex(
                                   /^\d{4}-\d{2}$/,
                                   "졸업년월을 입력하세요."
@@ -798,18 +833,22 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                             activity: {
                               title: z
                                 .string()
+                                .trim()
                                 .min(1, "활동 이름을 입력하세요."),
                               description: z
                                 .string()
+                                .trim()
                                 .max(400, "400자 이내로 입력하세요."),
                               start_date: z
                                 .string()
+                                .trim()
                                 .regex(
                                   /^\d{4}-\d{2}$/,
                                   "입학년월을 입력하세요."
                                 ),
                               end_date: z
                                 .string()
+                                .trim()
                                 .regex(
                                   /^\d{4}-\d{2}$/,
                                   "졸업년월을 입력하세요."
@@ -818,12 +857,15 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                             qualifications: {
                               qua_title: z
                                 .string()
+                                .trim()
                                 .min(1, "자격증 또는 어학 이름을 입력하세요."),
                               organ: z
                                 .string()
+                                .trim()
                                 .min(1, "발급 및 주관기관을 입력하세요."),
                               acquisition_date: z
                                 .string()
+                                .trim()
                                 .regex(
                                   /^\d{4}-\d{2}$/,
                                   "취득년월을 입력하세요."
@@ -833,6 +875,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   z.literal(""), // 빈 문자열을 허용
                                   z
                                     .string()
+                                    .trim()
                                     .regex(
                                       /^.+점$/,
                                       "00점 형식으로 입력하세요."
