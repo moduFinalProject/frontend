@@ -43,14 +43,22 @@ export const technologyStackSchema = z.preprocess(
     .optional()
 );
 
+const photoUrlStringSchema = z
+  .string()
+  .refine(
+    (val) => val.startsWith("data:image/") || val.startsWith("http"),
+    "올바른 이미지 URL 형식(data:image/ 또는 http)을 선택해주세요"
+  );
+const photoUrlFileSchema = z
+  .instanceof(File)
+  .refine(
+    (file) => file.type.startsWith("image/"),
+    "이미지 파일만 업로드할 수 있습니다."
+  );
+
 export const basicInfoSchema = z.object({
   title: z.string().min(1, "이력서 이름을 입력하세요."),
-  photoUrl: z
-    .string()
-    .refine(
-      (val) => val.startsWith("data:image/") || val.startsWith("http"),
-      "올바른 이미지를 선택해주세요"
-    ),
+  photoUrl: z.union([photoUrlStringSchema, photoUrlFileSchema]),
   user_info: z.object({
     name: z.string().min(2, "이름은 두글자 이상 입력하세요."),
     email: z.string().email("올바른 이메일 형식이 아닙니다."),
