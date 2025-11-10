@@ -23,6 +23,8 @@ export default function Textarea({
   rows = 5,
   isMust = false,
 }: InputProps) {
+  console.log(error);
+
   return (
     <div className={inputContainer}>
       <>
