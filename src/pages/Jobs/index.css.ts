@@ -12,9 +12,11 @@ export const container = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.lg,
-  hr: {
-    color: vars.color.line,
-    gridColumn: "span 2",
+  selectors: {
+    "& hr": {
+      color: vars.color.line,
+      gridColumn: "span 2",
+    },
   },
 });
 

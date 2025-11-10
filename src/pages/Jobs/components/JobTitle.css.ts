@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css";
+import { style, globalStyle } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
 
 export const headerText = style({
@@ -8,34 +8,10 @@ export const headerText = style({
   justifyContent: "flex-start",
   alignItems: "start",
   gap: vars.spacing.sm,
-
-  h2: {
-    margin: 0,
-    fontSize: vars.typography.fontSize.xl,
-    fontWeight: vars.typography.fontWeight.bold,
-  },
-  p: {
-    margin: 0,
-  },
-  ".desc": {
-    fontSize: vars.typography.fontSize.md,
-    color: vars.color.subText,
-  },
 });
 
 export const subPage = style({
   gap: vars.spacing.xs,
-
-  ".title": {
-    fontWeight: vars.typography.fontWeight.bold,
-    fontSize: vars.typography.fontSize.md,
-    color: vars.color.defaultText,
-  },
-  ".desc": {
-    margin: 0,
-    fontSize: vars.typography.fontSize.sm,
-    color: vars.color.subText,
-  },
 });
 
 export const prevWrap = style({
@@ -53,4 +29,31 @@ export const btnsWrap = style({
       alignSelf: "flex-end",
     },
   },
+});
+
+globalStyle(`${headerText} h2`, {
+  margin: 0,
+  fontSize: vars.typography.fontSize.xl,
+  fontWeight: vars.typography.fontWeight.bold,
+});
+
+globalStyle(`${headerText} p`, {
+  margin: 0,
+});
+
+globalStyle(`${headerText} .desc`, {
+  fontSize: vars.typography.fontSize.md,
+  color: vars.color.subText,
+});
+
+globalStyle(`${subPage} .title`, {
+  fontWeight: vars.typography.fontWeight.bold,
+  fontSize: vars.typography.fontSize.md,
+  color: vars.color.defaultText,
+});
+
+globalStyle(`${subPage} .desc`, {
+  margin: 0,
+  fontSize: vars.typography.fontSize.sm,
+  color: vars.color.subText,
 });

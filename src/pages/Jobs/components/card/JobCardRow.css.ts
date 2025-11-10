@@ -1,16 +1,10 @@
-import { style, styleVariants } from "@vanilla-extract/css";
+import { style, styleVariants, globalStyle } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
 
 export const row = style({
   display: "flex",
   gap: vars.spacing.sm,
   flexDirection: "column",
-
-  h4: {
-    fontWeight: vars.typography.fontWeight.normal,
-    fontSize: vars.typography.fontSize.sm,
-    color: vars.color.subText,
-  },
 });
 
 export const widthStyle = styleVariants({
@@ -92,10 +86,6 @@ export const imgWrap = style({
   alignItems: "center",
   borderRadius: vars.borderRadius.sm,
   backgroundColor: vars.color.formBg,
-
-  img: {
-    width: "100%",
-  },
 });
 
 export const imgRow = style({
@@ -111,12 +101,23 @@ export const noImg = style({
   justifyContent: "center",
   alignItems: "center",
   gap: vars.spacing.lg,
+});
 
-  img: {
-    width: "48px",
-  },
-  span: {
-    color: vars.color.subText,
-    fontSize: vars.typography.fontSize.sm,
-  },
+globalStyle(`${row} h4`, {
+  fontWeight: vars.typography.fontWeight.normal,
+  fontSize: vars.typography.fontSize.sm,
+  color: vars.color.subText,
+});
+
+globalStyle(`${imgWrap} img`, {
+  width: "100%",
+});
+
+globalStyle(`${noImg} img`, {
+  width: "48px",
+});
+
+globalStyle(`${noImg} span`, {
+  color: vars.color.subText,
+  fontSize: vars.typography.fontSize.sm,
 });
