@@ -37,9 +37,9 @@ type EducationItem = {
   organ: string;
   department?: string;
   degree_level?: 1 | 2 | 3 | 4 | 5;
+  score: string;
   start_date: string;
   end_date: string;
-  score: string;
 };
 type ProjectItem = {
   title: string;
@@ -264,30 +264,18 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     onSubmit: async ({ value }) => {
       try {
         basicInfoSchema.parse(value);
-        console.log(value);
-
         console.log(`${mode === "edit" ? "수정" : "생성"} 데이터:`, value);
 
         // TODO: API 호출
         const resumeData: ResumeFormValues = value; // useForm에서 받은 값
 
-        // photoUrl 필드에 저장된 값을 File 객체로 추출
         const photoUrlValue = resumeData.photoUrl;
-        console.log(photoUrlValue);
-        console.log(photoUrlValue instanceof File);
         const photoFile: File | null =
           photoUrlValue && photoUrlValue instanceof File ? photoUrlValue : null; // photoUrl 필드에 저장된 실제 File 객체라고 가정
 
-        console.log(photoFile);
-        // 1. FormData 객체 생성
         const formData = new FormData();
-
-        // 2. 텍스트 데이터 추가
-        // JSON.stringify()를 사용하여 복잡한 객체(user_info, education, experience 등)를 문자열로 변환하여 추가합니다.
-        // 서버에서 이 'data' 필드를 다시 JSON.parse()로 복원하여 사용합니다.
         formData.append("data", JSON.stringify(resumeData));
 
-        // 3. 파일 데이터 추가 (photoUrl 필드)
         if (photoFile) {
           formData.append("photo", photoFile, photoFile.name);
         }
@@ -309,8 +297,19 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         //   });
         // navigate("/resume");
       } catch (error) {
-        if (error instanceof z.ZodError)
+        if (error instanceof z.ZodError) {
           console.error("검증 오류:", error.issues);
+
+          // 오류가 발생한 첫 번째 필드로 스크롤 이동
+          const firstErrorPath = error.issues[0].path.join(".");
+          const errorElement = document.querySelector(
+            `[name="${firstErrorPath}"]`
+          );
+          errorElement?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }
       }
     },
   });
@@ -352,7 +351,13 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     if (key === "photoUrl")
       return (
         <ResumeCard key={key} title={FIELD_LABELS[key].label} isMust>
-          <form.Field name={key}>
+          <form.Field
+            name={key}
+            validators={{
+              onSubmit: ({ value }: { value: string }) =>
+                basicInfoSchema.parseAsync(value),
+            }}
+          >
             {(field) => (
               <ResumeCardRow
                 widthType="full"
@@ -365,6 +370,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     onChange={field.handleChange}
                     onBlur={field.handleBlur}
                     placeholder={FIELD_LABELS[key].placeholder}
+                    error={field.state.meta.errors.join(", ")}
                   />
                 }
               />
@@ -379,7 +385,12 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         title={FIELD_LABELS[key].label}
         isMust={key === "title"}
       >
-        <form.Field name={key}>
+        <form.Field
+          name={key}
+          validators={{
+            onSubmit: ({ value }) => basicInfoSchema.parseAsync(value),
+          }}
+        >
           {(field) => (
             <ResumeCardRow
               widthType="full"
@@ -391,6 +402,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     onChange={field.handleChange}
                     onBlur={field.handleBlur}
                     placeholder={FIELD_LABELS[key].placeholder}
+                    error={field.state.meta.errors.join(", ")}
                   />
                 ) : (
                   <Text
@@ -399,6 +411,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     onBlur={field.handleBlur}
                     placeholder={FIELD_LABELS[key].placeholder}
                     disabled={key === "url"}
+                    error={field.state.meta.errors.join(", ")}
                   />
                 )
               }
@@ -418,7 +431,13 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     return (
       <ResumeCard key={key} title={FIELD_LABELS[key].label} isMust>
         {Object.entries(value).map(([subKey, subValue], idx) => (
-          <form.Field key={subKey} name={`${key}.${subKey}`}>
+          <form.Field
+            key={subKey}
+            name={`${key}.${subKey}`}
+            validators={{
+              onSubmit: ({ value }) => basicInfoSchema.parseAsync(value),
+            }}
+          >
             {(field) => (
               <ResumeCardRow
                 widthType="half"
@@ -471,6 +490,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                       placeholder={USER_INFO_LABELS[subKey].placeholder}
                       value={field.state.value || subValue}
                       onChange={field.handleChange}
+                      error={field.state.meta.errors.join(", ")}
                     />
                   )
                 }
@@ -489,7 +509,9 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         <ResumeCard key={key} title={FIELD_LABELS[key].label}>
           <form.Field
             name="technology_stack"
-            // validators={{ onChange: validateTechStack }}
+            validators={{
+              onSubmit: ({ value }) => basicInfoSchema.parseAsync(value),
+            }}
           >
             {(field) => (
               <ResumeCardRow
@@ -509,10 +531,16 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
       );
 
     return (
-      <form.Field key={key} name={key}>
+      <form.Field
+        key={key}
+        name={key}
+        validators={{
+          onSubmit: ({ value }) => basicInfoSchema.parseAsync(value),
+        }}
+      >
         {(field) => {
           const fieldArrayValue = field.state.value as any[];
-          console.log(fieldArrayValue);
+          // console.log(fieldArrayValue);
 
           // experience, project 등
           const isEducation = key === "education";
@@ -557,12 +585,21 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   btnType="DEL"
                   onDelete={
                     isEducation && fieldArrayValue.length <= 1
-                      ? undefined
+                      ? () => {
+                          alert("학력은 최소 1개 이상 입력해야 합니다.");
+                        }
                       : () => handleRemoveItem(idx)
                   }
                 >
                   {Object.entries(item).map(([k, v]) => (
-                    <form.Field key={k} name={`${key}[${idx}].${k}`}>
+                    <form.Field
+                      key={k}
+                      name={`${key}[${idx}].${k}`}
+                      validators={{
+                        onSubmit: ({ value }) =>
+                          basicInfoSchema.parseAsync(value),
+                      }}
+                    >
                       {(field) => (
                         <ResumeCardRow
                           widthType={
@@ -600,6 +637,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     ? ACTIVITY_LABELS[k].placeholder
                                     : QUALIFICATIONS_LABELS[k].placeholder
                                 }
+                                error={field.state.meta.errors.join(", ")}
                               />
                             ) : k === "degree_level" ? (
                               <Select
@@ -654,6 +692,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                 type={k.includes("date") ? "month" : "text"}
                                 value={field.state.value || v}
                                 onChange={field.handleChange}
+                                error={field.state.meta.errors.join(", ")}
                               />
                             )
                           }
