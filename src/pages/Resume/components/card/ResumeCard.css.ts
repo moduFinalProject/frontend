@@ -8,6 +8,7 @@ export const card = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.lg,
+  gridColumn: "span 2",
 
   h3: {
     fontWeight: vars.typography.fontWeight.normal,
@@ -17,13 +18,24 @@ export const card = style({
 
 export const grid = style({
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(500px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))",
   gap: vars.spacing.lg,
 
   "@media": {
     "(max-width: 768px)": {
       gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
       gap: `${vars.spacing.lg} 0`,
+    },
+  },
+});
+
+export const innerGrid = style({
+  full: {
+    "@media": {
+      "(max-width: 1290px)": {
+        gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+        gap: `${vars.spacing.lg} 0`,
+      },
     },
   },
 });

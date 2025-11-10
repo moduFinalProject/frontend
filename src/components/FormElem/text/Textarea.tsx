@@ -10,43 +10,46 @@ interface InputProps {
   error?: string;
   disabled?: boolean;
   rows?: number;
+  isMust?: boolean;
 }
 
-const Textarea = forwardRef<HTMLTextAreaElement, InputProps>(
-  function Textarea(
-    {
-      label: labelText,
-      placeholder,
-      value,
-      onChange,
-      onBlur,
-      error,
-      disabled = false,
-      rows = 5,
-    },
-    ref
-  ) {
-    return (
-      <div className={inputContainer}>
-        <>
-          {labelText && <label className={label}>{labelText}</label>}
-          <textarea
-            ref={ref}
-            style={{ resize: "none" }}
-            className={inputBase}
-            placeholder={`${placeholder}`}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={onBlur}
-            disabled={disabled}
-            rows={rows}
-          />
-          <p>글자 수: {value?.length}</p>
-          {error && <span className={errorMessage}>{error}</span>}
-        </>
-      </div>
-    );
-  }
-);
+const Textarea = forwardRef<HTMLTextAreaElement, InputProps>(function Textarea(
+  {
+    label: labelText,
+    placeholder,
+    value,
+    onChange,
+    onBlur,
+    error,
+    disabled = false,
+    rows = 5,
+    isMust = false,
+  },
+  ref
+) {
+  return (
+    <div className={inputContainer}>
+      {labelText && (
+        <label className={label}>
+          {labelText}
+          {isMust && <span> *</span>}
+        </label>
+      )}
+      <textarea
+        ref={ref}
+        style={{ resize: "none" }}
+        className={inputBase}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onBlur={onBlur}
+        disabled={disabled}
+        rows={rows}
+      />
+      <p>글자 수: {value?.length}</p>
+      {error && <span className={errorMessage}>{error}</span>}
+    </div>
+  );
+});
 
 export default Textarea;

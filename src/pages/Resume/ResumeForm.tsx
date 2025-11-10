@@ -6,7 +6,7 @@ import ResumeCardRow from "./components/card/ResumeCardRow";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import Text, { Textarea } from "@/components/FormElem/text";
-import File from "@/components/FormElem/file/File";
+import FileElem from "@/components/FormElem/file/File";
 import { container, innerContainer } from "./index.css.ts";
 import { basicInfoSchema } from "./components/form/validators";
 import Select from "@/components/FormElem/text/Select.tsx";
@@ -27,7 +27,7 @@ interface ResumeFormProps {
 
 type ExperienceItem = {
   title: string;
-  department: string;
+  department?: string;
   position: string;
   start_date: string;
   end_date: string;
@@ -35,8 +35,8 @@ type ExperienceItem = {
 };
 type EducationItem = {
   organ: string;
-  department: string;
-  degree_level: string;
+  department?: string;
+  degree_level?: 1 | 2 | 3 | 4 | 5;
   start_date: string;
   end_date: string;
   score: string;
@@ -62,19 +62,19 @@ type QualificationItem = {
 type ResumeFormValues = {
   id: string;
   title: string;
-  photoUrl: string;
+  photoUrl: string | File;
   url?: string;
   user_info: {
     name: string;
     email: string;
     phone: string;
-    gender: string;
+    gender: 1 | 2;
     address: string;
-    military_service: string;
+    military_service: 1 | 2 | 3 | 4 | 5 | 6;
   };
+  education?: EducationItem[];
   self_introduction: string;
   experience?: ExperienceItem[];
-  education?: EducationItem[];
   project?: ProjectItem[];
   activity?: ActivityItem[];
   technology_stack?: string[];
@@ -91,15 +91,15 @@ const resumeDataSample: ResumeFormValues = {
     name: "김취업",
     email: "email@email.com",
     phone: "010-0000-0000",
-    gender: "남",
+    gender: 1,
     address: "서울시 강남구",
-    military_service: "군필",
+    military_service: 2,
   },
   education: [
     {
       organ: "한국대학교",
       department: "컴퓨터공학",
-      degree_level: "학사",
+      degree_level: 3,
       score: "3.8 / 4.5",
       start_date: "2020-06",
       end_date: "2022-02",
@@ -107,7 +107,7 @@ const resumeDataSample: ResumeFormValues = {
     {
       organ: "한국대학교",
       department: "컴퓨터공학",
-      degree_level: "학사",
+      degree_level: 3,
       score: "3.8 / 4.5",
       start_date: "2020-06",
       end_date: "2022-02",
@@ -203,7 +203,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   const emptyEducationItem: EducationItem = {
     organ: "",
     department: "",
-    degree_level: "",
+    degree_level: 1,
     score: "",
     start_date: "",
     end_date: "",
@@ -269,7 +269,44 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         console.log(`${mode === "edit" ? "수정" : "생성"} 데이터:`, value);
 
         // TODO: API 호출
-        alert("기본 정보가 저장되었습니다.");
+        const resumeData: ResumeFormValues = value; // useForm에서 받은 값
+
+        // photoUrl 필드에 저장된 값을 File 객체로 추출
+        const photoUrlValue = resumeData.photoUrl;
+        console.log(photoUrlValue);
+        console.log(photoUrlValue instanceof File);
+        const photoFile: File | null =
+          photoUrlValue && photoUrlValue instanceof File ? photoUrlValue : null; // photoUrl 필드에 저장된 실제 File 객체라고 가정
+
+        console.log(photoFile);
+        // 1. FormData 객체 생성
+        const formData = new FormData();
+
+        // 2. 텍스트 데이터 추가
+        // JSON.stringify()를 사용하여 복잡한 객체(user_info, education, experience 등)를 문자열로 변환하여 추가합니다.
+        // 서버에서 이 'data' 필드를 다시 JSON.parse()로 복원하여 사용합니다.
+        formData.append("data", JSON.stringify(resumeData));
+
+        // 3. 파일 데이터 추가 (photoUrl 필드)
+        if (photoFile) {
+          formData.append("photo", photoFile, photoFile.name);
+        }
+
+        console.log(formData);
+
+        // 4. fetch 요청
+        // fetch("/api/resumes", {
+        //   method: "POST",
+        //   body: formData,
+        // })
+        //   .then((response) => response.json())
+        //   .then((data) => {
+        //     console.log("Success:", data);
+        //     alert("기본 정보가 저장되었습니다.");
+        //   })
+        //   .catch((error) => {
+        //     console.error("Error:", error);
+        //   });
         // navigate("/resume");
       } catch (error) {
         if (error instanceof z.ZodError)
@@ -321,7 +358,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                 widthType="full"
                 isPhoto
                 input={
-                  <File
+                  <FileElem
                     label="사진 업로드"
                     type="img"
                     value={field.state.value}
@@ -392,8 +429,8 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                       error={field.state.meta.errors.join(", ")}
                       placeholder="남/여"
                       options={[
-                        { value: "남", label: "남" },
-                        { value: "야", label: "여" },
+                        { value: "1", label: "남" },
+                        { value: "2", label: "여" },
                       ]}
                     />
                   ) : subKey === "military_service" ? (
@@ -404,11 +441,14 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
                       error={field.state.meta.errors.join(", ")}
-                      placeholder="미필/군필/해당없음"
+                      placeholder="병역 여부 선택"
                       options={[
-                        { value: "미필", label: "미필" },
-                        { value: "군필", label: "군필" },
-                        { value: "해당없음", label: "해당없음" },
+                        { value: "1", label: "면제" },
+                        { value: "2", label: "군필" },
+                        { value: "3", label: "미필" },
+                        { value: "4", label: "공익" },
+                        { value: "5", label: "병역특례" },
+                        { value: "6", label: "해당없음" },
                       ]}
                     />
                   ) : (
@@ -521,16 +561,46 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                       {(field) => (
                         <ResumeCardRow
                           widthType={
-                            k === "description" || k === "title"
+                            ["description", "title"].includes(k)
                               ? "full"
                               : "half"
                           }
+                          isInner={true}
                           input={
                             k === "description" ? (
                               <Textarea
+                                label={
+                                  key === "education"
+                                    ? EDUCATION_LABELS[k]
+                                    : key === "experience"
+                                    ? EXPERIENCE_LABELS[k]
+                                    : key === "project"
+                                    ? PROJECT_LABELS[k]
+                                    : key === "activity"
+                                    ? ACTIVITY_LABELS[k]
+                                    : QUALIFICATIONS_LABELS[k]
+                                }
+                                isMust={["description"].includes(k)}
                                 rows={8}
                                 value={field.state.value || v}
                                 onChange={field.handleChange}
+                              />
+                            ) : k === "degree_level" ? (
+                              <Select
+                                isMust
+                                label={EDUCATION_LABELS[k]}
+                                value={field.state.value}
+                                onChange={field.handleChange}
+                                onBlur={field.handleBlur}
+                                error={field.state.meta.errors.join(", ")}
+                                placeholder="학위 선택"
+                                options={[
+                                  { value: "1", label: "고졸" },
+                                  { value: "2", label: "전문학사" },
+                                  { value: "3", label: "학사" },
+                                  { value: "4", label: "석사" },
+                                  { value: "5", label: "박사" },
+                                ]}
                               />
                             ) : (
                               <Text
@@ -546,6 +616,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     : QUALIFICATIONS_LABELS[k]
                                 }
                                 isMust={[
+                                  "title",
                                   "organ",
                                   "department",
                                   "start_date",

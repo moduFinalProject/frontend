@@ -27,6 +27,18 @@ export const widthStyle = styleVariants({
     },
   },
 });
+export const innerGrid = styleVariants({
+  half: {
+    gridColumn: "span 1",
+  },
+  full: {
+    "@media": {
+      "(max-width: 1290px)": {
+        gridColumn: "span 1",
+      },
+    },
+  },
+});
 
 export const topTitle = style({
   display: "flex",

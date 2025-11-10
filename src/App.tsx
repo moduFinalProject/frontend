@@ -5,9 +5,8 @@ import Layout from "@/components/Layout/Layout";
 import Landing from "@/pages/Landing";
 import NotFound from "@/pages/NotFound";
 import Profile from "@/pages/Profile";
-
-// import Login from "@/pages/Login";
-// import GoogleCallback from "@/pages/Login/GoogleCallback";
+import Dashboard from "@/pages/Dashboard";
+import { Login, GoogleCallback, SocialSignUp } from "@/pages/Login";
 
 import Resume from "@/pages/Resume";
 import ResumeList from "@/pages/Resume/ResumeList";
@@ -21,17 +20,6 @@ import JobDetail from "@/pages/Jobs/JobDetail";
 import JobForm from "@/pages/Jobs/JobForm";
 
 // 임시 페이지
-const Dashboard = () => (
-  <div
-    style={{
-      marginLeft: "15%",
-      width: "85%",
-      padding: "20px",
-    }}
-  >
-    대시보드 페이지
-  </div>
-);
 const ResumeFeedbackHis = () => (
   <div
     style={{
@@ -79,8 +67,9 @@ function App() {
   return (
     <Routes>
       <Route path="/landing" element={<Landing />} />
-      {/* <Route path="/login" element={<Login />} />
-      <Route path="/login/googleCallback" element={<GoogleCallback />} /> */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/googleCallback" element={<GoogleCallback />} />
+      <Route path="/SocialSignUp" element={<SocialSignUp />} />
 
       <Route
         path="/"
