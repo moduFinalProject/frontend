@@ -5,6 +5,7 @@ import Layout from "@/components/Layout/Layout";
 import Landing from "@/pages/Landing";
 import NotFound from "@/pages/NotFound";
 import Profile from "@/pages/Profile";
+import Dashboard from "@/pages/Dashboard";
 
 import { Login, GoogleCallback, SocialSignUp } from "@/pages/Login";
 
@@ -15,17 +16,6 @@ import ResumeCorrection from "@/pages/Resume/ResumeCorrection";
 import ResumeForm from "@/pages/Resume/ResumeForm";
 
 // 임시 페이지
-const Dashboard = () => (
-  <div
-    style={{
-      marginLeft: "15%",
-      width: "85%",
-      padding: "20px",
-    }}
-  >
-    대시보드 페이지
-  </div>
-);
 const JobPost = () => (
   <div
     style={{
