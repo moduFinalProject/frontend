@@ -13,6 +13,7 @@ import ResumeList from "@/pages/Resume/ResumeList";
 import ResumeDetail from "@/pages/Resume/ResumeDetail";
 import ResumeCorrection from "@/pages/Resume/ResumeCorrection";
 import ResumeForm from "@/pages/Resume/ResumeForm";
+import ResumeFeedback from "@/pages/ResumeFeedback";
 
 import Jobs from "@/pages/Jobs";
 import JobList from "@/pages/Jobs/JobList";
@@ -20,17 +21,6 @@ import JobDetail from "@/pages/Jobs/JobDetail";
 import JobForm from "@/pages/Jobs/JobForm";
 
 // 임시 페이지
-const ResumeFeedbackHis = () => (
-  <div
-    style={{
-      marginLeft: "15%",
-      width: "85%",
-      padding: "20px",
-    }}
-  >
-    공고별 첨삭 이력 페이지
-  </div>
-);
 const Interview = () => (
   <div
     style={{
@@ -139,7 +129,7 @@ function App() {
         element={
           loginToken ? (
             <Layout>
-              <ProtectedRoute element={<ResumeFeedbackHis />} />
+              <ProtectedRoute element={<ResumeFeedback />} />
             </Layout>
           ) : (
             <Landing />

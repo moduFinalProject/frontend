@@ -21,8 +21,6 @@ export const title = style({
   justifyContent: "space-between",
   alignItems: "start",
 
-  position: "relative",
-
   p: {
     fontSize: vars.typography.fontSize.sm,
     color: vars.color.subText,
@@ -95,18 +93,6 @@ export const descTitle = style({
   color: vars.color.subText,
 });
 
-export const dropdownStyle = style({
-  position: "absolute",
-  display: "flex",
-  flexDirection: "column",
-  gap: vars.spacing.xs,
-  top: "90%",
-  right: 0,
-  padding: `${vars.spacing.xs} ${vars.spacing.sm}`,
-
-  backgroundColor: vars.color.white,
-  border: `1px solid ${vars.color.line}`,
-  borderRadius: vars.borderRadius.sm,
-  boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
-  zIndex: 100,
+export const dropdownTrigger = style({
+  padding: vars.spacing.sm,
 });

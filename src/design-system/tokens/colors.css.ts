@@ -23,4 +23,12 @@ export const colors = {
 
   // 구분선 색상
   line: "#C4C4C4", // --LineColor
+
+  // 매칭 색상
+  warning: "#D08700",
+  warningBg: "#FEFCE8",
+  info: "#0088FF",
+  infoBg: "#F3F8FD",
+  success: "#00A63E",
+  successBg: "#F0FDF4",
 } as const;
