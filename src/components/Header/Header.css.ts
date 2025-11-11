@@ -5,22 +5,23 @@ export const header = style({
   width: "256px",
   height: "100vh",
   display: "flex",
-  flexDirection: "column",  
-  backgroundColor: vars.color.white,  
-  position: "fixed"
+  flexDirection: "column",
+  backgroundColor: vars.color.white,
+  position: "fixed",
 });
 
 export const headerLogo = style({
   width: "156px",
-  margin:vars.spacing.md
+  margin: vars.spacing.md,
+  cursor: "pointer",
 });
 
 export const menuContainer = style({
-  borderTop: `1px solid ${vars.color.line}`,  
-  borderRight: `1px solid ${vars.color.line}`,  
+  borderTop: `1px solid ${vars.color.line}`,
+  borderRight: `1px solid ${vars.color.line}`,
   height: "100vh",
-  display: "flex",           // ← 추가
-  flexDirection: "column",   // ← 추가
+  display: "flex", // ← 추가
+  flexDirection: "column", // ← 추가
 });
 
 export const menuUi = style({
@@ -29,21 +30,21 @@ export const menuUi = style({
   margin: 0,
 });
 
-export const menuBottom = style({    
+export const menuBottom = style({
   borderTop: `1px solid ${vars.color.line}`,
-  marginTop: "auto"
+  marginTop: "auto",
 });
 
-export const menuItem = style({  
+export const menuItem = style({
   display: "flex",
-  alignItems: "center",  
-  padding:vars.spacing.xs,
+  alignItems: "center",
+  padding: vars.spacing.xs,
   cursor: "pointer",
-  transition: "background-color 0.2s",  
+  transition: "background-color 0.2s",
 });
 
 export const menuItemActive = style({
-  background: vars.color.sub
+  background: vars.color.sub,
 });
 
 export const menuLink = style({
@@ -54,13 +55,13 @@ export const menuLink = style({
   alignItems: "center",
   gap: vars.spacing.md,
   padding: vars.spacing.md,
-  borderRadius: vars.borderRadius.sm,  
+  borderRadius: vars.borderRadius.sm,
   ":hover": {
-    background: vars.color.sub,    
+    background: vars.color.sub,
   },
   ":active": {
-    background: vars.color.sub,    
-  }
+    background: vars.color.sub,
+  },
 });
 
 export const logoutLink = style({
@@ -70,5 +71,5 @@ export const logoutLink = style({
   },
   ":active": {
     background: "#FEF2F2",
-  }
+  },
 });
