@@ -2,7 +2,6 @@ import { style, globalStyle } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
 
 export const container = style({
-  boxSizing: "border-box",
   width: "100%",
   height: "fit-content",
   maxWidth: 1280,

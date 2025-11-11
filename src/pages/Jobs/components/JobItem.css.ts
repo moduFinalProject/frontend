@@ -3,6 +3,7 @@ import { vars } from "@/design-system";
 
 export const jobItem = style({
   listStyle: "none",
+  backgroundColor: vars.color.white,
   margin: 0,
   padding: vars.spacing.lg,
   display: "flex",

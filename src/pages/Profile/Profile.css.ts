@@ -3,7 +3,6 @@ import { vars } from "@/design-system";
 
 export const profileContainer = style({
   width: "100%",
-  backgroundColor: vars.color.white,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
