@@ -12,6 +12,7 @@ export const card = style({
   gridColumn: "span 2",
 
   h3: {
+    fontSize: vars.typography.fontSize.md,
     fontWeight: vars.typography.fontWeight.normal,
     flex: 1,
   },

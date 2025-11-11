@@ -17,6 +17,14 @@ type ResumeData = {
   gender: string;
   address: string;
   military_service: string;
+  education?: {
+    organ: string;
+    department: string;
+    degree_level: string;
+    start_date: string;
+    end_date?: string;
+    score: string;
+  }[];
   self_introduction: string;
   experience?: {
     job_title: string;
@@ -27,14 +35,6 @@ type ResumeData = {
     job_description: string;
     employment_status: "Y" | "N";
   }[];
-  education?: {
-    organ: string;
-    department: string;
-    degree_level: string;
-    start_date: string;
-    end_date?: string;
-    score: string;
-  };
   project?: {
     title: string;
     description: string;
@@ -72,6 +72,16 @@ export default function ResumeDetail() {
     gender: "남",
     address: "서울시 강남구",
     military_service: "현역",
+    education: [
+      {
+        organ: "한국대학교",
+        department: "컴퓨터공학",
+        degree_level: "학사",
+        start_date: "2020-06",
+        end_date: "2022-02",
+        score: "3.8 / 4.5",
+      },
+    ],
     self_introduction:
       "안녕하세요. 3년차 웹 개발자 김취업입니다.\n\n사용자 중심의 인터페이스 설계와 효율적인 코드 작성에 관심이 많으며, 항상 새로운 기술을 배우고 적용하는 것을 즐깁니다. 팀원들과의 원활한 소통을 통해 프로젝트를 성공적으로 이끌어 낸 경험이 있으며, 문제 해결 능력과 책임감을 바탕으로 맡은 업무를 완수하는 것을 목표로 하고 있습니다.\n\n지속적인 학습과 성장을 통해 더 나은 개발자가 되고자 노력하고 있습니다.",
     experience: [
@@ -96,14 +106,6 @@ export default function ResumeDetail() {
         employment_status: "N",
       },
     ],
-    education: {
-      organ: "한국대학교",
-      department: "컴퓨터공학",
-      degree_level: "학사",
-      start_date: "2020-06",
-      end_date: "2022-02",
-      score: "3.8 / 4.5",
-    },
     project: [
       {
         title: "전자상거래 플랫폼 구축",
@@ -206,6 +208,25 @@ export default function ResumeDetail() {
           widthType="half"
         />
       </ResumeCard>
+      <ResumeCard title="학력">
+        {resumeData.education?.map((educationItem, idx) => {
+          const date = `${educationItem.start_date} ~ ${educationItem.end_date}`;
+
+          return (
+            <Fragment key={idx}>
+              {idx > 0 && <hr />}
+              <ResumeCardRow
+                key={idx}
+                subTile={`${educationItem.department} · ${educationItem.degree_level}`}
+                value={educationItem.organ}
+                desc={educationItem.score}
+                date={date}
+                widthType="full"
+              />
+            </Fragment>
+          );
+        })}
+      </ResumeCard>
       <ResumeCard title="자기소개">
         <ResumeCardRow desc={resumeData.self_introduction} widthType="full" />
       </ResumeCard>
@@ -273,7 +294,8 @@ export default function ResumeDetail() {
                 subTile={subTile}
                 value={qualificationItem.title}
                 widthType="full"
-                isLisence={!qualificationItem.score}
+                isLisence={true}
+                lisence={!qualificationItem.score}
               />
             </Fragment>
           );

@@ -75,12 +75,21 @@ export const stack = style({
   padding: `${vars.spacing.xs} ${vars.spacing.sm}`,
   borderRadius: vars.borderRadius.sm,
 });
-export const lisence = style({
-  fontSize: vars.typography.fontSize.xs,
-  backgroundColor: vars.color.defaultText,
-  color: vars.color.white,
-  padding: `${vars.spacing.xs} ${vars.spacing.sm}`,
-  borderRadius: vars.borderRadius.sm,
+export const lisenceType = styleVariants({
+  lisence: {
+    fontSize: vars.typography.fontSize.xs,
+    backgroundColor: vars.color.defaultText,
+    color: vars.color.white,
+    padding: `${vars.spacing.xs} ${vars.spacing.sm}`,
+    borderRadius: vars.borderRadius.sm,
+  },
+  language: {
+    fontSize: vars.typography.fontSize.xs,
+    backgroundColor: vars.color.formBg,
+    color: vars.color.defaultText,
+    padding: `${vars.spacing.xs} ${vars.spacing.sm}`,
+    borderRadius: vars.borderRadius.sm,
+  },
 });
 
 export const stackWrap = style({

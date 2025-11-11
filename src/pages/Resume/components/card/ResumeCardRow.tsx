@@ -6,7 +6,6 @@ import {
   topTitleText,
   stackWrap,
   stack,
-  lisence,
   subText,
   dateText,
   descText,
@@ -16,6 +15,7 @@ import {
   noImg,
   imgRow,
   innerGrid,
+  lisenceType,
 } from "./ResumeCardRow.css.ts";
 
 import type { ReactNode } from "react";
@@ -30,6 +30,7 @@ type rowData = {
   desc?: string;
   imgUrl?: string;
   isLisence?: boolean;
+  lisence?: boolean;
   isUrl?: boolean;
   isPhoto?: boolean;
   isInner?: boolean;
@@ -46,6 +47,7 @@ export default function ResumeCardRow({
   desc,
   imgUrl,
   isLisence = false,
+  lisence = false,
   isUrl = false,
   isPhoto = false,
   isInner = false,
@@ -70,7 +72,13 @@ export default function ResumeCardRow({
                     <br />
                   </Fragment>
                 ))}
-                {isLisence && <span className={lisence}>자격증</span>}
+                {isLisence && (
+                  <span
+                    className={lisenceType[lisence ? "lisence" : "language"]}
+                  >
+                    {lisence ? "자격증" : "어학"}
+                  </span>
+                )}
               </p>
             )}
             {subTile && <p className={subText}>{subTile}</p>}
