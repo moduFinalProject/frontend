@@ -8,7 +8,7 @@ import {
   header,
   headerContent,
   headerAction,
-} from "./ResumeFeedback.css.ts";
+} from "./index.css.ts";
 
 const MODE_TEXT = {
   list: {
