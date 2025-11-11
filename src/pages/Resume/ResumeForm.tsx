@@ -813,13 +813,13 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   ),
                                 end_date: z
                                   .union([
-                                    z.literal(""),
+                                    z.literal(null),
                                     z
                                       .string()
                                       .trim()
                                       .regex(
                                         /^\d{4}-\d{2}$/,
-                                        "졸업년월을 입력하세요."
+                                        "퇴사년월을 입력하세요."
                                       ),
                                   ])
                                   .optional(),
@@ -842,14 +842,14 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   .trim()
                                   .regex(
                                     /^\d{4}-\d{2}$/,
-                                    "입학년월을 입력하세요."
+                                    "시작년월을 입력하세요."
                                   ),
                                 end_date: z
                                   .string()
                                   .trim()
                                   .regex(
                                     /^\d{4}-\d{2}$/,
-                                    "졸업년월을 입력하세요."
+                                    "마감년월을 입력하세요."
                                   ),
                               },
                               activity: {
@@ -866,14 +866,14 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   .trim()
                                   .regex(
                                     /^\d{4}-\d{2}$/,
-                                    "입학년월을 입력하세요."
+                                    "시작년월을 입력하세요."
                                   ),
                                 end_date: z
                                   .string()
                                   .trim()
                                   .regex(
                                     /^\d{4}-\d{2}$/,
-                                    "졸업년월을 입력하세요."
+                                    "마감년월을 입력하세요."
                                   ),
                               },
                               qualifications: {
@@ -1018,7 +1018,6 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                       )
                                     }
                                   />
-                                  {/* 🎯 이 부분이 핵심입니다: end_date 바로 아래에 체크박스 필드를 렌더링합니다. */}
                                   {key === "experience" && k === "end_date" && (
                                     <form.Field
                                       key={"employmont_status_checkbox"}
@@ -1037,9 +1036,9 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                             const isChecked = e.target.checked;
                                             checkboxField.handleChange(
                                               isChecked
-                                            ); // 체크박스 값 업데이트
+                                            );
 
-                                            // end_date 필드의 값 및 메타 데이터 조작
+                                            // end_date
                                             const form = checkboxField.form;
                                             const endDateFieldName = `${key}[${idx}].end_date`;
 
@@ -1047,17 +1046,17 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                               // 재직 중 -> end_date 비우고 에러 초기화
                                               form.setFieldValue(
                                                 endDateFieldName,
-                                                ""
+                                                null
                                               );
                                               form.setFieldMeta(
                                                 endDateFieldName,
                                                 { errors: [] }
                                               );
                                             } else {
-                                              // 퇴사 -> end_date를 null/undefined로 설정하여 입력 활성화 (유효성 검사 적용을 위해)
+                                              // 퇴사 -> end_date 입력 활성화
                                               form.setFieldValue(
                                                 endDateFieldName,
-                                                null
+                                                ""
                                               );
                                             }
                                           }}
