@@ -154,7 +154,7 @@ export default function Login() {
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
+                      error={field.state.meta.errors.join(', ')}
                     />
                   )}
                 />
@@ -176,7 +176,7 @@ export default function Login() {
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
+                      error={field.state.meta.errors.join(', ')}
                     />
                   )}
                 />
