@@ -216,7 +216,9 @@ export default function Feedback({ type, isRecorrection }: FeedbackProps) {
           </ul>
           {type === "feedback" && (
             <Button
-              callback={() => {}}
+              callback={() => {
+                alert("새 이력서로 생성");
+              }}
               color="blue"
               text="수정사항 적용하기"
               widthStyle="full"

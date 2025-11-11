@@ -11,8 +11,9 @@ import {
 } from "./Input.css";
 
 interface InputProps {
+  id?: string;
   label?: string;
-  type?: "text" | "email" | "password" | "tel" | "date" | "month";
+  type?: "text" | "email" | "password" | "tel" | "date" | "month" | "search";
   placeholder?: string;
   name: string;
   value: string;
@@ -27,6 +28,7 @@ interface InputProps {
 
 const Text = forwardRef<HTMLInputElement, InputProps>(function Text(
   {
+    id,
     label: labelText,
     type = "text",
     placeholder,
@@ -52,6 +54,7 @@ const Text = forwardRef<HTMLInputElement, InputProps>(function Text(
       )}
       <div className={useBtn}>
         <input
+          id={id}
           name={name}
           ref={ref}
           type={type}

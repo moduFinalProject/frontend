@@ -6,6 +6,7 @@ import Landing from "@/pages/Landing";
 import NotFound from "@/pages/NotFound";
 import Profile from "@/pages/Profile";
 import Dashboard from "@/pages/Dashboard";
+
 import { Login, GoogleCallback, SocialSignUp } from "@/pages/Login";
 
 import Resume from "@/pages/Resume";
@@ -13,7 +14,10 @@ import ResumeList from "@/pages/Resume/ResumeList";
 import ResumeDetail from "@/pages/Resume/ResumeDetail";
 import ResumeCorrection from "@/pages/Resume/ResumeCorrection";
 import ResumeForm from "@/pages/Resume/ResumeForm";
+
 import ResumeFeedback from "@/pages/ResumeFeedback";
+import ResumeFeedbackList from "@/pages/ResumeFeedback/ResumeFeedbackList";
+import ResumeFeedbackDetail from "@/pages/ResumeFeedback/ResumeFeedbackDetail";
 
 import Jobs from "@/pages/Jobs";
 import JobList from "@/pages/Jobs/JobList";
@@ -130,13 +134,17 @@ function App() {
         element={
           loginToken ? (
             <Layout>
-              <ProtectedRoute element={<ResumeFeedback />} />
+              {/* <ProtectedRoute element={<ResumeFeedback />} /> */}
+              <ResumeFeedback />
             </Layout>
           ) : (
             <Landing />
           )
         }
-      />
+      >
+        <Route index element={<ResumeFeedbackList />} />
+        <Route path=":id" element={<ResumeFeedbackDetail />} />
+      </Route>
 
       <Route
         path="/interview"
