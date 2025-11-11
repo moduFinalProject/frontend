@@ -1,14 +1,14 @@
-import { Button } from "@/components/index.ts";
+import { Button, OptionsDropdown } from "@/components/index.ts";
 import {
   resumeItem,
   title,
   titleRow,
   desc,
   btns,
-  dropdownStyle,
   descTitle,
+  dropdownTrigger,
 } from "./ResumeItem.css.ts";
-import { useEffect, useRef, useState } from "react";
+import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 type Resume = {
@@ -25,39 +25,25 @@ interface ResumeItemProps {
 }
 
 export default function ResumeItem({ resume }: ResumeItemProps) {
-  const [dropdown, setDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
-
   const navigate = useNavigate();
 
-  function handleDropdown() {
-    setDropdown((prev) => !prev);
-    console.log("클릭");
-  }
-
-  // 외부 클릭 감지
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      // dropdownRef.current가 존재하고, 그 영역 안을 클릭한 게 아니라면 닫기
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setDropdown(false);
-      }
-    }
-
-    if (dropdown) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    // cleanup
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdown]);
+  const dropdownItems = useMemo(
+    () => [
+      {
+        label: "수정",
+        onSelect: () => {
+          navigate(`./${resume.id}/edit`);
+        },
+      },
+      {
+        label: "삭제",
+        onSelect: () => {
+          // TODO: 삭제 기능 구현 필요
+        },
+      },
+    ],
+    [navigate, resume.id]
+  );
 
   return (
     <li className={resumeItem}>
@@ -71,35 +57,12 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
           </div>
           <p>{resume.desc}</p>
         </div>
-        <div ref={dropdownRef}>
-          <Button
-            text=""
-            color="none"
-            callback={() => {
-              handleDropdown();
-            }}
-            widthStyle="fit"
-            icon="MORE"
-          />
-          {dropdown && (
-            <div className={dropdownStyle}>
-              <Button
-                color="none"
-                text="수정"
-                callback={() => {
-                  navigate(`./${resume.id}/edit`);
-                }}
-                widthStyle="full"
-              />
-              <Button
-                color="none"
-                text="삭제"
-                callback={() => {}}
-                widthStyle="full"
-              />
-            </div>
-          )}
-        </div>
+        <OptionsDropdown
+          ariaLabel={`${resume.name} 옵션`}
+          items={dropdownItems}
+          triggerClassName={dropdownTrigger}
+          itemWidthStyle="fit"
+        />
       </div>
       <div className={desc}>
         <div>

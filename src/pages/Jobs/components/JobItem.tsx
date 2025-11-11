@@ -1,13 +1,13 @@
-﻿import { useEffect, useRef, useState } from "react";
+﻿import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Button } from "@/components/index.ts";
+import { Button, OptionsDropdown } from "@/components/index.ts";
 import {
   jobItem,
   title,
   titleRow,
   btns,
-  dropdownStyle,
+  dropdownTrigger,
 } from "./JobItem.css.ts";
 import type { JobListItem } from "../api.ts";
 
@@ -16,34 +16,20 @@ interface JobItemProps {
 }
 
 export default function JobItem({ job }: JobItemProps) {
-  const [dropdown, setDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
-  function toggleDropdown() {
-    setDropdown((prev) => !prev);
-  }
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setDropdown(false);
-      }
-    }
-
-    if (dropdown) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdown]);
+  const dropdownItems = useMemo(
+    () => [
+      {
+        label: "삭제",
+        onSelect: () => {
+          console.log("삭제하기");
+          // TODO: 삭제 로직 연결
+        },
+      },
+    ],
+    []
+  );
 
   return (
     <li className={jobItem}>
@@ -76,30 +62,12 @@ export default function JobItem({ job }: JobItemProps) {
           </div>
           <p>{job.company}</p>
         </div>
-        <div ref={dropdownRef}>
-          <Button
-            text=""
-            color="none"
-            widthStyle="fit"
-            icon="MORE"
-            callback={() => {
-              toggleDropdown();
-            }}
-          />
-          {dropdown && (
-            <div className={dropdownStyle}>
-              <Button
-                color="none"
-                text="삭제"
-                widthStyle="full"
-                callback={() => {
-                  console.log("삭제하기");
-                  setDropdown(false);
-                }}
-              />
-            </div>
-          )}
-        </div>
+        <OptionsDropdown
+          ariaLabel={`${job.title} 옵션`}
+          items={dropdownItems}
+          itemWidthStyle="fit"
+          triggerClassName={dropdownTrigger}
+        />
       </header>
 
       <footer className={btns}>

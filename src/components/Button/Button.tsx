@@ -10,6 +10,12 @@ interface ButtonProps {
   buttonType?: "button" | "submit" | "reset";
   disabled?: boolean;
   form?: string;
+  ariaLabel?: string;
+  className?: string;
+  ariaExpanded?: boolean;
+  ariaHasPopup?: boolean | "dialog" | "menu" | "listbox" | "tree" | "grid";
+  ariaControls?: string;
+  role?: string;
 }
 
 export default function Button({
@@ -21,14 +27,34 @@ export default function Button({
   disabled = false,
   buttonType = "button",
   form,
+  ariaLabel,
+  className,
+  ariaExpanded,
+  ariaHasPopup,
+  ariaControls,
+  role,
 }: ButtonProps) {
+  const classNames = [
+    baseButton,
+    buttonColor[color],
+    buttonWidth[widthStyle],
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <button
       disabled={disabled}
-      className={`${baseButton} ${buttonColor[color]} ${buttonWidth[widthStyle]}`}
+      className={classNames}
       type={buttonType}
       onClick={callback}
       form={form}
+      aria-label={ariaLabel}
+      aria-expanded={ariaExpanded}
+      aria-haspopup={ariaHasPopup}
+      aria-controls={ariaControls}
+      role={role}
     >
       {icon && <img src={ICONS[icon]} alt="" />}
       {text}
