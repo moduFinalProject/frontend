@@ -642,14 +642,10 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
             name="technology_stack"
             validators={{
               onChange: ({ value }) => {
-                // basicInfoSchema.parseAsync(value);
-
                 const result = z
                   .preprocess(
                     (val) => {
-                      if (typeof val !== "string") {
-                        return val;
-                      }
+                      if (typeof val !== "string") return val;
 
                       const processedArray = val
                         .split(",")
@@ -660,15 +656,24 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                         ? processedArray
                         : undefined;
                     },
-
                     z
                       .array(
                         z.string().trim().min(1, "스킬 이름을 입력하세요.")
                       )
-                      .refine((items) => {
-                        const uniqueItems = new Set(items);
-                        return uniqueItems.size === items.length;
-                      }, "중복된 스킬 항목이 있습니다.")
+                      .superRefine((items, ctx) => {
+                        const duplicates = items.filter(
+                          (item, idx) => items.indexOf(item) !== idx
+                        );
+                        if (duplicates.length > 0) {
+                          const uniqueDuplicates = [...new Set(duplicates)];
+                          ctx.addIssue({
+                            code: z.ZodIssueCode.custom,
+                            message: `중복된 스킬 항목이 있습니다: ${uniqueDuplicates.join(
+                              ", "
+                            )}`,
+                          });
+                        }
+                      })
                       .nullable()
                       .optional()
                   )
@@ -676,7 +681,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
 
                 return result.success
                   ? undefined
-                  : result?.error.issues[0].message;
+                  : result.error.issues[0].message;
               },
             }}
           >
