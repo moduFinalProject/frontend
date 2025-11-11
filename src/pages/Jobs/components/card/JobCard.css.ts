@@ -28,7 +28,3 @@ export const grid = style({
     },
   },
 });
-
-export const titleWrap = style({
-  display: "flex",
-});
