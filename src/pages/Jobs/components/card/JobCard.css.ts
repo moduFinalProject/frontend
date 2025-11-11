@@ -2,6 +2,7 @@ import { style } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
 
 export const card = style({
+  backgroundColor: vars.color.white,
   padding: vars.spacing.lg,
   border: `1px solid ${vars.color.line}`,
   borderRadius: vars.borderRadius.lg,
