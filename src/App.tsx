@@ -130,7 +130,7 @@ function App() {
       </Route>
 
       <Route
-        path="/resumeFeedbackHis"
+        path="/resumeFeedback"
         element={
           loginToken ? (
             <Layout>

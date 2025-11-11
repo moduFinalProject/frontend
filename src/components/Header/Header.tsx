@@ -63,10 +63,10 @@ export default function Header() {
       menuURL: "/jobs",
     },
     {
-      id: "resumeFeedbackHis",
+      id: "resumeFeedback",
       menuName: "공고별 첨삭 이력",
       menuIcon: "CHECK",
-      menuURL: "/resumeFeedbackHis",
+      menuURL: "/resumeFeedback",
     },
     {
       id: "interview",
