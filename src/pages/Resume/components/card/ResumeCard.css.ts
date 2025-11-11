@@ -20,16 +20,12 @@ export const card = style({
 
 export const grid = style({
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))",
+  gridTemplateColumns: "repeat(2, 1fr)",
   gap: vars.spacing.lg,
 
   "@media": {
-    "(max-width: 1290px)": {
-      gridTemplateColumns: "repeat(auto-fill, minmax(500px, 1fr))",
-      gap: `${vars.spacing.lg} 0`,
-    },
-    "(max-width: 768px)": {
-      gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+    "(max-width: 1024px)": {
+      gridTemplateColumns: "1fr",
       gap: `${vars.spacing.lg} 0`,
     },
   },
@@ -38,8 +34,8 @@ export const grid = style({
 export const innerGrid = style({
   full: {
     "@media": {
-      "(max-width: 1290px)": {
-        gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+      "(max-width: 768px)": {
+        gridTemplateColumns: "1fr",
         gap: `${vars.spacing.lg} 0`,
       },
     },
