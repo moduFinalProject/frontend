@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+export const MIN_LENGTH = 2;
+export const MAX_LENGTH = 500;
+
+const isArrayItemTrulyEmpty = (item: any, requiredKeys: string[]) => {
+  return requiredKeys.every((key) => !item[key] || item[key] === "");
+};
+
+// 학력
 export const educationItemSchema = z
   .object({
     organ: z
@@ -28,14 +36,73 @@ export const educationItemSchema = z
     }
   );
 
-export const experienceItemSchema = z
+export const educationSchema = z.preprocess((val) => {
+  if (!Array.isArray(val)) return val;
+
+  const requiredKeys = [
+    "organ",
+    "department",
+    "degree_level",
+    "start_date",
+    "end_date",
+  ];
+
+  return val.filter((item) => !isArrayItemTrulyEmpty(item, requiredKeys));
+}, z.array(educationItemSchema).min(1, "학력은 최소 1개 이상 입력해야 합니다.").optional());
+
+// 경력
+export const experienceItemSchema = z.object({
+  title: z.string().min(1, "회사명을 입력하세요."),
+  position: z.string().min(1, "직책을 입력하세요."),
+  start_date: z.string().regex(/^\d{4}-\d{2}$/, "입사년월을 입력하세요."),
+  end_date: z
+    .union([
+      z.literal(null),
+      z
+        .string()
+        .trim()
+        .regex(/^\d{4}-\d{2}$/, "퇴사년월을 입력하세요.")
+        .nullable(),
+    ])
+    .optional(),
+  description: z.string().min(1, "주요 업무 및 성과를 입력하세요."),
+  department: z.string().optional(),
+});
+
+export const experienceSchema = z.preprocess((val) => {
+  if (!Array.isArray(val)) return val;
+
+  const requiredKeys = [
+    "title",
+    "position",
+    "start_date",
+    "end_date",
+    "description",
+  ];
+
+  return val.filter((item) => !isArrayItemTrulyEmpty(item, requiredKeys));
+}, z.array(experienceItemSchema).optional());
+
+// 프로젝트
+export const projectItemSchema = z
   .object({
-    title: z.string().min(1, "회사명을 입력하세요."),
-    position: z.string().min(1, "직책을 입력하세요."),
-    start_date: z.string().regex(/^\d{4}-\d{2}$/, "입사년월을 입력하세요."),
-    end_date: z.string().regex(/^\d{4}-\d{2}$/, "퇴사년월을 입력하세요."),
-    description: z.string().min(1, "주요 업무 및 성과를 입력하세요."),
-    department: z.string().optional(),
+    title: z
+      .string()
+      .trim()
+      .min(MIN_LENGTH, `프로젝트 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`),
+    description: z
+      .string()
+      .trim()
+      .min(MIN_LENGTH, `프로젝트 내용을 ${MIN_LENGTH}글자 이상 입력하세요.`)
+      .max(MAX_LENGTH, `프로젝트 내용을 ${MAX_LENGTH}글자 이하 입력하세요.`),
+    start_date: z
+      .string()
+      .trim()
+      .regex(/^\d{4}-\d{2}$/, "시작년월을 입력하세요."),
+    end_date: z
+      .string()
+      .trim()
+      .regex(/^\d{4}-\d{2}$/, "마감년월을 입력하세요."),
   })
   .refine(
     (data) => {
@@ -50,40 +117,96 @@ export const experienceItemSchema = z
     }
   );
 
-const isArrayItemTrulyEmpty = (item: any, requiredKeys: string[]) => {
-  return requiredKeys.every((key) => !item[key] || item[key] === "");
-};
-export const educationSchema = z.preprocess((val) => {
+export const projectSchema = z.preprocess((val) => {
   if (!Array.isArray(val)) return val;
 
-  // 교육 항목의 필수 문자열 키
-  const requiredKeys = [
-    "organ",
-    "department",
-    "degree_level",
-    "start_date",
-    "end_date",
-  ];
+  const requiredKeys = ["title", "description", "start_date", "end_date"];
 
   return val.filter((item) => !isArrayItemTrulyEmpty(item, requiredKeys));
-}, z.array(educationItemSchema).min(1, "학력은 최소 1개 이상 입력해야 합니다.").optional());
+}, z.array(projectItemSchema).optional());
 
-export const experienceSchema = z.preprocess((val) => {
+// 활동
+export const activityItemSchema = z
+  .object({
+    title: z
+      .string()
+      .trim()
+      .min(MIN_LENGTH, `활동 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`),
+    description: z
+      .string()
+      .trim()
+      .min(MIN_LENGTH, `활동 내용을 ${MIN_LENGTH}글자 이상 입력하세요.`)
+      .max(MAX_LENGTH, `활동 내용을 ${MAX_LENGTH}글자 이하 입력하세요.`),
+    start_date: z
+      .string()
+      .trim()
+      .regex(/^\d{4}-\d{2}$/, "입학년월을 입력하세요."),
+    end_date: z
+      .string()
+      .trim()
+      .regex(/^\d{4}-\d{2}$/, "졸업년월을 입력하세요."),
+  })
+  .refine(
+    (data) => {
+      const startDate = new Date(data.start_date);
+      const endDate = new Date(data.end_date);
+
+      return startDate <= endDate;
+    },
+    {
+      message: "시작일은 마감일보다 늦을 수 없습니다.",
+      path: ["end_date"],
+    }
+  );
+
+export const activitySchema = z.preprocess((val) => {
   if (!Array.isArray(val)) return val;
 
-  // 경력 항목의 필수 문자열 키
-  const requiredKeys = [
-    "title",
-    "position",
-    "start_date",
-    "end_date",
-    "description",
-  ];
+  const requiredKeys = ["title", "description", "start_date", "end_date"];
 
-  // 🚨 필터링: 필수 키가 모두 비어있는 항목은 제거
   return val.filter((item) => !isArrayItemTrulyEmpty(item, requiredKeys));
-}, z.array(experienceItemSchema).optional());
+}, z.array(activityItemSchema).optional());
 
+// 자격/어학
+export const qualificationsItemSchema = z.object({
+  qua_title: z
+    .string()
+    .trim()
+    .min(
+      MIN_LENGTH,
+      `자격증 또는 어학 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`
+    ),
+  organ: z
+    .string()
+    .trim()
+    .min(
+      MIN_LENGTH,
+      `발급 및 주관기관 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`
+    ),
+  acquisition_date: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}$/, "취득년월을 입력하세요."),
+  score: z
+    .union([
+      z.literal(""), // 빈 문자열을 허용
+      z
+        .string()
+        .trim()
+        .regex(/^.+점$/, "00점 형식으로 입력하세요."),
+    ])
+    .optional(),
+});
+
+export const qualificationsSchema = z.preprocess((val) => {
+  if (!Array.isArray(val)) return val;
+
+  const requiredKeys = ["qua_title", "organ", "acquisition_date"];
+
+  return val.filter((item) => !isArrayItemTrulyEmpty(item, requiredKeys));
+}, z.array(qualificationsItemSchema).optional());
+
+// 기술스텍
 export const technologyStackSchema = z.preprocess(
   (val) => {
     if (typeof val !== "string") {
@@ -107,6 +230,7 @@ export const technologyStackSchema = z.preprocess(
     .optional()
 );
 
+// 사진
 const photoUrlStringSchema = z
   .string()
   .refine(
@@ -120,30 +244,35 @@ const photoUrlFileSchema = z
     "이미지 파일만 업로드할 수 있습니다."
   );
 
+// 취합 스키마
 export const basicInfoSchema = z.object({
-  title: z.string().min(1, "이력서 이름을 입력하세요."),
+  title: z.string().min(2, "이력서 이름을 두글자 이상 입력하세요."),
   photoUrl: z.union([photoUrlStringSchema, photoUrlFileSchema]),
   user_info: z.object({
     name: z.string().min(2, "이름은 두글자 이상 입력하세요."),
-    email: z.string().email("올바른 이메일 형식이 아닙니다."),
+    email: z
+      .string()
+      .min(1, "이메일을 입력하세요.")
+      .email("올바른 이메일 형식이 아닙니다."),
     phone: z
       .string()
+      .min(1, "전화번호를 입력하세요.")
       .regex(/^010-\d{4}-\d{4}$/, "010-0000-0000 형식으로 입력하세요."),
     gender: z.enum(["1", "2"], "성별을 선택해주세요"),
     address: z
       .string()
-      .min(6, "주소를 입력해주세요")
+      .min(5, "주소를 입력해주세요")
       .regex(/^.+시\s+.+구/, "주소는 'OO시 OO구' 형식으로 입력해주세요"),
     military_service: z.enum(
       ["1", "2", "3", "4", "5", "6"],
       "병역 여부를 선택해주세요"
     ),
   }),
-  self_introduction: z.string().max(400, "400자 이하로 입력하세요.").optional(),
+  self_introduction: z.string().max(500, "500자 이하로 입력하세요.").optional(),
   education: educationSchema,
   experience: experienceSchema,
-  project: z.array(educationItemSchema).optional(),
-  activity: z.array(educationItemSchema).optional(),
+  project: projectSchema,
+  activity: activitySchema,
   technology_stack: technologyStackSchema,
-  qualifications: z.array(educationItemSchema).optional(),
+  qualifications: qualificationsSchema,
 });
