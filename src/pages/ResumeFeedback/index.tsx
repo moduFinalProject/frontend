@@ -32,7 +32,7 @@ export default function ResumeFeedbackList() {
       <header className={header}>
         <FeedbackTitle
           mode={mode}
-          title="채용공고"
+          title="공고별 첨삭"
           desc={modeData[mode].desc}
           feedbackId={id}
         />
