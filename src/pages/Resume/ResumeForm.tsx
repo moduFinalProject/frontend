@@ -31,7 +31,7 @@ type ExperienceItem = {
   department?: string;
   position: string;
   start_date: string;
-  end_date: string;
+  end_date: string | null;
   employmont_status: boolean;
   description: string;
 };
@@ -124,7 +124,7 @@ const resumeDataSample: ResumeFormValues = {
       department: "개발팀",
       position: "프론트엔드 개발자",
       start_date: "2022-03",
-      end_date: "",
+      end_date: null,
       employmont_status: true,
       description:
         "- React와 TypeScript를 활용한 웹 서비스 개발 및 유지보수\n- Redux를 이용한 상태 관리 구조 설계 및 구현\n- REST API 연동 및 데이터 처리 로직 개발\n- 반응형 웹 디자인 구현으로 모바일 사용자 경험 개선\n- Git을 활용한 버전 관리 및 코드 리뷰 참여\n- 웹 접근성 개선 작업으로 WCAG 2.1 AA 등급 달성",
@@ -820,7 +820,8 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                       .regex(
                                         /^\d{4}-\d{2}$/,
                                         "퇴사년월을 입력하세요."
-                                      ),
+                                      )
+                                      .nullable(),
                                   ])
                                   .optional(),
                                 description: z
@@ -842,14 +843,14 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   .trim()
                                   .regex(
                                     /^\d{4}-\d{2}$/,
-                                    "시작년월을 입력하세요."
+                                    "입학년월을 입력하세요."
                                   ),
                                 end_date: z
                                   .string()
                                   .trim()
                                   .regex(
                                     /^\d{4}-\d{2}$/,
-                                    "마감년월을 입력하세요."
+                                    "졸업년월을 입력하세요."
                                   ),
                               },
                               activity: {
@@ -866,14 +867,14 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   .trim()
                                   .regex(
                                     /^\d{4}-\d{2}$/,
-                                    "시작년월을 입력하세요."
+                                    "입학년월을 입력하세요."
                                   ),
                                 end_date: z
                                   .string()
                                   .trim()
                                   .regex(
                                     /^\d{4}-\d{2}$/,
-                                    "마감년월을 입력하세요."
+                                    "졸업년월을 입력하세요."
                                   ),
                               },
                               qualifications: {
@@ -1031,19 +1032,18 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                             ].label
                                           }
                                           name={checkboxField.name}
-                                          value={checkboxField.state.value} // boolean 값
+                                          value={checkboxField.state.value}
                                           onChange={(e) => {
                                             const isChecked = e.target.checked;
                                             checkboxField.handleChange(
                                               isChecked
                                             );
 
-                                            // end_date
                                             const form = checkboxField.form;
                                             const endDateFieldName = `${key}[${idx}].end_date`;
 
                                             if (isChecked) {
-                                              // 재직 중 -> end_date 비우고 에러 초기화
+                                              // 재직 중
                                               form.setFieldValue(
                                                 endDateFieldName,
                                                 null
@@ -1053,7 +1053,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                                 { errors: [] }
                                               );
                                             } else {
-                                              // 퇴사 -> end_date 입력 활성화
+                                              // 퇴사
                                               form.setFieldValue(
                                                 endDateFieldName,
                                                 ""
