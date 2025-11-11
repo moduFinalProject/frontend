@@ -1,11 +1,19 @@
 import { topbar, topbarRight, userInfo, userDetails, userName, userEmail } from "./Topbar.css";
 import { Button } from "@/components/Button";
+import { useMemo } from "react";
 
 export default function Topbar() {
-  const user = {
-    name: "김취업",
-    email: "kim@example.com",
-  };
+  const user = useMemo(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        return JSON.parse(userStr);
+      } catch (e) {
+        console.error("Failed to parse user from localStorage:", e);
+      }
+    }
+    return null;
+  }, []);
 
   return (
     <aside className={topbar}>
@@ -17,14 +25,15 @@ export default function Topbar() {
           callback={()=>{alert("클릭")}}
           icon="ALAM"
         ></Button>
-        <div className={userInfo}>
-          <div className={userDetails}>
-            <p className={userName}>{user.name}</p>
-            <p className={userEmail}>{user.email}</p>
+        {user && (
+          <div className={userInfo}>
+            <div className={userDetails}>
+              <p className={userName}>{user.name}</p>
+              <p className={userEmail}>{user.email}</p>
+            </div>
           </div>
-        </div>
+        )}
       </section>
-
     </aside>
   );
 }

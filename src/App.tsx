@@ -55,7 +55,7 @@ const StudyGuide = () => (
 );
 
 function App() {
-  const loginToken: boolean = true;
+  const loginToken: boolean = !!localStorage.getItem("access_token");
 
   const ProtectedRoute = ({ element }: { element: React.ReactNode }) => {
     if (!loginToken) {
