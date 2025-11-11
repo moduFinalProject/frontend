@@ -21,6 +21,11 @@ import {
   QUALIFICATIONS_LABELS,
 } from "@/constants/fieldLabels.ts";
 import { trimObjectStrings } from "@/utils/trimOojectStrings.ts";
+import {
+  basicInfoSchema,
+  MAX_LENGTH,
+  MIN_LENGTH,
+} from "./components/form/validators.ts";
 
 interface ResumeFormProps {
   mode: "create" | "edit";
@@ -269,7 +274,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     onSubmit: async ({ value }) => {
       try {
         const trimmedValue = trimObjectStrings(value);
-        // basicInfoSchema.parse(value);
+        basicInfoSchema.parse(trimmedValue);
         // const validatedData = await basicInfoSchema.parseAsync(value);
         console.log(
           `${mode === "edit" ? "수정" : "생성"} 데이터:`,
@@ -368,7 +373,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           <form.Field
             name={key}
             validators={{
-              onSubmit: ({ value }: { value: string }) => {
+              onchange: ({ value }: { value: string }) => {
                 // basicInfoSchema.parseAsync(value);
                 const photoUrlStringSchema = z
                   .string()
@@ -426,20 +431,26 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         <form.Field
           name={key}
           validators={{
-            onSubmit: ({ value }) => {
+            onChange: ({ value }) => {
               // basicInfoSchema.parseAsync(value)
               let result;
               if (key === "title")
                 result = z
                   .string()
                   .trim()
-                  .min(1, "이력서 이름을 입력하세요.")
+                  .min(
+                    MIN_LENGTH,
+                    `이력서 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`
+                  )
                   .safeParse(value);
               else if (key === "self_introduction")
                 result = z
                   .string()
                   .trim()
-                  .max(400, "400자 이하로 입력하세요.")
+                  .max(
+                    MAX_LENGTH,
+                    `자기소개는 ${MAX_LENGTH}자 이하로 입력하세요.`
+                  )
                   .nullable()
                   .optional()
                   .safeParse(value);
@@ -495,7 +506,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
             key={subKey}
             name={`${key}.${subKey}`}
             validators={{
-              onSubmit: ({ value }) => {
+              onChange: ({ value }) => {
                 // basicInfoSchema.parseAsync(value)
                 const userInfoSchema: {
                   name: z.ZodString;
@@ -518,7 +529,10 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   name: z
                     .string()
                     .trim()
-                    .min(2, "이름은 두글자 이상 입력하세요."),
+                    .min(
+                      MIN_LENGTH,
+                      `이름은 ${MIN_LENGTH}글자 이상 입력하세요.`
+                    ),
                   email: z
                     .string()
                     .trim()
@@ -627,7 +641,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           <form.Field
             name="technology_stack"
             validators={{
-              onSubmit: ({ value }) => {
+              onChange: ({ value }) => {
                 // basicInfoSchema.parseAsync(value);
 
                 const result = z
@@ -749,21 +763,27 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                         key={k}
                         name={`${key}[${idx}].${k}`}
                         validators={{
-                          onSubmit: ({ value }) => {
+                          onChange: ({ value }) => {
                             // basicInfoSchema.parseAsync(value)
                             const itemSchema = {
                               education: {
                                 organ: z
                                   .string()
                                   .trim()
-                                  .min(1, "학교 이름을 입력하세요.")
+                                  .min(
+                                    MIN_LENGTH,
+                                    `학교 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`
+                                  )
                                   .regex(
                                     /^.+학교/,
                                     "oo학교 형식으로 입력하세요."
                                   ),
                                 department: z
                                   .string()
-                                  .min(1, "학과를 입력하세요.")
+                                  .min(
+                                    MIN_LENGTH,
+                                    `학과를 ${MIN_LENGTH}글자 이상 입력하세요.`
+                                  )
                                   .regex(/^.+과/, "oo과 형식으로 입력하세요."),
                                 degree_level: z.enum(
                                   ["1", "2", "3", "4", "5"],
@@ -794,16 +814,25 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                 title: z
                                   .string()
                                   .trim()
-                                  .min(1, "회사명을 입력하세요."),
+                                  .min(
+                                    MIN_LENGTH,
+                                    `회사명을 ${MIN_LENGTH}글자 이상 입력하세요.`
+                                  ),
                                 department: z
                                   .string()
                                   .trim()
-                                  .min(1, "부서명을 입력하세요")
+                                  .min(
+                                    MIN_LENGTH,
+                                    `부서명을 ${MIN_LENGTH}글자 이상 입력하세요.`
+                                  )
                                   .optional(),
                                 position: z
                                   .string()
                                   .trim()
-                                  .min(1, "직책을 입력하세요."),
+                                  .min(
+                                    MIN_LENGTH,
+                                    `직무를 ${MIN_LENGTH}글자 이상 입력하세요.`
+                                  ),
                                 start_date: z
                                   .string()
                                   .trim()
@@ -827,41 +856,68 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                 description: z
                                   .string()
                                   .trim()
-                                  .min(1, "주요 업무 및 성과를 입력하세요."),
+                                  .min(
+                                    MIN_LENGTH,
+                                    `주요 업무 및 성과를 ${MIN_LENGTH}글자 이상 입력하세요.`
+                                  )
+                                  .max(
+                                    MAX_LENGTH,
+                                    `주요 업무 및 성과를 ${MAX_LENGTH}글자 이하 입력하세요.`
+                                  ),
                               },
                               project: {
                                 title: z
                                   .string()
                                   .trim()
-                                  .min(1, "프로젝트 이름을 입력하세요."),
+                                  .min(
+                                    MIN_LENGTH,
+                                    `프로젝트 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`
+                                  ),
                                 description: z
                                   .string()
                                   .trim()
-                                  .max(400, "400자 이내로 입력하세요."),
+                                  .min(
+                                    MIN_LENGTH,
+                                    `프로젝트 내용을 ${MIN_LENGTH}글자 이상 입력하세요.`
+                                  )
+                                  .max(
+                                    MAX_LENGTH,
+                                    `프로젝트 내용을 ${MAX_LENGTH}글자 이하 입력하세요.`
+                                  ),
                                 start_date: z
                                   .string()
                                   .trim()
                                   .regex(
                                     /^\d{4}-\d{2}$/,
-                                    "입학년월을 입력하세요."
+                                    "시작년월을 입력하세요."
                                   ),
                                 end_date: z
                                   .string()
                                   .trim()
                                   .regex(
                                     /^\d{4}-\d{2}$/,
-                                    "졸업년월을 입력하세요."
+                                    "마감년월을 입력하세요."
                                   ),
                               },
                               activity: {
                                 title: z
                                   .string()
                                   .trim()
-                                  .min(1, "활동 이름을 입력하세요."),
+                                  .min(
+                                    MIN_LENGTH,
+                                    `활동 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`
+                                  ),
                                 description: z
                                   .string()
                                   .trim()
-                                  .max(400, "400자 이내로 입력하세요."),
+                                  .min(
+                                    MIN_LENGTH,
+                                    `활동 내용을 ${MIN_LENGTH}글자 이상 입력하세요.`
+                                  )
+                                  .max(
+                                    MAX_LENGTH,
+                                    `활동 내용을 ${MAX_LENGTH}글자 이하 입력하세요.`
+                                  ),
                                 start_date: z
                                   .string()
                                   .trim()
@@ -882,13 +938,16 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   .string()
                                   .trim()
                                   .min(
-                                    1,
-                                    "자격증 또는 어학 이름을 입력하세요."
+                                    MIN_LENGTH,
+                                    `자격증 또는 어학 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`
                                   ),
                                 organ: z
                                   .string()
                                   .trim()
-                                  .min(1, "발급 및 주관기관을 입력하세요."),
+                                  .min(
+                                    MIN_LENGTH,
+                                    `발급 및 주관기관 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`
+                                  ),
                                 acquisition_date: z
                                   .string()
                                   .trim()
@@ -1086,7 +1145,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
       id="resumeForm"
       onSubmit={(e) => {
         e.preventDefault();
-        // e.stopPropagation();
+        e.stopPropagation();
         form.handleSubmit();
       }}
     >
