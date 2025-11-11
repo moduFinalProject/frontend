@@ -1,22 +1,15 @@
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 
-import { Button, OptionsDropdown } from "@/components";
-import { ICONS } from "@/constants/icons";
+import { OptionsDropdown } from "@/components";
+import Search from "./components/form/Search.tsx";
 
 import matchingHighIcon from "@/assets/icons/Icon-high.svg";
 import matchingMidIcon from "@/assets/icons/Icon-meddle.svg";
 import matchingLowIcon from "@/assets/icons/Icon-row.svg";
 
 import {
-  container,
-  header,
-  headerContent,
-  headerAction,
   controls,
-  searchForm,
-  searchInput,
-  searchButton,
   filterGroup,
   filterButton,
   filterButtonActive,
@@ -39,7 +32,8 @@ import {
   matchingLabel,
   dateText,
   emptyState,
-} from "./ResumeFeedback.css.ts";
+} from "./ResumeFeedbackList.css.ts";
+import { Link } from "react-router-dom";
 
 type SortOrder = "latest" | "matching";
 type MatchingLevel = "warning" | "info" | "success";
@@ -132,25 +126,7 @@ export default function ResumeFeedback() {
   };
 
   return (
-    <main className={container}>
-      <header className={header}>
-        <div className={headerContent}>
-          <h1>첨삭 이력</h1>
-          <p>공고별로 첨삭한 이력서 결과를 확인하세요</p>
-        </div>
-        <div className={headerAction}>
-          <Button
-            color="blue"
-            widthStyle="fit"
-            icon="PLUS"
-            text="새 이력서 첨삭"
-            callback={() => {
-              // TODO: 이동 경로 협의
-            }}
-          />
-        </div>
-      </header>
-
+    <>
       <section
         className={controls}
         aria-labelledby="resume-feedback-controls-heading"
@@ -158,23 +134,8 @@ export default function ResumeFeedback() {
         <h2 id="resume-feedback-controls-heading" className="a11y-hidden">
           첨삭 이력 검색 및 정렬
         </h2>
-        <form className={searchForm} onSubmit={handleSubmit} role="search">
-          <label className="a11y-hidden" htmlFor="resume-feedback-search">
-            기업명 또는 직무 검색
-          </label>
-          <input
-            id="resume-feedback-search"
-            className={searchInput}
-            type="search"
-            placeholder="기업명 또는 직무로 검색..."
-            value={searchValue}
-            onChange={(event) => setSearchValue(event.target.value)}
-          />
-          <button type="submit" className={searchButton}>
-            <img src={ICONS.SEARCH} alt="" aria-hidden="true" />
-            검색
-          </button>
-        </form>
+
+        <Search />
 
         <fieldset className={filterGroup} aria-label="정렬 기준">
           <legend className="a11y-hidden">정렬 기준</legend>
@@ -230,9 +191,11 @@ export default function ResumeFeedback() {
                     <header className={cardTop}>
                       <div className={companyBlock}>
                         <div className={companyRow}>
-                          <h3 id={`resume-feedback-${job.id}-title`}>
-                            {job.company}
-                          </h3>
+                          <Link to={`./${job.id}`}>
+                            <h3 id={`resume-feedback-${job.id}-title`}>
+                              {job.company}
+                            </h3>
+                          </Link>
                           <span className={jobBadge}>{job.jobTitle}</span>
                         </div>
                         <dl className={detailList}>
@@ -300,6 +263,6 @@ export default function ResumeFeedback() {
           </ul>
         )}
       </section>
-    </main>
+    </>
   );
 }
