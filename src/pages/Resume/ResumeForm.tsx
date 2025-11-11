@@ -26,6 +26,7 @@ import {
   MAX_LENGTH,
   MIN_LENGTH,
 } from "./components/form/validators.ts";
+import { errorInput } from "@/components/FormElem/text/Input.css.ts";
 
 interface ResumeFormProps {
   mode: "create" | "edit";
@@ -272,6 +273,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   const form = useForm<ResumeFormValues>({
     defaultValues,
     onSubmit: async ({ value }) => {
+      console.log(value);
       try {
         const trimmedValue = trimObjectStrings(value);
         basicInfoSchema.parse(trimmedValue);
@@ -317,17 +319,22 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
       } catch (error) {
         if (error instanceof z.ZodError) {
           console.error("검증 오류:", error.issues);
-
-          // 오류가 발생한 첫 번째 필드로 스크롤 이동
-          const firstErrorPath = error.issues[0].path.join(".");
-          const errorElement = document.querySelector(
-            `[name="${firstErrorPath}"]`
-          );
-          errorElement?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
         }
+      }
+    },
+    onSubmitInvalid: () => {
+      const selector = `input.${errorInput}, textarea.${errorInput}, select.${errorInput}`;
+      const firstInvalidElement = window.document.querySelector(selector);
+
+      if (firstInvalidElement) {
+        // 2. DOM에서 찾은 요소에 포커스를 맞추고 스크롤 이동
+        firstInvalidElement.focus();
+        firstInvalidElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        // 이 방식은 requiredFieldOrder 없이 DOM 순서대로 첫 번째 필드를 찾습니다.
       }
     },
   });
@@ -373,11 +380,12 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           <form.Field
             name={key}
             validators={{
-              onchange: ({ value }: { value: string }) => {
+              onChange: ({ value }: { value: string }) => {
                 // basicInfoSchema.parseAsync(value);
                 const photoUrlStringSchema = z
                   .string()
                   .trim()
+                  .min(MIN_LENGTH, "이미지를 등록해주세요")
                   .refine(
                     (val) =>
                       val.startsWith("data:image/") || val.startsWith("http"),
@@ -974,6 +982,20 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   .optional(),
                               },
                             };
+
+                            // 날짜 데이터 비교
+                            if (k === "end_date") {
+                              const startDate = form.getFieldValue(
+                                `${key}[${idx}].start_date`
+                              );
+
+                              if (startDate && startDate > value) {
+                                if (key === "experience" && value === null)
+                                  return;
+                                return "시작년월은 마감년월보다 빠를 수 없습니다.";
+                              }
+                            }
+
                             const result = itemSchema[key][k]?.safeParse(value);
                             return result?.success
                               ? undefined

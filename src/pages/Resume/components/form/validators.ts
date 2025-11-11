@@ -12,16 +12,28 @@ export const educationItemSchema = z
   .object({
     organ: z
       .string()
+      .trim()
       .min(1, "학교 이름을 입력하세요.")
       .regex(/^.+학교/, "oo학교 형식으로 입력하세요."),
     department: z
       .string()
+      .trim()
       .min(1, "학과를 입력하세요.")
       .regex(/^.+과/, "oo과 형식으로 입력하세요."),
     degree_level: z.enum(["1", "2", "3", "4", "5"], "학위를 선택하세요."),
-    score: z.string().regex(/^.+점/, "00점 형식으로 입력하세요.").optional(),
-    start_date: z.string().regex(/^\d{4}-\d{2}$/, "입학년월을 입력하세요."),
-    end_date: z.string().regex(/^\d{4}-\d{2}$/, "졸업년월을 입력하세요."),
+    score: z
+      .string()
+      .trim()
+      .regex(/^.+점/, "00점 형식으로 입력하세요.")
+      .optional(),
+    start_date: z
+      .string()
+      .trim()
+      .regex(/^\d{4}-\d{2}$/, "입학년월을 입력하세요."),
+    end_date: z
+      .string()
+      .trim()
+      .regex(/^\d{4}-\d{2}$/, "졸업년월을 입력하세요."),
   })
   .refine(
     (data) => {
@@ -52,9 +64,12 @@ export const educationSchema = z.preprocess((val) => {
 
 // 경력
 export const experienceItemSchema = z.object({
-  title: z.string().min(1, "회사명을 입력하세요."),
-  position: z.string().min(1, "직책을 입력하세요."),
-  start_date: z.string().regex(/^\d{4}-\d{2}$/, "입사년월을 입력하세요."),
+  title: z.string().trim().min(1, "회사명을 입력하세요."),
+  position: z.string().trim().min(1, "직책을 입력하세요."),
+  start_date: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}$/, "입사년월을 입력하세요."),
   end_date: z
     .union([
       z.literal(null),
@@ -65,8 +80,8 @@ export const experienceItemSchema = z.object({
         .nullable(),
     ])
     .optional(),
-  description: z.string().min(1, "주요 업무 및 성과를 입력하세요."),
-  department: z.string().optional(),
+  description: z.string().trim().min(1, "주요 업무 및 성과를 입력하세요."),
+  department: z.string().trim().optional(),
 });
 
 export const experienceSchema = z.preprocess((val) => {
@@ -244,6 +259,8 @@ export const technologyStackSchema = z.preprocess(
 // 사진
 const photoUrlStringSchema = z
   .string()
+  .trim()
+  .min(MIN_LENGTH, "이미지를 등록해주세요")
   .refine(
     (val) => val.startsWith("data:image/") || val.startsWith("http"),
     "올바른 이미지 URL 형식(data:image/ 또는 http)을 선택해주세요"
@@ -257,21 +274,24 @@ const photoUrlFileSchema = z
 
 // 취합 스키마
 export const basicInfoSchema = z.object({
-  title: z.string().min(2, "이력서 이름을 두글자 이상 입력하세요."),
+  title: z.string().trim().min(2, "이력서 이름을 두글자 이상 입력하세요."),
   photoUrl: z.union([photoUrlStringSchema, photoUrlFileSchema]),
   user_info: z.object({
     name: z.string().min(2, "이름은 두글자 이상 입력하세요."),
     email: z
       .string()
+      .trim()
       .min(1, "이메일을 입력하세요.")
       .email("올바른 이메일 형식이 아닙니다."),
     phone: z
       .string()
+      .trim()
       .min(1, "전화번호를 입력하세요.")
       .regex(/^010-\d{4}-\d{4}$/, "010-0000-0000 형식으로 입력하세요."),
     gender: z.enum(["1", "2"], "성별을 선택해주세요"),
     address: z
       .string()
+      .trim()
       .min(5, "주소를 입력해주세요")
       .regex(/^.+시\s+.+구/, "주소는 'OO시 OO구' 형식으로 입력해주세요"),
     military_service: z.enum(
