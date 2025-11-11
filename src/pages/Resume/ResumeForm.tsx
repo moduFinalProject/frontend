@@ -25,6 +25,8 @@ import {
   basicInfoSchema,
   MAX_LENGTH,
   MIN_LENGTH,
+  photoUrlFileSchema,
+  photoUrlStringSchema,
 } from "./components/form/validators.ts";
 import { errorInput } from "@/components/FormElem/text/Input.css.ts";
 
@@ -382,24 +384,9 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
             validators={{
               onChange: ({ value }: { value: string }) => {
                 // basicInfoSchema.parseAsync(value);
-                const photoUrlStringSchema = z
-                  .string()
-                  .trim()
-                  .min(MIN_LENGTH, "이미지를 등록해주세요")
-                  .refine(
-                    (val) =>
-                      val.startsWith("data:image/") || val.startsWith("http"),
-                    "올바른 이미지 URL 형식(data:image/ 또는 http)을 선택해주세요"
-                  );
-                const photoUrlFileSchema = z
-                  .instanceof(File)
-                  .refine(
-                    (file) => file.type.startsWith("image/"),
-                    "이미지 파일만 업로드할 수 있습니다."
-                  );
 
                 const result = z
-                  .union([photoUrlStringSchema, photoUrlFileSchema])
+                  .union([photoUrlFileSchema, photoUrlStringSchema])
                   .safeParse(value);
                 return result.success
                   ? undefined
