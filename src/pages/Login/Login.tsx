@@ -28,7 +28,7 @@ async function loginProcess(formData: LoginForm, navigate: ReturnType<typeof use
     const response = await loginWithEmail(formData.email, formData.password);
 
     // 로그인 성공 시 토큰 저장
-    localStorage.setItem("access_token", response.accessToken);
+    localStorage.setItem("access_token", response.access_token);
     localStorage.setItem("user", JSON.stringify(response.user));
 
     // 대시보드로 이동
@@ -145,12 +145,13 @@ export default function Login() {
                   children={(field) => (
                     <Text
                       label="이메일"
+                      name="email"
                       type="email"
                       placeholder="your@email.com"
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(', ')}
+                      error={field.state.meta.errors[0]?.message || ""}
                     />
                   )}
                 />
@@ -160,12 +161,13 @@ export default function Login() {
                   children={(field) => (
                     <Text
                       label="비밀번호"
+                      name="password"
                       type="password"
                       placeholder="••••••••"
                       value={field.state.value}
                       onChange={field.handleChange}
-                      onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(', ')}
+                      onBlur={field.handleBlur}                      
+                      error={field.state.meta.errors[0]?.message || ""}
                     />
                   )}
                 />
