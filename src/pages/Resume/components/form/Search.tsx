@@ -64,7 +64,9 @@ export default function Search() {
                 text="검색"
                 buttonType="submit"
                 form="searchForm"
-                callback={() => {}}
+                callback={() => {
+                  console.log("검색 진행");
+                }}
                 widthStyle="fit"
               />
             </>

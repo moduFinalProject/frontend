@@ -11,6 +11,7 @@ export const resumeItem = style({
   border: `1px solid ${vars.color.line}`,
   borderRadius: vars.borderRadius.lg,
   backgroundColor: vars.color.white,
+  transition: "0.3s ease",
 
   ":hover": {
     boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
@@ -34,7 +35,6 @@ export const title = style({
 export const titleRow = style({
   display: "flex",
   gap: vars.spacing.sm,
-  cursor: "pointer",
 
   a: {
     color: "inherit",
@@ -95,4 +95,12 @@ export const descTitle = style({
 
 export const dropdownTrigger = style({
   padding: vars.spacing.sm,
+});
+export const noDrag = style({
+  webkitUserSelect: "none" /* Chrome, Safari, Opera */,
+  khtmlUserSelect: "none" /* Konqueror */,
+  mozUserSelect: "none" /* Firefox */,
+  oUserSelect: "none" /* Old Opera */,
+  msUserSelect: "none" /* Internet Explorer/Edge */,
+  userSelect: "none" /* Standard */,
 });

@@ -13,6 +13,7 @@ export const baseButton = style({
   alignItems: "center",
   gap: vars.spacing.sm,
   alignSelf: "flex-start",
+  transition: "0.2s ease",
 
   selectors: {
     "&:hover": {
@@ -46,6 +47,13 @@ export const buttonColor = styleVariants({
     color: vars.color.defaultText,
     border: `1px solid ${vars.color.line}`,
     fontWeight: vars.typography.fontWeight.normal,
+
+    "&:hover": {
+      border: `1px solid ${vars.color.line}`,
+      backgroundColor: "#e9ebef",
+      color: vars.color.defaultText,
+      opacity: 1,
+    },
   },
   red: {
     backgroundColor: vars.color.delete,
@@ -60,15 +68,15 @@ export const buttonColor = styleVariants({
     fontWeight: vars.typography.fontWeight.bold,
   },
   gray: {
-    backgroundColor: vars.color.white,
+    backgroundColor: vars.color.mainBg,
     color: vars.color.defaultText,
-    border: `1px solid ${vars.color.white}`,
+    border: `1px solid ${vars.color.mainBg}`,
     fontWeight: vars.typography.fontWeight.bold,
     padding: vars.spacing.sm,
 
     ":hover": {
-      border: `1px solid ${vars.color.formBg}`,
-      backgroundColor: vars.color.formBg,
+      border: `1px solid #e9ebef`,
+      backgroundColor: "#e9ebef",
       opacity: 1,
     },
   },

@@ -7,6 +7,7 @@ import {
   btns,
   descTitle,
   dropdownTrigger,
+  noDrag,
 } from "./ResumeItem.css.ts";
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -39,6 +40,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
         label: "삭제",
         onSelect: () => {
           // TODO: 삭제 기능 구현 필요
+          if (confirm("삭제하시겠습니까?")) alert("삭제되었습니다");
         },
       },
     ],
@@ -53,7 +55,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
             <Link to={`./${resume.id}`}>
               <h4>{resume.name}</h4>
             </Link>
-            {resume.url && <span>공고맞춤</span>}
+            {resume.url && <span className={noDrag}>공고맞춤</span>}
           </div>
           <p>{resume.desc}</p>
         </div>
