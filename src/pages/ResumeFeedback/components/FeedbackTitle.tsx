@@ -28,16 +28,14 @@ export default function FeedbackTitle({
   const [isFetchingUrl, setIsFetchingUrl] = useState(false);
   const currentFeedbackId = feedbackId ?? id ?? "";
 
-  let titleText = title;
+  let titleText = (title += " 이력");
   if (mode === "view") titleText += " 상세";
   else if (mode === "create") titleText += " 등록";
   else if (mode === "edit") titleText += " 수정";
 
   function handleSubmit() {
     if (mode === "create") {
-      console.log("새 채용공고 등록");
-    } else {
-      console.log("채용공고 수정");
+      console.log("새 채용 공고별 첨삭 등록");
     }
   }
 
@@ -84,7 +82,7 @@ export default function FeedbackTitle({
       <div className={btnsWrap}>
         {mode === "list" && (
           <Button
-            text="새 채용공고 등록"
+            text="새 채용 공고별 첨삭 생성"
             color="blue"
             widthStyle="fit"
             icon="PLUS"
