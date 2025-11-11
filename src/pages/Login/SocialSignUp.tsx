@@ -34,9 +34,6 @@ const basicInfoSchema = z.object({
   gender: z.string().min(1, "성별을 선택해주세요"),
   address: z.string().min(1, "주소를 입력해주세요"),
   military_service: z.string().min(1, "군 복무 여부를 선택해주세요"),
-  user_type: z.string().optional(),
-  provider: z.string().optional(),
-  provider_id: z.string().optional(),
 });
 
 type ProfileData = z.infer<typeof basicInfoSchema>;
@@ -69,18 +66,19 @@ export default function SocialSignIn() {
       gender: "",
       address: "",
       military_service: "",
-      user_type: "",
-      provider: "",
-      provider_id: "",
+      user_type: oauthUser.user_type || "",
+      provider: oauthUser.provider || "",
+      provider_id: oauthUser.provider_id || "",
     } as ProfileData,
     validators: {
-      onChange: basicInfoSchema,
+      onSubmit: basicInfoSchema,
     },
     onSubmit: async ({ value }) => {
       try {
         setError(null);
         setLoading(true);
 
+        console.log("Form value:", value);
         const response = await signUpWithUserInfo(value);
 
         // 회원가입 성공 시 토큰 저장
@@ -131,9 +129,9 @@ export default function SocialSignIn() {
                     type="text"
                     placeholder="이름을 입력해주세요"
                     value={field.state.value}
-                    onChange={field.handleChange}
+                    onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
+                    error={field.state.meta.errors[0]?.message || ""}
                   />
                 } />
               )}
@@ -151,9 +149,9 @@ export default function SocialSignIn() {
                     type="email"
                     placeholder="이메일을 입력해주세요"
                     value={field.state.value}
-                    onChange={field.handleChange}
+                    onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
+                    error={field.state.meta.errors[0]?.message || ""}
                   />
                 } />
               )}
@@ -171,9 +169,9 @@ export default function SocialSignIn() {
                     type="tel"
                     placeholder="010-0000-0000"
                     value={field.state.value}
-                    onChange={field.handleChange}
+                    onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
+                    error={field.state.meta.errors[0]?.message || ""}
                   />
                 } />
               )}
@@ -189,9 +187,9 @@ export default function SocialSignIn() {
                     name="gender"
                     label={USER_INFO_LABELS.gender}
                     value={field.state.value}
-                    onChange={field.handleChange}
+                    onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
+                    error={field.state.meta.errors[0]?.message || ""}
                     placeholder="성별 선택"
                     options={[
                       { value: "1", label: "남" },
@@ -214,9 +212,9 @@ export default function SocialSignIn() {
                     type="text"
                     placeholder="주소를 입력해주세요"
                     value={field.state.value}
-                    onChange={field.handleChange}
+                    onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
+                    error={field.state.meta.errors[0]?.message || ""}
                   />
                 } />
               )}
@@ -232,9 +230,9 @@ export default function SocialSignIn() {
                     name="military_service"
                     label={USER_INFO_LABELS.military_service}
                     value={field.state.value}
-                    onChange={field.handleChange}
+                    onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors.join(", ")}
+                    error={field.state.meta.errors[0]?.message || ""}
                     placeholder="군 복무 여부 선택"
                     options={[
                       { value: "1", label: "면제" },
