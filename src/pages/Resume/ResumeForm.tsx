@@ -23,10 +23,12 @@ import {
 import { trimObjectStrings } from "@/utils/trimOojectStrings.ts";
 import {
   basicInfoSchema,
-  MAX_LENGTH,
+  MAX_TEXTAREA_LENGTH,
+  MAX_NAME_LENGTH,
   MIN_LENGTH,
   photoUrlFileSchema,
   photoUrlStringSchema,
+  MAX_TITLE_LENGTH,
 } from "./components/form/validators.ts";
 import { errorInput } from "@/components/FormElem/text/Input.css.ts";
 
@@ -34,15 +36,6 @@ interface ResumeFormProps {
   mode: "create" | "edit";
 }
 
-type ExperienceItem = {
-  title: string;
-  department?: string;
-  position: string;
-  start_date: string;
-  end_date: string | null;
-  employmont_status: boolean;
-  description: string;
-};
 type EducationItem = {
   organ: string;
   department?: string;
@@ -50,6 +43,15 @@ type EducationItem = {
   score: string;
   start_date: string;
   end_date: string;
+};
+type ExperienceItem = {
+  job_title: string;
+  department?: string;
+  position: string;
+  start_date: string;
+  end_date: string | null;
+  employmont_status: boolean;
+  job_description: string;
 };
 type ProjectItem = {
   title: string;
@@ -64,7 +66,7 @@ type ActivityItem = {
   end_date: string;
 };
 type QualificationItem = {
-  qua_title: string;
+  title: string;
   organ: string;
   acquisition_date: string;
   score?: string;
@@ -76,18 +78,19 @@ type ResumeFormValues = {
   url?: string;
   user_info: {
     name: string;
+    birth_date: string;
     email: string;
     phone: string;
     gender: "0" | "1" | "2";
-    address: string;
     military_service: "0" | "1" | "2" | "3" | "4" | "5" | "6";
+    address: string;
   };
-  education?: EducationItem[];
+  educations?: EducationItem[];
   self_introduction: string;
-  experience?: ExperienceItem[];
-  project?: ProjectItem[];
-  activity?: ActivityItem[];
-  technology_stack?: string[];
+  experiences?: ExperienceItem[];
+  projects?: ProjectItem[];
+  activites?: ActivityItem[];
+  technology_stacks?: string[];
   qualifications?: QualificationItem[];
 };
 
@@ -99,13 +102,14 @@ const resumeDataSample: ResumeFormValues = {
   // url: "https://career.example.com/job/123456",
   user_info: {
     name: "김취업",
+    birth_date: "1996-12-12",
     email: "email@email.com",
     phone: "010-0000-0000",
     gender: "1",
-    address: "서울시 강남구",
     military_service: "2",
+    address: "서울시 강남구",
   },
-  education: [
+  educations: [
     {
       organ: "한국대학교",
       department: "컴퓨터공학과",
@@ -126,29 +130,29 @@ const resumeDataSample: ResumeFormValues = {
   self_introduction:
     "안녕하세요. 3년차 웹 개발자 김취업입니다.\n\n사용자 중심의 인터페이스 설계와 효율적인 코드 작성에 관심이 많으며, 항상 새로운 기술을 배우고 적용하는 것을 즐깁니다. 팀원들과의 원활한 소통을 통해 프로젝트를 성공적으로 이끌어 낸 경험이 있으며, 문제 해결 능력과 책임감을 바탕으로 맡은 업무를 완수하는 것을 목표로 하고 있습니다.\n\n지속적인 학습과 성장을 통해 더 나은 개발자가 되고자 노력하고 있습니다.",
 
-  experience: [
+  experiences: [
     {
-      title: "테크스타트업",
+      job_title: "테크스타트업",
       department: "개발팀",
       position: "프론트엔드 개발자",
       start_date: "2022-03",
       end_date: null,
       employmont_status: true,
-      description:
+      job_description:
         "- React와 TypeScript를 활용한 웹 서비스 개발 및 유지보수\n- Redux를 이용한 상태 관리 구조 설계 및 구현\n- REST API 연동 및 데이터 처리 로직 개발\n- 반응형 웹 디자인 구현으로 모바일 사용자 경험 개선\n- Git을 활용한 버전 관리 및 코드 리뷰 참여\n- 웹 접근성 개선 작업으로 WCAG 2.1 AA 등급 달성",
     },
     {
-      title: "디지털솔루션",
+      job_title: "디지털솔루션",
       department: "개발팀",
       position: "주니어 웹 개발자",
       start_date: "2020-06",
       end_date: "2022-02",
       employmont_status: false,
-      description:
+      job_description:
         "- HTML, CSS, JavaScript를 활용한 웹 페이지 개발\n- jQuery를 이용한 동적 UI 구현\n- 크로스 브라우저 호환성 테스트 및 이슈 해결\n- 웹사이트 성능 최적화를 통한 로딩 속도 25% 개선\n- UI/UX 디자이너와 협업하여 사용자 경험 개선",
     },
   ],
-  project: [
+  projects: [
     {
       title: "전자상거래 플랫폼 구축",
       start_date: "2020-06",
@@ -164,7 +168,7 @@ const resumeDataSample: ResumeFormValues = {
         "- 사내 업무 효율화를 위한 관리 시스템 개발\n- 실시간 데이터 동기화를 위한 WebSocket 구현\n- Chart.js를 활용한 데이터 시각화 대시보드 개발\n- 사용자 권한 관리 시스템 구축",
     },
   ],
-  activity: [
+  activites: [
     {
       title: "오픈소스 프로젝트 기여",
       start_date: "2020-06",
@@ -180,7 +184,7 @@ const resumeDataSample: ResumeFormValues = {
         "- 주 1회 웹 개발 관련 스터디 진행 (총 12명 참여)\n- React, TypeScript 등 최신 기술 스택 학습 및 토론\n- 토이 프로젝트 협업을 통한 실무 경험 공유",
     },
   ],
-  technology_stack: [
+  technology_stacks: [
     "React",
     "TypeScript",
     "JavaScript",
@@ -193,13 +197,13 @@ const resumeDataSample: ResumeFormValues = {
   ],
   qualifications: [
     {
-      qua_title: "정보처리기사",
+      title: "정보처리기사",
       organ: "한국산업인력공단",
       acquisition_date: "2020-08",
       score: "",
     },
     {
-      qua_title: "TOEIC",
+      title: "TOEIC",
       organ: "ETS",
       acquisition_date: "2024-05",
       score: "850점",
@@ -221,13 +225,13 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     end_date: "",
   };
   const emptyExperienceItem: ExperienceItem = {
-    title: "",
+    job_title: "",
     department: "",
     position: "",
     start_date: "",
     end_date: "",
     employmont_status: false,
-    description: "",
+    job_description: "",
   };
   const emptyProjectItem: ProjectItem = {
     title: "",
@@ -242,7 +246,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     end_date: "",
   };
   const emptyQualificationItem: QualificationItem = {
-    qua_title: "",
+    title: "",
     organ: "",
     acquisition_date: "",
     score: "",
@@ -256,18 +260,19 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         photoUrl: "",
         user_info: {
           name: "",
+          birth_date: "",
           email: "",
           phone: "",
           gender: "0",
-          address: "",
           military_service: "0",
+          address: "",
         },
-        education: [emptyEducationItem],
+        educations: [emptyEducationItem],
         self_introduction: "",
-        experience: [],
-        project: [],
-        activity: [],
-        technology_stack: [],
+        experiences: [],
+        projects: [],
+        activites: [],
+        technology_stacks: [],
         qualifications: [],
       };
 
@@ -275,33 +280,44 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   const form = useForm<ResumeFormValues>({
     defaultValues,
     onSubmit: async ({ value }) => {
-      console.log(value);
+      // console.log(value);
       try {
         const trimmedValue = trimObjectStrings(value);
         basicInfoSchema.parse(trimmedValue);
-        // const validatedData = await basicInfoSchema.parseAsync(value);
-        console.log(
-          `${mode === "edit" ? "수정" : "생성"} 데이터:`,
-          trimmedValue
-        );
-
-        // console.log(`${mode === "edit" ? "수정" : "생성"} 데이터:`, value);
 
         // TODO: API 호출
         const resumeData: ResumeFormValues = trimmedValue;
 
         const photoUrlValue = resumeData.photoUrl;
         const photoFile: File | null =
-          photoUrlValue && photoUrlValue instanceof File ? photoUrlValue : null; // photoUrl 필드에 저장된 실제 File 객체라고 가정
+          photoUrlValue && photoUrlValue instanceof File ? photoUrlValue : null;
 
         const formData = new FormData();
-        formData.append("data", JSON.stringify(resumeData));
+        const dataToFlatten = {
+          ...resumeData,
+          photoUrl: photoFile ? undefined : resumeData.photoUrl,
+        };
 
-        if (photoFile) {
-          formData.append("photo", photoFile, photoFile.name);
+        if (dataToFlatten.user_info) {
+          const flattenedData = {
+            ...dataToFlatten.user_info, // name, email 등이 먼저 추가됩니다.
+            ...dataToFlatten,
+          };
+          delete flattenedData.user_info;
+
+          const finalData = flattenedData;
+
+          const formData = new FormData();
+
+          console.log(finalData);
+          formData.append("data", JSON.stringify(finalData));
+
+          // 4. File 객체는 'photo' 키에 별도로 추가 (기존 방식 유지)
+          if (photoFile) {
+            formData.append("photo", photoFile, photoFile.name);
+          }
+          console.log(formData);
         }
-
-        console.log(formData);
 
         // 4. fetch 요청
         // fetch("/api/resumes", {
@@ -437,14 +453,18 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     MIN_LENGTH,
                     `이력서 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`
                   )
+                  .max(
+                    MAX_TITLE_LENGTH,
+                    `이력서 이름을 ${MAX_TITLE_LENGTH}글자 이하 입력하세요.`
+                  )
                   .safeParse(value);
               else if (key === "self_introduction")
                 result = z
                   .string()
                   .trim()
                   .max(
-                    MAX_LENGTH,
-                    `자기소개는 ${MAX_LENGTH}자 이하로 입력하세요.`
+                    MAX_TEXTAREA_LENGTH,
+                    `자기소개는 ${MAX_TEXTAREA_LENGTH}자 이하로 입력하세요.`
                   )
                   .nullable()
                   .optional()
@@ -505,6 +525,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                 // basicInfoSchema.parseAsync(value)
                 const userInfoSchema: {
                   name: z.ZodString;
+                  birth_date: z.ZodString;
                   email: z.ZodString;
                   phone: z.ZodString;
                   gender: z.ZodEnum<{
@@ -527,10 +548,23 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     .min(
                       MIN_LENGTH,
                       `이름은 ${MIN_LENGTH}글자 이상 입력하세요.`
+                    )
+                    .max(
+                      MAX_NAME_LENGTH,
+                      `이름은 ${MAX_NAME_LENGTH}글자 이상 입력하세요.`
                     ),
+                  birth_date: z
+                    .string()
+                    .trim()
+                    .regex(/^\d{4}-\d{2}-\d{2}$/, "생일을 입력하세요."),
                   email: z
                     .string()
                     .trim()
+                    .min(MIN_LENGTH, "이메일을 입력하세요.")
+                    .max(
+                      MAX_NAME_LENGTH,
+                      `이메일은 ${MAX_NAME_LENGTH}글자 이하 입력하세요.`
+                    )
                     .email("올바른 이메일 형식이 아닙니다."),
                   phone: z
                     .string()
@@ -543,7 +577,11 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   address: z
                     .string()
                     .trim()
-                    .min(6, "주소를 입력해주세요")
+                    .min(MIN_LENGTH, "주소를 입력해주세요")
+                    .max(
+                      MAX_NAME_LENGTH,
+                      `주소는 ${MAX_NAME_LENGTH}글자 이하 입력하세요.`
+                    )
                     .regex(
                       /^.+시\s+.+구/,
                       "주소는 'OO시 OO구' 형식으로 입력해주세요"
@@ -562,7 +600,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           >
             {(field) => (
               <ResumeCardRow
-                widthType="half"
+                widthType={["address"].includes(subKey) ? "full" : "half"}
                 input={
                   subKey === "gender" ? (
                     <Select
@@ -608,6 +646,8 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                           ? "email"
                           : subKey === "phone"
                           ? "tel"
+                          : subKey === "birth_date"
+                          ? "date"
                           : subKey.includes("date")
                           ? "month"
                           : "text"
@@ -630,11 +670,11 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   // 배열 필드 (학력, 경력, 프로젝트, 대외활동, 자격증)
   function renderArrayField(form: any, key: string, value: any[]) {
     // 스택
-    if (key === "technology_stack")
+    if (key === "technology_stacks")
       return (
         <ResumeCard key={key} title={FIELD_LABELS[key].label}>
           <form.Field
-            name="technology_stack"
+            name="technology_stacks"
             validators={{
               onChange: ({ value }) => {
                 const result = z
@@ -685,7 +725,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                 widthType="full"
                 input={
                   <Text
-                    name="technology_stack"
+                    name="technology_stacks"
                     value={field.state.value}
                     onChange={field.handleChange}
                     placeholder={FIELD_LABELS[key].placeholder}
@@ -708,10 +748,10 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           const isEducation = key === "education";
           const handleAddItem = () => {
             let newItem;
-            if (key === "experience") newItem = emptyExperienceItem;
-            else if (key === "education") newItem = emptyEducationItem;
-            else if (key === "project") newItem = emptyProjectItem;
-            else if (key === "activity") newItem = emptyActivityItem;
+            if (key === "experiences") newItem = emptyExperienceItem;
+            else if (key === "educations") newItem = emptyEducationItem;
+            else if (key === "projects") newItem = emptyProjectItem;
+            else if (key === "activites") newItem = emptyActivityItem;
             else if (key === "qualifications") newItem = emptyQualificationItem;
 
             if (newItem) {
@@ -736,7 +776,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
               useButton={true}
               btnType="PLUSBLACK"
               onAdd={handleAddItem}
-              isMust={"education".includes(key)}
+              isMust={"educations".includes(key)}
             >
               {fieldArrayValue.length === 0 && <p>등록된 항목이 없습니다.</p>}
               {fieldArrayValue.map((item, idx) => (
@@ -754,7 +794,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   }
                 >
                   {Object.entries(item).map(([k, v]) => {
-                    if (key === "experience" && k === "employmont_status") {
+                    if (key === "experiences" && k === "employmont_status") {
                       return null;
                     }
 
@@ -766,7 +806,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                           onChange: ({ value }) => {
                             // basicInfoSchema.parseAsync(value)
                             const itemSchema = {
-                              education: {
+                              educations: {
                                 organ: z
                                   .string()
                                   .trim()
@@ -810,8 +850,8 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     "졸업년월을 입력하세요."
                                   ),
                               },
-                              experience: {
-                                title: z
+                              experiences: {
+                                job_title: z
                                   .string()
                                   .trim()
                                   .min(
@@ -853,7 +893,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                       .nullable(),
                                   ])
                                   .optional(),
-                                description: z
+                                job_description: z
                                   .string()
                                   .trim()
                                   .min(
@@ -861,11 +901,11 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     `주요 업무 및 성과를 ${MIN_LENGTH}글자 이상 입력하세요.`
                                   )
                                   .max(
-                                    MAX_LENGTH,
-                                    `주요 업무 및 성과를 ${MAX_LENGTH}글자 이하 입력하세요.`
+                                    MAX_TEXTAREA_LENGTH,
+                                    `주요 업무 및 성과를 ${MAX_TEXTAREA_LENGTH}글자 이하 입력하세요.`
                                   ),
                               },
-                              project: {
+                              projects: {
                                 title: z
                                   .string()
                                   .trim()
@@ -881,8 +921,8 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     `프로젝트 내용을 ${MIN_LENGTH}글자 이상 입력하세요.`
                                   )
                                   .max(
-                                    MAX_LENGTH,
-                                    `프로젝트 내용을 ${MAX_LENGTH}글자 이하 입력하세요.`
+                                    MAX_TEXTAREA_LENGTH,
+                                    `프로젝트 내용을 ${MAX_TEXTAREA_LENGTH}글자 이하 입력하세요.`
                                   ),
                                 start_date: z
                                   .string()
@@ -899,7 +939,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     "마감년월을 입력하세요."
                                   ),
                               },
-                              activity: {
+                              activites: {
                                 title: z
                                   .string()
                                   .trim()
@@ -915,8 +955,8 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     `활동 내용을 ${MIN_LENGTH}글자 이상 입력하세요.`
                                   )
                                   .max(
-                                    MAX_LENGTH,
-                                    `활동 내용을 ${MAX_LENGTH}글자 이하 입력하세요.`
+                                    MAX_TEXTAREA_LENGTH,
+                                    `활동 내용을 ${MAX_TEXTAREA_LENGTH}글자 이하 입력하세요.`
                                   ),
                                 start_date: z
                                   .string()
@@ -934,7 +974,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   ),
                               },
                               qualifications: {
-                                qua_title: z
+                                title: z
                                   .string()
                                   .trim()
                                   .min(
@@ -993,23 +1033,24 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                         {(field) => (
                           <ResumeCardRow
                             widthType={
-                              ["description", "title"].includes(k)
+                              k.includes("description") ||
+                              (key !== "qualifications" && k.includes("title"))
                                 ? "full"
                                 : "half"
                             }
                             isInner={true}
                             input={
-                              k === "description" ? (
+                              k.includes("description") ? (
                                 <Textarea
                                   name={`${key}[${idx}].${k}`}
                                   label={
-                                    key === "education"
+                                    key === "educations"
                                       ? EDUCATION_LABELS[k].label
-                                      : key === "experience"
+                                      : key === "experiences"
                                       ? EXPERIENCE_LABELS[k].label
-                                      : key === "project"
+                                      : key === "projects"
                                       ? PROJECT_LABELS[k].label
-                                      : key === "activity"
+                                      : key === "activites"
                                       ? ACTIVITY_LABELS[k].label
                                       : QUALIFICATIONS_LABELS[k].label
                                   }
@@ -1018,13 +1059,13 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   value={field.state.value || v}
                                   onChange={field.handleChange}
                                   placeholder={
-                                    key === "education"
+                                    key === "educations"
                                       ? EDUCATION_LABELS[k].placeholder
-                                      : key === "experience"
+                                      : key === "experiences"
                                       ? EXPERIENCE_LABELS[k].placeholder
-                                      : key === "project"
+                                      : key === "projects"
                                       ? PROJECT_LABELS[k].placeholder
-                                      : key === "activity"
+                                      : key === "activites"
                                       ? ACTIVITY_LABELS[k].placeholder
                                       : QUALIFICATIONS_LABELS[k].placeholder
                                   }
@@ -1053,24 +1094,24 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                   <Text
                                     name={`${key}[${idx}].${k}`}
                                     label={
-                                      key === "education"
+                                      key === "educations"
                                         ? EDUCATION_LABELS[k].label
-                                        : key === "experience"
+                                        : key === "experiences"
                                         ? EXPERIENCE_LABELS[k].label
-                                        : key === "project"
+                                        : key === "projects"
                                         ? PROJECT_LABELS[k].label
-                                        : key === "activity"
+                                        : key === "activites"
                                         ? ACTIVITY_LABELS[k].label
                                         : QUALIFICATIONS_LABELS[k].label
                                     }
                                     placeholder={
-                                      key === "education"
+                                      key === "educations"
                                         ? EDUCATION_LABELS[k].placeholder
-                                        : key === "experience"
+                                        : key === "experiences"
                                         ? EXPERIENCE_LABELS[k].placeholder
-                                        : key === "project"
+                                        : key === "projects"
                                         ? PROJECT_LABELS[k].placeholder
-                                        : key === "activity"
+                                        : key === "activites"
                                         ? ACTIVITY_LABELS[k].placeholder
                                         : QUALIFICATIONS_LABELS[k].placeholder
                                     }
@@ -1086,57 +1127,59 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     error={field.state.meta.errors.join(", ")}
                                     disabled={
                                       k === "end_date" &&
-                                      key === "experience" &&
+                                      key === "experiences" &&
                                       field.form.getFieldValue(
                                         `${key}[${idx}].employmont_status`
                                       )
                                     }
                                   />
-                                  {key === "experience" && k === "end_date" && (
-                                    <form.Field
-                                      key={"employmont_status_checkbox"}
-                                      name={`${key}[${idx}].employmont_status`}
-                                    >
-                                      {(checkboxField) => (
-                                        <Checkbox
-                                          label={
-                                            EXPERIENCE_LABELS[
-                                              "employmont_status"
-                                            ].label
-                                          }
-                                          name={checkboxField.name}
-                                          value={checkboxField.state.value}
-                                          onChange={(e) => {
-                                            const isChecked = e.target.checked;
-                                            checkboxField.handleChange(
-                                              isChecked
-                                            );
-
-                                            const form = checkboxField.form;
-                                            const endDateFieldName = `${key}[${idx}].end_date`;
-
-                                            if (isChecked) {
-                                              // 재직 중
-                                              form.setFieldValue(
-                                                endDateFieldName,
-                                                null
-                                              );
-                                              form.setFieldMeta(
-                                                endDateFieldName,
-                                                { errors: [] }
-                                              );
-                                            } else {
-                                              // 퇴사
-                                              form.setFieldValue(
-                                                endDateFieldName,
-                                                ""
-                                              );
+                                  {key === "experiences" &&
+                                    k === "end_date" && (
+                                      <form.Field
+                                        key={"employmont_status_checkbox"}
+                                        name={`${key}[${idx}].employmont_status`}
+                                      >
+                                        {(checkboxField) => (
+                                          <Checkbox
+                                            label={
+                                              EXPERIENCE_LABELS[
+                                                "employmont_status"
+                                              ].label
                                             }
-                                          }}
-                                        />
-                                      )}
-                                    </form.Field>
-                                  )}
+                                            name={checkboxField.name}
+                                            value={checkboxField.state.value}
+                                            onChange={(e) => {
+                                              const isChecked =
+                                                e.target.checked;
+                                              checkboxField.handleChange(
+                                                isChecked
+                                              );
+
+                                              const form = checkboxField.form;
+                                              const endDateFieldName = `${key}[${idx}].end_date`;
+
+                                              if (isChecked) {
+                                                // 재직 중
+                                                form.setFieldValue(
+                                                  endDateFieldName,
+                                                  null
+                                                );
+                                                form.setFieldMeta(
+                                                  endDateFieldName,
+                                                  { errors: [] }
+                                                );
+                                              } else {
+                                                // 퇴사
+                                                form.setFieldValue(
+                                                  endDateFieldName,
+                                                  ""
+                                                );
+                                              }
+                                            }}
+                                          />
+                                        )}
+                                      </form.Field>
+                                    )}
                                 </>
                               )
                             }

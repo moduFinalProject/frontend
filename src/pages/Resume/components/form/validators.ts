@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 export const MIN_LENGTH = 2;
-export const MAX_LENGTH = 500;
+export const MAX_TITLE_LENGTH = 30;
+export const MAX_NAME_LENGTH = 50;
+export const MAX_TEXTAREA_LENGTH = 500;
 
 const isArrayItemTrulyEmpty = (item: any, requiredKeys: string[]) => {
   return requiredKeys.every((key) => !item[key] || item[key] === "");
@@ -64,7 +66,7 @@ export const educationSchema = z.preprocess((val) => {
 
 // 경력
 export const experienceItemSchema = z.object({
-  title: z.string().trim().min(MIN_LENGTH, "회사명을 입력하세요."),
+  job_title: z.string().trim().min(MIN_LENGTH, "회사명을 입력하세요."),
   position: z.string().trim().min(MIN_LENGTH, "직책을 입력하세요."),
   start_date: z
     .string()
@@ -80,7 +82,7 @@ export const experienceItemSchema = z.object({
         .nullable(),
     ])
     .optional(),
-  description: z
+  job_description: z
     .string()
     .trim()
     .min(MIN_LENGTH, "주요 업무 및 성과를 입력하세요."),
@@ -112,7 +114,10 @@ export const projectItemSchema = z
       .string()
       .trim()
       .min(MIN_LENGTH, `프로젝트 내용을 ${MIN_LENGTH}글자 이상 입력하세요.`)
-      .max(MAX_LENGTH, `프로젝트 내용을 ${MAX_LENGTH}글자 이하 입력하세요.`),
+      .max(
+        MAX_TEXTAREA_LENGTH,
+        `프로젝트 내용을 ${MAX_TEXTAREA_LENGTH}글자 이하 입력하세요.`
+      ),
     start_date: z
       .string()
       .trim()
@@ -154,7 +159,10 @@ export const activityItemSchema = z
       .string()
       .trim()
       .min(MIN_LENGTH, `활동 내용을 ${MIN_LENGTH}글자 이상 입력하세요.`)
-      .max(MAX_LENGTH, `활동 내용을 ${MAX_LENGTH}글자 이하 입력하세요.`),
+      .max(
+        MAX_TEXTAREA_LENGTH,
+        `활동 내용을 ${MAX_TEXTAREA_LENGTH}글자 이하 입력하세요.`
+      ),
     start_date: z
       .string()
       .trim()
@@ -187,7 +195,7 @@ export const activitySchema = z.preprocess((val) => {
 
 // 자격/어학
 export const qualificationsItemSchema = z.object({
-  qua_title: z
+  title: z
     .string()
     .trim()
     .min(
@@ -219,7 +227,7 @@ export const qualificationsItemSchema = z.object({
 export const qualificationsSchema = z.preprocess((val) => {
   if (!Array.isArray(val)) return val;
 
-  const requiredKeys = ["qua_title", "organ", "acquisition_date"];
+  const requiredKeys = ["title", "organ", "acquisition_date"];
 
   return val.filter((item) => !isArrayItemTrulyEmpty(item, requiredKeys));
 }, z.array(qualificationsItemSchema).optional());
@@ -278,16 +286,26 @@ export const basicInfoSchema = z.object({
   title: z
     .string()
     .trim()
-    .min(MIN_LENGTH, `이력서 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`),
+    .min(MIN_LENGTH, `이력서 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`)
+    .max(
+      MAX_TITLE_LENGTH,
+      `이력서 이름을 ${MAX_TITLE_LENGTH}글자 이하 입력하세요.`
+    ),
   // photoUrl: z.union([photoUrlFileSchema, photoUrlStringSchema]).optional(),
   user_info: z.object({
     name: z
       .string()
-      .min(MIN_LENGTH, `이름은 ${MIN_LENGTH}글자 이상 입력하세요.`),
+      .min(MIN_LENGTH, `이름은 ${MIN_LENGTH}글자 이상 입력하세요.`)
+      .max(MAX_NAME_LENGTH, `이름은 ${MAX_NAME_LENGTH}글자 이하 입력하세요.`),
+    birth_date: z
+      .string()
+      .trim()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "생일을 입력하세요."),
     email: z
       .string()
       .trim()
       .min(MIN_LENGTH, "이메일을 입력하세요.")
+      .max(MAX_NAME_LENGTH, `이메일은 ${MAX_NAME_LENGTH}글자 이하 입력하세요.`)
       .email("올바른 이메일 형식이 아닙니다."),
     phone: z
       .string()
@@ -295,24 +313,28 @@ export const basicInfoSchema = z.object({
       .min(MIN_LENGTH, "전화번호를 입력하세요.")
       .regex(/^010-\d{4}-\d{4}$/, "010-0000-0000 형식으로 입력하세요."),
     gender: z.enum(["1", "2"], "성별을 선택해주세요"),
-    address: z
-      .string()
-      .trim()
-      .min(MIN_LENGTH, "주소를 입력해주세요")
-      .regex(/^.+시\s+.+구/, "주소는 'OO시 OO구' 형식으로 입력해주세요"),
     military_service: z.enum(
       ["1", "2", "3", "4", "5", "6"],
       "병역 여부를 선택해주세요"
     ),
+    address: z
+      .string()
+      .trim()
+      .min(MIN_LENGTH, "주소를 입력해주세요")
+      .max(MAX_NAME_LENGTH, `주소는 ${MAX_NAME_LENGTH}글자 이하 입력하세요.`)
+      .regex(/^.+시\s+.+구/, "주소는 'OO시 OO구' 형식으로 입력해주세요"),
   }),
   self_introduction: z
     .string()
-    .max(MAX_LENGTH, `자기소개를 ${MAX_LENGTH}자 이하로 입력하세요.`)
+    .max(
+      MAX_TEXTAREA_LENGTH,
+      `자기소개를 ${MAX_TEXTAREA_LENGTH}자 이하로 입력하세요.`
+    )
     .optional(),
-  education: educationSchema,
-  experience: experienceSchema,
-  project: projectSchema,
-  activity: activitySchema,
-  technology_stack: technologyStackSchema,
+  educations: educationSchema,
+  experiences: experienceSchema,
+  projects: projectSchema,
+  activites: activitySchema,
+  technology_stacks: technologyStackSchema,
   qualifications: qualificationsSchema,
 });

@@ -15,7 +15,7 @@ export const FIELD_LABELS: Record<string, labelPlaceholderSet> = {
     label: "자기소개",
     placeholder: "자신의 강점, 경험, 목표 등을 자유롭게 작성해주세요.",
   },
-  technology_stack: {
+  technology_stacks: {
     label: "기술 스택",
     placeholder:
       "사용 가능한 스텍을 중복 없이 콤마(,)를 이용하여 작성해주세요. 예) React, TypeScript, ...",
@@ -25,16 +25,16 @@ export const FIELD_LABELS: Record<string, labelPlaceholderSet> = {
   user_info: {
     label: "기본 정보",
   },
-  education: {
+  educations: {
     label: "학력",
   },
-  experience: {
+  experiences: {
     label: "경력",
   },
-  project: {
+  projects: {
     label: "프로젝트",
   },
-  activity: {
+  activites: {
     label: "대외 활동",
   },
   qualifications: {
@@ -45,11 +45,12 @@ export const FIELD_LABELS: Record<string, labelPlaceholderSet> = {
 // 기본 정보(user_info) 내부 필드
 export const USER_INFO_LABELS: Record<string, labelPlaceholderSet> = {
   name: { label: "이름", placeholder: "이름은 2글자 이상 입력하세요" },
+  birth_date: { label: "생일", placeholder: "생일을 입력하세요" },
   email: { label: "이메일", placeholder: "example@example.com" },
   phone: { label: "연락처", placeholder: "010-0000-0000" },
   gender: { label: "성별", placeholder: "남/여" },
-  address: { label: "주소", placeholder: "oo시 oo구" },
   military_service: { label: "병역", placeholder: "병역 여부 선택" },
+  address: { label: "주소", placeholder: "oo시 oo구" },
 };
 
 // 배열 항목(e.g., education, experience) 내부 필드
@@ -63,13 +64,13 @@ export const EDUCATION_LABELS: Record<string, labelPlaceholderSet> = {
 };
 
 export const EXPERIENCE_LABELS: Record<string, labelPlaceholderSet> = {
-  title: { label: "회사명", placeholder: "회사명을 입력하세요" },
+  job_title: { label: "회사명", placeholder: "회사명을 입력하세요" },
   department: { label: "부서", placeholder: "부서명을 입력하세요" },
   position: { label: "직무", placeholder: "직무를 입력하세요" },
   start_date: { label: "입사일" },
   end_date: { label: "퇴사일" },
   employmont_status: { label: "현재 재직중" },
-  description: {
+  job_description: {
     label: "경력 기술서 (담당 업무 및 성과)",
     placeholder:
       "- 주요 업무 내용 및 담당 역할\n- 사용한 기술 스택과 도구\n- 구체적인 성과 및 기여도 (수치화 권장)\n- 프로젝트 규모 및 팀 구성\n\n예시:\n- React와 TypeScript를 활용한 웹 서비스 개발 및 유지보수\n- 성능 최적화를 통한 페이지 로딩 속도 30% 개선\n- 5인 팀에서 프론트엔드 파트 리딩",
@@ -97,7 +98,7 @@ export const ACTIVITY_LABELS: Record<string, labelPlaceholderSet> = {
 };
 
 export const QUALIFICATIONS_LABELS: Record<string, labelPlaceholderSet> = {
-  qua_title: {
+  title: {
     label: "자격증/시험명",
     placeholder: "자격증명 또는 시험명을 입력하세요",
   },
