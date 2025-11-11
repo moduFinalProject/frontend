@@ -47,7 +47,7 @@ export async function signUpWithUserInfo(userInfo: {
   gender: string;
   address: string;
   military_service: string;
-  birth_date?: string;
+  birth_date: string;
 }): Promise<SignUpResponse> {
   // localStorage에 저장된 user 객체에서 OAuth 정보 가져오기
   const userStr = localStorage.getItem("user");
