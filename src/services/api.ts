@@ -33,7 +33,7 @@ export async function loginWithEmail(email: string, password: string): Promise<L
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Login failed");
+    throw new Error(data.message || "로그인에 실패했습니다.");
   }
 
   return data;
@@ -62,7 +62,7 @@ export async function signUpWithUserInfo(userInfo: {
     user_type,
     provider,
     provider_id,
-    birth_date: userInfo.birth_date || "2000-01-01",
+    birth_date: userInfo.birth_date,
   };
 
   const response = await fetch(`${API_BASE_URL}/auth/signup`, {
@@ -76,7 +76,7 @@ export async function signUpWithUserInfo(userInfo: {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Sign up failed");
+    throw new Error(data.message || "회원가입에 실패하였습니다.");
   }
 
   return data;

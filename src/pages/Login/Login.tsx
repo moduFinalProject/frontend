@@ -28,7 +28,7 @@ async function loginProcess(formData: LoginForm, navigate: ReturnType<typeof use
     const response = await loginWithEmail(formData.email, formData.password);
 
     // 로그인 성공 시 토큰 저장
-    localStorage.setItem("access_token", response.accessToken);
+    localStorage.setItem("access_token", response.access_token);
     localStorage.setItem("user", JSON.stringify(response.user));
 
     // 대시보드로 이동
@@ -110,9 +110,6 @@ export default function Login() {
       email: '',
       password: '',
     } as LoginForm,
-    validators: {
-      onChange: loginSchema,
-    },
     onSubmit: async ({ value }) => {
       loginProcess(value, navigate, setError, setLoading);
     },
@@ -142,30 +139,44 @@ export default function Login() {
               <fieldset className={fieldsetStyle}>
                 <form.Field
                   name="email"
+                  validators={{
+                    onChange: ({ value }) => {
+                      const result = loginSchema.shape.email.safeParse(value);
+                      return result.success ? undefined : result.error.issues[0].message;
+                    },
+                  }}
                   children={(field) => (
                     <Text
                       label="이메일"
+                      name="email"
                       type="email"
                       placeholder="your@email.com"
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(', ')}
+                      error={field.state.meta.errors.join(", ")}
                     />
                   )}
                 />
 
                 <form.Field
                   name="password"
+                  validators={{
+                    onChange: ({ value }) => {
+                      const result = loginSchema.shape.password.safeParse(value);
+                      return result.success ? undefined : result.error.issues[0].message;
+                    },
+                  }}
                   children={(field) => (
                     <Text
                       label="비밀번호"
+                      name="password"
                       type="password"
                       placeholder="••••••••"
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(', ')}
+                      error={field.state.meta.errors.join(", ")}
                     />
                   )}
                 />
@@ -181,9 +192,20 @@ export default function Login() {
                 widthStyle="full"
                 color="blue"
                 text={loading ? "로그인 중..." : "로그인"}
-                callback={() => {}}
+                callback={() => {
+                  // 모든 필드를 터치하여 검증 표시 후 제출
+                  form.setFieldMeta('email', (prev) => ({
+                    ...prev,
+                    isTouched: true,
+                  }));
+                  form.setFieldMeta('password', (prev) => ({
+                    ...prev,
+                    isTouched: true,
+                  }));
+                  form.handleSubmit();
+                }}
                 buttonType="submit"
-                disabled={!form.state.isValid || loading}
+                disabled={loading}
               />
             </form>
           </section>

@@ -21,7 +21,36 @@ import {
 // Zod 스키마 정의
 const basicInfoSchema = z.object({
   name: z.string().min(1, "이름을 입력해주세요").min(2, "이름은 2글자 이상이어야 합니다."),
-  birth_date: z.string().min(1, "생일을 입력해주세요").min(2, "올바른 날짜 입력 형식이 아닙니다."),
+  birth_date: z.string()
+    .min(1, "생일을 입력해주세요")
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "올바른 날짜 형식이 아닙니다. (형식: yyyy-MM-dd)")
+    .refine((date) => {
+      const [year, month, day] = date.split('-').map(Number);
+      const currentYear = new Date().getFullYear();
+
+      // 연도 검증: 1900 ~ 올해
+      if (year < 1900 || year > currentYear) {
+        return false;
+      }
+
+      // 월 검증: 01 ~ 12
+      if (month < 1 || month > 12) {
+        return false;
+      }
+
+      // 일 검증: 01 ~ 31
+      if (day < 1 || day > 31) {
+        return false;
+      }
+
+      // 해당 월의 마지막 날짜 검증
+      const daysInMonth = new Date(year, month, 0).getDate();
+      if (day > daysInMonth) {
+        return false;
+      }
+
+      return true;
+    }, "올바른 날짜를 입력해주세요."),
   email: z.string()
     .min(1, "이메일을 입력해주세요")
     .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "올바른 이메일 형식이 아닙니다."),
@@ -122,6 +151,12 @@ export default function SocialSignIn() {
             {/* 이름 */}
             <form.Field
               name="name"
+              validators={{
+                onChange: ({ value }) => {
+                  const result = basicInfoSchema.shape.name.safeParse(value);
+                  return result.success ? undefined : result.error.issues[0].message;
+                },
+              }}
               children={(field) => (
                 <ResumeCardRow widthType="half" input={
                   <Text
@@ -133,7 +168,7 @@ export default function SocialSignIn() {
                     value={field.state.value}
                     onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors[0]?.message || ""}
+                    error={field.state.meta.errors.join(", ")}
                   />
                 } />
               )}
@@ -142,6 +177,12 @@ export default function SocialSignIn() {
             {/* 생일 */}
             <form.Field
               name="birth_date"
+              validators={{
+                onChange: ({ value }) => {
+                  const result = basicInfoSchema.shape.birth_date.safeParse(value);
+                  return result.success ? undefined : result.error.issues[0].message;
+                },
+              }}
               children={(field) => (
                 <ResumeCardRow widthType="half" input={
                   <Text
@@ -153,7 +194,7 @@ export default function SocialSignIn() {
                     value={field.state.value}
                     onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors[0]?.message || ""}
+                    error={field.state.meta.errors.join(", ")}
                   />
                 } />
               )}
@@ -162,6 +203,12 @@ export default function SocialSignIn() {
             {/* 이메일 */}
             <form.Field
               name="email"
+              validators={{
+                onChange: ({ value }) => {
+                  const result = basicInfoSchema.shape.email.safeParse(value);
+                  return result.success ? undefined : result.error.issues[0].message;
+                },
+              }}
               children={(field) => (
                 <ResumeCardRow widthType="half" input={
                   <Text
@@ -173,7 +220,7 @@ export default function SocialSignIn() {
                     value={field.state.value}
                     onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors[0]?.message || ""}
+                    error={field.state.meta.errors.join(", ")}
                   />
                 } />
               )}
@@ -182,6 +229,12 @@ export default function SocialSignIn() {
             {/* 연락처 */}
             <form.Field
               name="phone"
+              validators={{
+                onChange: ({ value }) => {
+                  const result = basicInfoSchema.shape.phone.safeParse(value);
+                  return result.success ? undefined : result.error.issues[0].message;
+                },
+              }}
               children={(field) => (
                 <ResumeCardRow widthType="half" input={
                   <Text
@@ -193,7 +246,7 @@ export default function SocialSignIn() {
                     value={field.state.value}
                     onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors[0]?.message || ""}
+                    error={field.state.meta.errors.join(", ")}
                   />
                 } />
               )}
@@ -202,6 +255,12 @@ export default function SocialSignIn() {
             {/* 성별 */}
             <form.Field
               name="gender"
+              validators={{
+                onChange: ({ value }) => {
+                  const result = basicInfoSchema.shape.gender.safeParse(value);
+                  return result.success ? undefined : result.error.issues[0].message;
+                },
+              }}
               children={(field) => (
                 <ResumeCardRow widthType="half" input={
                   <Select
@@ -211,7 +270,7 @@ export default function SocialSignIn() {
                     value={field.state.value}
                     onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors[0]?.message || ""}
+                    error={field.state.meta.errors.join(", ")}
                     placeholder="성별 선택"
                     options={[
                       { value: "1", label: "남" },
@@ -225,6 +284,12 @@ export default function SocialSignIn() {
             {/* 병역 */}
             <form.Field
               name="military_service"
+              validators={{
+                onChange: ({ value }) => {
+                  const result = basicInfoSchema.shape.military_service.safeParse(value);
+                  return result.success ? undefined : result.error.issues[0].message;
+                },
+              }}
               children={(field) => (
                 <ResumeCardRow widthType="half" input={
                   <Select
@@ -234,7 +299,7 @@ export default function SocialSignIn() {
                     value={field.state.value}
                     onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors[0]?.message || ""}
+                    error={field.state.meta.errors.join(", ")}
                     placeholder="병역 선택"
                     options={[
                       { value: "1", label: "면제" },
@@ -251,6 +316,12 @@ export default function SocialSignIn() {
             {/* 주소 */}
             <form.Field
               name="address"
+              validators={{
+                onChange: ({ value }) => {
+                  const result = basicInfoSchema.shape.address.safeParse(value);
+                  return result.success ? undefined : result.error.issues[0].message;
+                },
+              }}
               children={(field) => (
                 <ResumeCardRow widthType="full" input={
                   <Text
@@ -262,7 +333,7 @@ export default function SocialSignIn() {
                     value={field.state.value}
                     onChange={(value) => field.setValue(value)}
                     onBlur={field.handleBlur}
-                    error={field.state.meta.errors[0]?.message || ""}
+                    error={field.state.meta.errors.join(", ")}
                   />
                 } />
               )}
