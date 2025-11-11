@@ -13,12 +13,12 @@ export const educationItemSchema = z
     organ: z
       .string()
       .trim()
-      .min(1, "학교 이름을 입력하세요.")
+      .min(MIN_LENGTH, "학교 이름을 입력하세요.")
       .regex(/^.+학교/, "oo학교 형식으로 입력하세요."),
     department: z
       .string()
       .trim()
-      .min(1, "학과를 입력하세요.")
+      .min(MIN_LENGTH, "학과를 입력하세요.")
       .regex(/^.+과/, "oo과 형식으로 입력하세요."),
     degree_level: z.enum(["1", "2", "3", "4", "5"], "학위를 선택하세요."),
     score: z
@@ -64,8 +64,8 @@ export const educationSchema = z.preprocess((val) => {
 
 // 경력
 export const experienceItemSchema = z.object({
-  title: z.string().trim().min(1, "회사명을 입력하세요."),
-  position: z.string().trim().min(1, "직책을 입력하세요."),
+  title: z.string().trim().min(MIN_LENGTH, "회사명을 입력하세요."),
+  position: z.string().trim().min(MIN_LENGTH, "직책을 입력하세요."),
   start_date: z
     .string()
     .trim()
@@ -80,7 +80,10 @@ export const experienceItemSchema = z.object({
         .nullable(),
     ])
     .optional(),
-  description: z.string().trim().min(1, "주요 업무 및 성과를 입력하세요."),
+  description: z
+    .string()
+    .trim()
+    .min(MIN_LENGTH, "주요 업무 및 성과를 입력하세요."),
   department: z.string().trim().optional(),
 });
 
@@ -274,32 +277,40 @@ const photoUrlFileSchema = z
 
 // 취합 스키마
 export const basicInfoSchema = z.object({
-  title: z.string().trim().min(2, "이력서 이름을 두글자 이상 입력하세요."),
+  title: z
+    .string()
+    .trim()
+    .min(MIN_LENGTH, `이력서 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`),
   photoUrl: z.union([photoUrlStringSchema, photoUrlFileSchema]),
   user_info: z.object({
-    name: z.string().min(2, "이름은 두글자 이상 입력하세요."),
+    name: z
+      .string()
+      .min(MIN_LENGTH, `이름은 ${MIN_LENGTH}글자 이상 입력하세요.`),
     email: z
       .string()
       .trim()
-      .min(1, "이메일을 입력하세요.")
+      .min(MIN_LENGTH, "이메일을 입력하세요.")
       .email("올바른 이메일 형식이 아닙니다."),
     phone: z
       .string()
       .trim()
-      .min(1, "전화번호를 입력하세요.")
+      .min(MIN_LENGTH, "전화번호를 입력하세요.")
       .regex(/^010-\d{4}-\d{4}$/, "010-0000-0000 형식으로 입력하세요."),
     gender: z.enum(["1", "2"], "성별을 선택해주세요"),
     address: z
       .string()
       .trim()
-      .min(5, "주소를 입력해주세요")
+      .min(MIN_LENGTH, "주소를 입력해주세요")
       .regex(/^.+시\s+.+구/, "주소는 'OO시 OO구' 형식으로 입력해주세요"),
     military_service: z.enum(
       ["1", "2", "3", "4", "5", "6"],
       "병역 여부를 선택해주세요"
     ),
   }),
-  self_introduction: z.string().max(500, "500자 이하로 입력하세요.").optional(),
+  self_introduction: z
+    .string()
+    .max(MAX_LENGTH, `자기소개를 ${MAX_LENGTH}자 이하로 입력하세요.`)
+    .optional(),
   education: educationSchema,
   experience: experienceSchema,
   project: projectSchema,
