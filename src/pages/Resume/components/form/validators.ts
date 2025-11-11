@@ -222,11 +222,22 @@ export const technologyStackSchema = z.preprocess(
   },
 
   z
-    .array(z.string().min(1, "스킬 이름을 입력하세요."))
-    .refine((items) => {
-      const uniqueItems = new Set(items);
-      return uniqueItems.size === items.length;
-    }, "중복된 스킬 항목이 있습니다.")
+    .array(z.string().trim().min(1, "스킬 이름을 입력하세요."))
+    .superRefine((items, ctx) => {
+      const duplicates = items.filter(
+        (item, idx) => items.indexOf(item) !== idx
+      );
+      if (duplicates.length > 0) {
+        const uniqueDuplicates = [...new Set(duplicates)];
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `중복된 스킬 항목이 있습니다: ${uniqueDuplicates.join(
+            ", "
+          )}`,
+        });
+      }
+    })
+    .nullable()
     .optional()
 );
 
