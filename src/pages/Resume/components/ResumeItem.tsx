@@ -40,6 +40,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
         label: "삭제",
         onSelect: () => {
           // TODO: 삭제 기능 구현 필요
+          if (confirm("삭제하시겠습니까?")) alert("삭제되었습니다");
         },
       },
     ],

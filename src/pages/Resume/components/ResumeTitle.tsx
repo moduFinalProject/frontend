@@ -70,7 +70,9 @@ export default function ResumeTitle({
               text="AI 자동완성"
               color="white"
               widthStyle="fit"
-              callback={() => {}}
+              callback={() => {
+                alert("개발중입니다");
+              }}
             />
             <Button
               text="저장하기"
@@ -90,7 +92,9 @@ export default function ResumeTitle({
               text="삭제"
               color="red"
               widthStyle="fit"
-              callback={() => {}}
+              callback={() => {
+                if (confirm("삭제하시겠습니까?")) alert("삭제되었습니다");
+              }}
             />
             <Button
               text="다운로드"
@@ -98,7 +102,7 @@ export default function ResumeTitle({
               widthStyle="fit"
               icon="DOWN"
               callback={() => {
-                console.log(resumeId);
+                alert("다운로드 되었습니다");
               }}
             />
             <Button
@@ -118,13 +122,18 @@ export default function ResumeTitle({
               color="white"
               widthStyle="fit"
               icon="DOWN"
-              callback={() => {}}
+              callback={() => {
+                alert("다운로드 되었습니다");
+              }}
             />
             <Button
               text="저장"
               color="blue"
               widthStyle="fit"
-              callback={() => {}}
+              callback={() => {
+                if (confirm("새 이력서로 생성하시겠습니까?"))
+                  alert("생성되었습니다");
+              }}
             />
           </>
         )}
