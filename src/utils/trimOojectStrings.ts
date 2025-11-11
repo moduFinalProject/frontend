@@ -3,6 +3,11 @@ export const trimObjectStrings = (obj: any): any => {
     return obj;
   }
 
+  // File 객체 예외 처리
+  if (obj instanceof File) {
+    return obj;
+  }
+
   // 배열인 경우 (예: education, experience 목록)
   if (Array.isArray(obj)) {
     return obj.map(trimObjectStrings);

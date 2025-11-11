@@ -72,7 +72,7 @@ type QualificationItem = {
   score?: string;
 };
 type ResumeFormValues = {
-  id: string;
+  resume_id: string;
   title: string;
   photoUrl: string | File;
   url?: string;
@@ -95,11 +95,11 @@ type ResumeFormValues = {
 };
 
 const resumeDataSample: ResumeFormValues = {
-  id: "1",
+  resume_id: "1",
   title: "기본 이력서",
   photoUrl:
     "https://i.pinimg.com/736x/95/f0/8a/95f08adb4d08c76eda72fd488700bd3a.jpg",
-  // url: "https://career.example.com/job/123456",
+  url: "https://career.example.com/job/123456",
   user_info: {
     name: "김취업",
     birth_date: "1996-12-12",
@@ -292,34 +292,29 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         const photoFile: File | null =
           photoUrlValue && photoUrlValue instanceof File ? photoUrlValue : null;
 
-        const formData = new FormData();
         const dataToFlatten = {
           ...resumeData,
-          photoUrl: photoFile ? undefined : resumeData.photoUrl,
         };
 
         if (dataToFlatten.user_info) {
           const flattenedData = {
-            ...dataToFlatten.user_info, // name, email 등이 먼저 추가됩니다.
+            ...dataToFlatten.user_info,
             ...dataToFlatten,
           };
           delete flattenedData.user_info;
 
           const finalData = flattenedData;
+          console.log(finalData);
 
           const formData = new FormData();
-
-          console.log(finalData);
           formData.append("data", JSON.stringify(finalData));
 
-          // 4. File 객체는 'photo' 키에 별도로 추가 (기존 방식 유지)
           if (photoFile) {
             formData.append("photo", photoFile, photoFile.name);
           }
-          console.log(formData);
         }
 
-        // 4. fetch 요청
+        // fetch 요청
         // fetch("/api/resumes", {
         //   method: "POST",
         //   body: formData,
@@ -1215,7 +1210,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         </ResumeCard>
 
         {Object.entries(defaultValues).map(([key, value]) => {
-          if (key !== "id")
+          if (key !== "resume_id")
             return renderFieldByType(form, key, value, isEditMode);
         })}
       </div>
