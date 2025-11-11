@@ -294,7 +294,8 @@ export default function ResumeDetail() {
                 subTile={subTile}
                 value={qualificationItem.title}
                 widthType="full"
-                isLisence={!qualificationItem.score}
+                isLisence={true}
+                lisence={!qualificationItem.score}
               />
             </Fragment>
           );
