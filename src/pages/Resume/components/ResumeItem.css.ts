@@ -96,3 +96,11 @@ export const descTitle = style({
 export const dropdownTrigger = style({
   padding: vars.spacing.sm,
 });
+export const noDrag = style({
+  webkitUserSelect: "none" /* Chrome, Safari, Opera */,
+  khtmlUserSelect: "none" /* Konqueror */,
+  mozUserSelect: "none" /* Firefox */,
+  oUserSelect: "none" /* Old Opera */,
+  msUserSelect: "none" /* Internet Explorer/Edge */,
+  userSelect: "none" /* Standard */,
+});
