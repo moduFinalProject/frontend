@@ -94,7 +94,7 @@ export default function ResumeCardRow({
           ))}
         </div>
       )}
-      <div className={imgRow}>
+      <div className={isPhoto ? imgRow : ""}>
         {isPhoto && (
           <div id="imgWrap" className={imgWrap}>
             {imgUrl ? (

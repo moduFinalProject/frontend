@@ -7,6 +7,7 @@ import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import Text, { Textarea } from "@/components/FormElem/text";
 import FileElem from "@/components/FormElem/file/File";
+import Checkbox from "@/components/FormElem/checkbox/Checkbox";
 import { container, innerContainer } from "./index.css.ts";
 import Select from "@/components/FormElem/text/Select.tsx";
 
@@ -19,6 +20,7 @@ import {
   ACTIVITY_LABELS,
   QUALIFICATIONS_LABELS,
 } from "@/constants/fieldLabels.ts";
+import { trimObjectStrings } from "@/utils/trimOojectStrings.ts";
 
 interface ResumeFormProps {
   mode: "create" | "edit";
@@ -30,12 +32,13 @@ type ExperienceItem = {
   position: string;
   start_date: string;
   end_date: string;
+  employmont_status: boolean;
   description: string;
 };
 type EducationItem = {
   organ: string;
   department?: string;
-  degree_level?: "1" | "2" | "3" | "4" | "5";
+  degree_level?: "0" | "1" | "2" | "3" | "4" | "5";
   score: string;
   start_date: string;
   end_date: string;
@@ -67,9 +70,9 @@ type ResumeFormValues = {
     name: string;
     email: string;
     phone: string;
-    gender: "1" | "2";
+    gender: "0" | "1" | "2";
     address: string;
-    military_service: "1" | "2" | "3" | "4" | "5" | "6";
+    military_service: "0" | "1" | "2" | "3" | "4" | "5" | "6";
   };
   education?: EducationItem[];
   self_introduction: string;
@@ -122,6 +125,7 @@ const resumeDataSample: ResumeFormValues = {
       position: "프론트엔드 개발자",
       start_date: "2022-03",
       end_date: "",
+      employmont_status: true,
       description:
         "- React와 TypeScript를 활용한 웹 서비스 개발 및 유지보수\n- Redux를 이용한 상태 관리 구조 설계 및 구현\n- REST API 연동 및 데이터 처리 로직 개발\n- 반응형 웹 디자인 구현으로 모바일 사용자 경험 개선\n- Git을 활용한 버전 관리 및 코드 리뷰 참여\n- 웹 접근성 개선 작업으로 WCAG 2.1 AA 등급 달성",
     },
@@ -131,6 +135,7 @@ const resumeDataSample: ResumeFormValues = {
       position: "주니어 웹 개발자",
       start_date: "2020-06",
       end_date: "2022-02",
+      employmont_status: false,
       description:
         "- HTML, CSS, JavaScript를 활용한 웹 페이지 개발\n- jQuery를 이용한 동적 UI 구현\n- 크로스 브라우저 호환성 테스트 및 이슈 해결\n- 웹사이트 성능 최적화를 통한 로딩 속도 25% 개선\n- UI/UX 디자이너와 협업하여 사용자 경험 개선",
     },
@@ -202,7 +207,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   const emptyEducationItem: EducationItem = {
     organ: "",
     department: "",
-    degree_level: 1,
+    degree_level: "0",
     score: "",
     start_date: "",
     end_date: "",
@@ -213,6 +218,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     position: "",
     start_date: "",
     end_date: "",
+    employmont_status: false,
     description: "",
   };
   const emptyProjectItem: ProjectItem = {
@@ -244,9 +250,9 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           name: "",
           email: "",
           phone: "",
-          gender: "",
+          gender: "0",
           address: "",
-          military_service: "",
+          military_service: "0",
         },
         education: [emptyEducationItem],
         self_introduction: "",
@@ -262,14 +268,18 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     defaultValues,
     onSubmit: async ({ value }) => {
       try {
+        const trimmedValue = trimObjectStrings(value);
         // basicInfoSchema.parse(value);
         // const validatedData = await basicInfoSchema.parseAsync(value);
-        console.log(`${mode === "edit" ? "수정" : "생성"} 데이터:`, value);
+        console.log(
+          `${mode === "edit" ? "수정" : "생성"} 데이터:`,
+          trimmedValue
+        );
 
         // console.log(`${mode === "edit" ? "수정" : "생성"} 데이터:`, value);
 
         // TODO: API 호출
-        const resumeData: ResumeFormValues = value; // useForm에서 받은 값
+        const resumeData: ResumeFormValues = trimmedValue;
 
         const photoUrlValue = resumeData.photoUrl;
         const photoFile: File | null =
@@ -362,6 +372,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                 // basicInfoSchema.parseAsync(value);
                 const photoUrlStringSchema = z
                   .string()
+                  .trim()
                   .refine(
                     (val) =>
                       val.startsWith("data:image/") || val.startsWith("http"),
@@ -421,11 +432,13 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
               if (key === "title")
                 result = z
                   .string()
+                  .trim()
                   .min(1, "이력서 이름을 입력하세요.")
                   .safeParse(value);
               else if (key === "self_introduction")
                 result = z
                   .string()
+                  .trim()
                   .max(400, "400자 이하로 입력하세요.")
                   .nullable()
                   .optional()
@@ -502,10 +515,17 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     6: "6";
                   }>;
                 } = {
-                  name: z.string().min(2, "이름은 두글자 이상 입력하세요."),
-                  email: z.string().email("올바른 이메일 형식이 아닙니다."),
+                  name: z
+                    .string()
+                    .trim()
+                    .min(2, "이름은 두글자 이상 입력하세요."),
+                  email: z
+                    .string()
+                    .trim()
+                    .email("올바른 이메일 형식이 아닙니다."),
                   phone: z
                     .string()
+                    .trim()
                     .regex(
                       /^010-\d{4}-\d{4}$/,
                       "010-0000-0000 형식으로 입력하세요."
@@ -513,6 +533,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                   gender: z.enum(["1", "2"], "성별을 선택해주세요"),
                   address: z
                     .string()
+                    .trim()
                     .min(6, "주소를 입력해주세요")
                     .regex(
                       /^.+시\s+.+구/,
@@ -627,7 +648,9 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     },
 
                     z
-                      .array(z.string().min(1, "스킬 이름을 입력하세요."))
+                      .array(
+                        z.string().trim().min(1, "스킬 이름을 입력하세요.")
+                      )
                       .refine((items) => {
                         const uniqueItems = new Set(items);
                         return uniqueItems.size === items.length;
@@ -716,242 +739,340 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                       : () => handleRemoveItem(idx)
                   }
                 >
-                  {Object.entries(item).map(([k, v]) => (
-                    <form.Field
-                      key={k}
-                      name={`${key}[${idx}].${k}`}
-                      validators={{
-                        onSubmit: ({ value }) => {
-                          // basicInfoSchema.parseAsync(value)
-                          const itemSchema = {
-                            education: {
-                              organ: z
-                                .string()
-                                .min(1, "학교 이름을 입력하세요.")
-                                .regex(
-                                  /^.+학교/,
-                                  "oo학교 형식으로 입력하세요."
+                  {Object.entries(item).map(([k, v]) => {
+                    if (key === "experience" && k === "employmont_status") {
+                      return null;
+                    }
+
+                    return (
+                      <form.Field
+                        key={k}
+                        name={`${key}[${idx}].${k}`}
+                        validators={{
+                          onSubmit: ({ value }) => {
+                            // basicInfoSchema.parseAsync(value)
+                            const itemSchema = {
+                              education: {
+                                organ: z
+                                  .string()
+                                  .trim()
+                                  .min(1, "학교 이름을 입력하세요.")
+                                  .regex(
+                                    /^.+학교/,
+                                    "oo학교 형식으로 입력하세요."
+                                  ),
+                                department: z
+                                  .string()
+                                  .min(1, "학과를 입력하세요.")
+                                  .regex(/^.+과/, "oo과 형식으로 입력하세요."),
+                                degree_level: z.enum(
+                                  ["1", "2", "3", "4", "5"],
+                                  "학위를 선택하세요."
                                 ),
-                              department: z
-                                .string()
-                                .min(1, "학과를 입력하세요.")
-                                .regex(/^.+과/, "oo과 형식으로 입력하세요."),
-                              degree_level: z.enum(
-                                ["1", "2", "3", "4", "5"],
-                                "학위를 선택하세요."
-                              ),
-                              score: z
-                                .string()
-                                .regex(/^.+점/, "00점 형식으로 입력하세요.")
-                                .nullable()
-                                .optional(),
-                              start_date: z
-                                .string()
-                                .regex(
-                                  /^\d{4}-\d{2}$/,
-                                  "입학년월을 입력하세요."
-                                ),
-                              end_date: z
-                                .string()
-                                .regex(
-                                  /^\d{4}-\d{2}$/,
-                                  "졸업년월을 입력하세요."
-                                ),
-                            },
-                            experience: {
-                              title: z.string().min(1, "회사명을 입력하세요."),
-                              department: z
-                                .string()
-                                .min(1, "부서명을 입력하세요")
-                                .optional(),
-                              position: z.string().min(1, "직책을 입력하세요."),
-                              start_date: z
-                                .string()
-                                .regex(
-                                  /^\d{4}-\d{2}$/,
-                                  "입사년월을 입력하세요."
-                                ),
-                              description: z
-                                .string()
-                                .min(1, "주요 업무 및 성과를 입력하세요."),
-                            },
-                            project: {
-                              title: z
-                                .string()
-                                .min(1, "프로젝트 이름을 입력하세요."),
-                              description: z
-                                .string()
-                                .max(400, "400자 이내로 입력하세요."),
-                              start_date: z
-                                .string()
-                                .regex(
-                                  /^\d{4}-\d{2}$/,
-                                  "입학년월을 입력하세요."
-                                ),
-                              end_date: z
-                                .string()
-                                .regex(
-                                  /^\d{4}-\d{2}$/,
-                                  "졸업년월을 입력하세요."
-                                ),
-                            },
-                            activity: {
-                              title: z
-                                .string()
-                                .min(1, "활동 이름을 입력하세요."),
-                              description: z
-                                .string()
-                                .max(400, "400자 이내로 입력하세요."),
-                              start_date: z
-                                .string()
-                                .regex(
-                                  /^\d{4}-\d{2}$/,
-                                  "입학년월을 입력하세요."
-                                ),
-                              end_date: z
-                                .string()
-                                .regex(
-                                  /^\d{4}-\d{2}$/,
-                                  "졸업년월을 입력하세요."
-                                ),
-                            },
-                            qualifications: {
-                              qua_title: z
-                                .string()
-                                .min(1, "자격증 또는 어학 이름을 입력하세요."),
-                              organ: z
-                                .string()
-                                .min(1, "발급 및 주관기관을 입력하세요."),
-                              acquisition_date: z
-                                .string()
-                                .regex(
-                                  /^\d{4}-\d{2}$/,
-                                  "취득년월을 입력하세요."
-                                ),
-                              score: z
-                                .union([
-                                  z.literal(""), // 빈 문자열을 허용
-                                  z
-                                    .string()
-                                    .regex(
-                                      /^.+점$/,
-                                      "00점 형식으로 입력하세요."
-                                    ),
-                                ])
-                                .optional(),
-                            },
-                          };
-                          const result = itemSchema[key][k]?.safeParse(value);
-                          return result?.success
-                            ? undefined
-                            : result?.error.issues[0].message;
-                        },
-                      }}
-                    >
-                      {(field) => (
-                        <ResumeCardRow
-                          widthType={
-                            ["description", "title"].includes(k)
-                              ? "full"
-                              : "half"
-                          }
-                          isInner={true}
-                          input={
-                            k === "description" ? (
-                              <Textarea
-                                name={`${key}[${idx}].${k}`}
-                                label={
-                                  key === "education"
-                                    ? EDUCATION_LABELS[k].label
-                                    : key === "experience"
-                                    ? EXPERIENCE_LABELS[k].label
-                                    : key === "project"
-                                    ? PROJECT_LABELS[k].label
-                                    : key === "activity"
-                                    ? ACTIVITY_LABELS[k].label
-                                    : QUALIFICATIONS_LABELS[k].label
-                                }
-                                isMust={["description"].includes(k)}
-                                rows={8}
-                                value={field.state.value || v}
-                                onChange={field.handleChange}
-                                placeholder={
-                                  key === "education"
-                                    ? EDUCATION_LABELS[k].placeholder
-                                    : key === "experience"
-                                    ? EXPERIENCE_LABELS[k].placeholder
-                                    : key === "project"
-                                    ? PROJECT_LABELS[k].placeholder
-                                    : key === "activity"
-                                    ? ACTIVITY_LABELS[k].placeholder
-                                    : QUALIFICATIONS_LABELS[k].placeholder
-                                }
-                                error={field.state.meta.errors.join(", ")}
-                              />
-                            ) : k === "degree_level" ? (
-                              <Select
-                                name={`${key}[${idx}].${k}`}
-                                isMust
-                                label={EDUCATION_LABELS[k].label}
-                                value={field.state.value}
-                                onChange={field.handleChange}
-                                onBlur={field.handleBlur}
-                                error={field.state.meta.errors.join(", ")}
-                                placeholder={EDUCATION_LABELS[k].placeholder}
-                                options={[
-                                  { value: "1", label: "고졸" },
-                                  { value: "2", label: "전문학사" },
-                                  { value: "3", label: "학사" },
-                                  { value: "4", label: "석사" },
-                                  { value: "5", label: "박사" },
-                                ]}
-                              />
-                            ) : (
-                              <Text
-                                name={`${key}[${idx}].${k}`}
-                                label={
-                                  key === "education"
-                                    ? EDUCATION_LABELS[k].label
-                                    : key === "experience"
-                                    ? EXPERIENCE_LABELS[k].label
-                                    : key === "project"
-                                    ? PROJECT_LABELS[k].label
-                                    : key === "activity"
-                                    ? ACTIVITY_LABELS[k].label
-                                    : QUALIFICATIONS_LABELS[k].label
-                                }
-                                placeholder={
-                                  key === "education"
-                                    ? EDUCATION_LABELS[k].placeholder
-                                    : key === "experience"
-                                    ? EXPERIENCE_LABELS[k].placeholder
-                                    : key === "project"
-                                    ? PROJECT_LABELS[k].placeholder
-                                    : key === "activity"
-                                    ? ACTIVITY_LABELS[k].placeholder
-                                    : QUALIFICATIONS_LABELS[k].placeholder
-                                }
-                                isMust={[
-                                  "qua_title",
-                                  "title",
-                                  "organ",
-                                  "position",
-                                  "department",
-                                  "start_date",
-                                  "end_date",
-                                  "acquisition_date",
-                                ].includes(k)}
-                                type={k.includes("date") ? "month" : "text"}
-                                value={field.state.value || v}
-                                onChange={field.handleChange}
-                                error={field.state.meta.errors.join(", ")}
-                              />
-                            )
-                          }
-                        />
-                      )}
-                    </form.Field>
-                  ))}
+                                score: z
+                                  .string()
+                                  .trim()
+                                  .regex(/^.+점/, "00점 형식으로 입력하세요.")
+                                  .nullable()
+                                  .optional(),
+                                start_date: z
+                                  .string()
+                                  .trim()
+                                  .regex(
+                                    /^\d{4}-\d{2}$/,
+                                    "입학년월을 입력하세요."
+                                  ),
+                                end_date: z
+                                  .string()
+                                  .trim()
+                                  .regex(
+                                    /^\d{4}-\d{2}$/,
+                                    "졸업년월을 입력하세요."
+                                  ),
+                              },
+                              experience: {
+                                title: z
+                                  .string()
+                                  .trim()
+                                  .min(1, "회사명을 입력하세요."),
+                                department: z
+                                  .string()
+                                  .trim()
+                                  .min(1, "부서명을 입력하세요")
+                                  .optional(),
+                                position: z
+                                  .string()
+                                  .trim()
+                                  .min(1, "직책을 입력하세요."),
+                                start_date: z
+                                  .string()
+                                  .trim()
+                                  .regex(
+                                    /^\d{4}-\d{2}$/,
+                                    "입사년월을 입력하세요."
+                                  ),
+                                end_date: z
+                                  .union([
+                                    z.literal(""),
+                                    z
+                                      .string()
+                                      .trim()
+                                      .regex(
+                                        /^\d{4}-\d{2}$/,
+                                        "졸업년월을 입력하세요."
+                                      ),
+                                  ])
+                                  .optional(),
+                                description: z
+                                  .string()
+                                  .trim()
+                                  .min(1, "주요 업무 및 성과를 입력하세요."),
+                              },
+                              project: {
+                                title: z
+                                  .string()
+                                  .trim()
+                                  .min(1, "프로젝트 이름을 입력하세요."),
+                                description: z
+                                  .string()
+                                  .trim()
+                                  .max(400, "400자 이내로 입력하세요."),
+                                start_date: z
+                                  .string()
+                                  .trim()
+                                  .regex(
+                                    /^\d{4}-\d{2}$/,
+                                    "입학년월을 입력하세요."
+                                  ),
+                                end_date: z
+                                  .string()
+                                  .trim()
+                                  .regex(
+                                    /^\d{4}-\d{2}$/,
+                                    "졸업년월을 입력하세요."
+                                  ),
+                              },
+                              activity: {
+                                title: z
+                                  .string()
+                                  .trim()
+                                  .min(1, "활동 이름을 입력하세요."),
+                                description: z
+                                  .string()
+                                  .trim()
+                                  .max(400, "400자 이내로 입력하세요."),
+                                start_date: z
+                                  .string()
+                                  .trim()
+                                  .regex(
+                                    /^\d{4}-\d{2}$/,
+                                    "입학년월을 입력하세요."
+                                  ),
+                                end_date: z
+                                  .string()
+                                  .trim()
+                                  .regex(
+                                    /^\d{4}-\d{2}$/,
+                                    "졸업년월을 입력하세요."
+                                  ),
+                              },
+                              qualifications: {
+                                qua_title: z
+                                  .string()
+                                  .trim()
+                                  .min(
+                                    1,
+                                    "자격증 또는 어학 이름을 입력하세요."
+                                  ),
+                                organ: z
+                                  .string()
+                                  .trim()
+                                  .min(1, "발급 및 주관기관을 입력하세요."),
+                                acquisition_date: z
+                                  .string()
+                                  .trim()
+                                  .regex(
+                                    /^\d{4}-\d{2}$/,
+                                    "취득년월을 입력하세요."
+                                  ),
+                                score: z
+                                  .union([
+                                    z.literal(""), // 빈 문자열을 허용
+                                    z
+                                      .string()
+                                      .trim()
+                                      .regex(
+                                        /^.+점$/,
+                                        "00점 형식으로 입력하세요."
+                                      ),
+                                  ])
+                                  .optional(),
+                              },
+                            };
+                            const result = itemSchema[key][k]?.safeParse(value);
+                            return result?.success
+                              ? undefined
+                              : result?.error.issues[0].message;
+                          },
+                        }}
+                      >
+                        {(field) => (
+                          <ResumeCardRow
+                            widthType={
+                              ["description", "title"].includes(k)
+                                ? "full"
+                                : "half"
+                            }
+                            isInner={true}
+                            input={
+                              k === "description" ? (
+                                <Textarea
+                                  name={`${key}[${idx}].${k}`}
+                                  label={
+                                    key === "education"
+                                      ? EDUCATION_LABELS[k].label
+                                      : key === "experience"
+                                      ? EXPERIENCE_LABELS[k].label
+                                      : key === "project"
+                                      ? PROJECT_LABELS[k].label
+                                      : key === "activity"
+                                      ? ACTIVITY_LABELS[k].label
+                                      : QUALIFICATIONS_LABELS[k].label
+                                  }
+                                  isMust
+                                  rows={8}
+                                  value={field.state.value || v}
+                                  onChange={field.handleChange}
+                                  placeholder={
+                                    key === "education"
+                                      ? EDUCATION_LABELS[k].placeholder
+                                      : key === "experience"
+                                      ? EXPERIENCE_LABELS[k].placeholder
+                                      : key === "project"
+                                      ? PROJECT_LABELS[k].placeholder
+                                      : key === "activity"
+                                      ? ACTIVITY_LABELS[k].placeholder
+                                      : QUALIFICATIONS_LABELS[k].placeholder
+                                  }
+                                  error={field.state.meta.errors.join(", ")}
+                                />
+                              ) : k === "degree_level" ? (
+                                <Select
+                                  name={`${key}[${idx}].employmont_status`}
+                                  isMust
+                                  label={EDUCATION_LABELS[k].label}
+                                  value={field.state.value}
+                                  onChange={field.handleChange}
+                                  onBlur={field.handleBlur}
+                                  error={field.state.meta.errors.join(", ")}
+                                  placeholder={EDUCATION_LABELS[k].placeholder}
+                                  options={[
+                                    { value: "1", label: "고졸" },
+                                    { value: "2", label: "전문학사" },
+                                    { value: "3", label: "학사" },
+                                    { value: "4", label: "석사" },
+                                    { value: "5", label: "박사" },
+                                  ]}
+                                />
+                              ) : (
+                                <>
+                                  <Text
+                                    name={`${key}[${idx}].${k}`}
+                                    label={
+                                      key === "education"
+                                        ? EDUCATION_LABELS[k].label
+                                        : key === "experience"
+                                        ? EXPERIENCE_LABELS[k].label
+                                        : key === "project"
+                                        ? PROJECT_LABELS[k].label
+                                        : key === "activity"
+                                        ? ACTIVITY_LABELS[k].label
+                                        : QUALIFICATIONS_LABELS[k].label
+                                    }
+                                    placeholder={
+                                      key === "education"
+                                        ? EDUCATION_LABELS[k].placeholder
+                                        : key === "experience"
+                                        ? EXPERIENCE_LABELS[k].placeholder
+                                        : key === "project"
+                                        ? PROJECT_LABELS[k].placeholder
+                                        : key === "activity"
+                                        ? ACTIVITY_LABELS[k].placeholder
+                                        : QUALIFICATIONS_LABELS[k].placeholder
+                                    }
+                                    isMust={
+                                      !(
+                                        key === "qualifications" &&
+                                        ["score"].includes(k)
+                                      )
+                                    }
+                                    type={k.includes("date") ? "month" : "text"}
+                                    value={field.state.value || v}
+                                    onChange={field.handleChange}
+                                    error={field.state.meta.errors.join(", ")}
+                                    disabled={
+                                      k === "end_date" &&
+                                      key === "experience" &&
+                                      field.form.getFieldValue(
+                                        `${key}[${idx}].employmont_status`
+                                      )
+                                    }
+                                  />
+                                  {/* 🎯 이 부분이 핵심입니다: end_date 바로 아래에 체크박스 필드를 렌더링합니다. */}
+                                  {key === "experience" && k === "end_date" && (
+                                    <form.Field
+                                      key={"employmont_status_checkbox"}
+                                      name={`${key}[${idx}].employmont_status`}
+                                    >
+                                      {(checkboxField) => (
+                                        <Checkbox
+                                          label={
+                                            EXPERIENCE_LABELS[
+                                              "employmont_status"
+                                            ].label
+                                          }
+                                          name={checkboxField.name}
+                                          value={checkboxField.state.value} // boolean 값
+                                          onChange={(e) => {
+                                            const isChecked = e.target.checked;
+                                            checkboxField.handleChange(
+                                              isChecked
+                                            ); // 체크박스 값 업데이트
+
+                                            // end_date 필드의 값 및 메타 데이터 조작
+                                            const form = checkboxField.form;
+                                            const endDateFieldName = `${key}[${idx}].end_date`;
+
+                                            if (isChecked) {
+                                              // 재직 중 -> end_date 비우고 에러 초기화
+                                              form.setFieldValue(
+                                                endDateFieldName,
+                                                ""
+                                              );
+                                              form.setFieldMeta(
+                                                endDateFieldName,
+                                                { errors: [] }
+                                              );
+                                            } else {
+                                              // 퇴사 -> end_date를 null/undefined로 설정하여 입력 활성화 (유효성 검사 적용을 위해)
+                                              form.setFieldValue(
+                                                endDateFieldName,
+                                                null
+                                              );
+                                            }
+                                          }}
+                                        />
+                                      )}
+                                    </form.Field>
+                                  )}
+                                </>
+                              )
+                            }
+                          />
+                        )}
+                      </form.Field>
+                    );
+                  })}
                 </ResumeCard>
               ))}
             </ResumeCard>
