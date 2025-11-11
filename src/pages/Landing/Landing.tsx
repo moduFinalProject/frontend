@@ -18,17 +18,20 @@ import {
   bannerImage,
   footer,
   footerText,
+  headerButton,
+  bannerButton,
 } from "./Landing.css";
 
 import Button from "@/components/Button/Button";
 
 import logoImageSrc from "@/assets/logos/logo-GAECHWI.svg";
 import mainBannerImageSrc from "@/assets/images/landing/sample.png";
+import { useNavigate } from "react-router-dom";
 
 export default function Landing() {
+  const navigate = useNavigate();
   const handleStartClick = () => {
-    // 시작하기 버튼 클릭 핸들러
-    console.log("시작하기 클릭");
+    navigate("/login");
   };
 
   return (
@@ -52,6 +55,7 @@ export default function Landing() {
               color="blue"
               text="시작하기"
               callback={handleStartClick}
+              className={headerButton}
             />
           </nav>
         </div>
@@ -82,6 +86,7 @@ export default function Landing() {
                   color="blue"
                   text="시작하기"
                   callback={handleStartClick}
+                  className={bannerButton}
                 />
               </div>
             </article>
