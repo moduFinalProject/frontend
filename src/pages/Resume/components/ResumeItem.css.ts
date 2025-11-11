@@ -11,6 +11,7 @@ export const resumeItem = style({
   border: `1px solid ${vars.color.line}`,
   borderRadius: vars.borderRadius.lg,
   backgroundColor: vars.color.white,
+  transition: "0.3s ease",
 
   ":hover": {
     boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
