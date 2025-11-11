@@ -1,7 +1,17 @@
-import { header, headerLogo, menuContainer, menuUi, menuBottom, menuItem, menuItemActive, menuLink, logoutLink } from "./Header.css";
+import {
+  header,
+  headerLogo,
+  menuContainer,
+  menuUi,
+  menuBottom,
+  menuItem,
+  menuItemActive,
+  menuLink,
+  logoutLink,
+} from "./Header.css";
 import logo from "@/assets/logo/logo.svg";
 import { ICONS } from "@/constants/icons";
-import { Link, useLocation  } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 interface MenuItem {
   id: string;
@@ -17,8 +27,15 @@ function MenuItemComponent({ item }: { item: MenuItem }) {
 
   return (
     <li className={`${menuItem}`}>
-      <Link to={item.menuURL} className={`${menuLink} ${isLogout ? logoutLink : ""} ${isActive ? menuItemActive:""}`}>
-        {item.menuIcon && <img src={ICONS[item.menuIcon]} alt={item.menuName} />}
+      <Link
+        to={item.menuURL}
+        className={`${menuLink} ${isLogout ? logoutLink : ""} ${
+          isActive ? menuItemActive : ""
+        }`}
+      >
+        {item.menuIcon && (
+          <img src={ICONS[item.menuIcon]} alt={item.menuName} />
+        )}
         {item.menuName}
       </Link>
     </li>
@@ -31,67 +48,78 @@ export default function Header() {
       id: "dashboard",
       menuName: "대시보드",
       menuIcon: "DASHBOARD",
-      menuURL: "/"
+      menuURL: "/",
     },
     {
       id: "resume",
       menuName: "내 이력서",
       menuIcon: "RESUME",
-      menuURL: "/resume"
+      menuURL: "/resume",
     },
     {
       id: "jobs",
       menuName: "채용공고",
       menuIcon: "JOB",
-      menuURL: "/jobs"
+      menuURL: "/jobs",
     },
     {
       id: "resumeFeedbackHis",
       menuName: "공고별 첨삭 이력",
       menuIcon: "CHECK",
-      menuURL: "/resumeFeedbackHis"
+      menuURL: "/resumeFeedbackHis",
     },
     {
       id: "interview",
       menuName: "AI 모의면접",
       menuIcon: "CHAT",
-      menuURL: "/interview"
+      menuURL: "/interview",
     },
     {
       id: "studyGuide",
       menuName: "학습 가이드",
       menuIcon: "STUDY",
-      menuURL: "/studyGuide"
-    }
-  ]
+      menuURL: "/studyGuide",
+    },
+  ];
 
-  const menuListBottom: MenuItem[] = [    
+  const menuListBottom: MenuItem[] = [
     {
       id: "profile",
       menuName: "프로필",
       menuIcon: "PROFILE",
-      menuURL: "/profile"
+      menuURL: "/profile",
     },
     {
       id: "logout",
       menuName: "로그아웃",
       menuIcon: "LOGOUT",
-      menuURL: "/logout"
-    }
-  ]
+      menuURL: "/logout",
+    },
+  ];
+
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate("/");
+  };
 
   return (
-    <>      
+    <>
       <nav className={header}>
-        <img src={logo} alt="개취 로고" className={headerLogo}/>  
+        <img
+          src={logo}
+          alt="개취 로고"
+          className={headerLogo}
+          onClick={handleLogoClick}
+        />
         <div className={menuContainer}>
           <ul className={menuUi}>
-            {menuListTop.map(item => (
+            {menuListTop.map((item) => (
               <MenuItemComponent key={item.id} item={item} />
             ))}
           </ul>
           <ul className={`${menuUi} ${menuBottom}`}>
-            {menuListBottom.map(item => (
+            {menuListBottom.map((item) => (
               <MenuItemComponent key={item.id} item={item} />
             ))}
           </ul>
