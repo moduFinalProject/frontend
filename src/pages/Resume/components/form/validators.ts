@@ -260,20 +260,18 @@ export const technologyStackSchema = z.preprocess(
 );
 
 // 사진
-const photoUrlStringSchema = z
+export const photoUrlStringSchema = z
   .string()
   .trim()
-  .min(MIN_LENGTH, "이미지를 등록해주세요")
+  .min(MIN_LENGTH, "URL 또는 파일을 입력해야 합니다.")
   .refine(
     (val) => val.startsWith("data:image/") || val.startsWith("http"),
     "올바른 이미지 URL 형식(data:image/ 또는 http)을 선택해주세요"
   );
-const photoUrlFileSchema = z
-  .instanceof(File)
-  .refine(
-    (file) => file.type.startsWith("image/"),
-    "이미지 파일만 업로드할 수 있습니다."
-  );
+export const photoUrlFileSchema = z.instanceof(File).refine((file) => {
+  console.log(file.type);
+  return file.type.startsWith("image/");
+}, "이미지 파일만 업로드할 수 있습니다.");
 
 // 취합 스키마
 export const basicInfoSchema = z.object({
@@ -281,7 +279,7 @@ export const basicInfoSchema = z.object({
     .string()
     .trim()
     .min(MIN_LENGTH, `이력서 이름을 ${MIN_LENGTH}글자 이상 입력하세요.`),
-  photoUrl: z.union([photoUrlStringSchema, photoUrlFileSchema]),
+  // photoUrl: z.union([photoUrlFileSchema, photoUrlStringSchema]).optional(),
   user_info: z.object({
     name: z
       .string()
