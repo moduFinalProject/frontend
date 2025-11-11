@@ -161,6 +161,15 @@ export const bannerButtonContainer = style({
   alignItems: "stretch",
 });
 
+export const headerButton = style({
+  alignSelf: "auto",
+});
+
+export const bannerButton = style({
+  alignSelf: "auto",
+  width: "100%",
+});
+
 export const bannerImageContainer = style({
   flex: 1,
 
