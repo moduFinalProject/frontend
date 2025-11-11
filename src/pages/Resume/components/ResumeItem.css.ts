@@ -35,7 +35,6 @@ export const title = style({
 export const titleRow = style({
   display: "flex",
   gap: vars.spacing.sm,
-  cursor: "pointer",
 
   a: {
     color: "inherit",
