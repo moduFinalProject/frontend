@@ -10,7 +10,11 @@ const searchSchema = z.object({
   value: "",
 });
 
-export default function Search() {
+interface SearchProps {
+  onSubmit?: (value: string) => void;
+}
+
+export default function Search({ onSubmit }: SearchProps) {
   const searchForm = useForm({
     defaultValues: {
       value: "",
@@ -19,6 +23,7 @@ export default function Search() {
       try {
         searchSchema.parse(value);
         console.log("검색:", value);
+        onSubmit?.(value.value ?? "");
         // if (value !== "") {
         //   console.log("검색 진행");
         // } else {

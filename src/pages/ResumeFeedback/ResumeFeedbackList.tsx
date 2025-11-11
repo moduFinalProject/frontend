@@ -1,5 +1,4 @@
-import { useMemo, useState } from "react";
-import type { FormEvent } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { OptionsDropdown } from "@/components";
 import Search from "./components/form/Search.tsx";
@@ -94,7 +93,7 @@ function formatDisplayDate(date: string) {
   return date.replace(/-/g, ".");
 }
 
-export default function ResumeFeedback() {
+export default function ResumeFeedbackList() {
   const [searchValue, setSearchValue] = useState("");
   const [sortOrder, setSortOrder] = useState<SortOrder>("latest");
 
@@ -121,9 +120,9 @@ export default function ResumeFeedback() {
     });
   }, [searchValue, sortOrder]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-  };
+  const handleSearchSubmit = useCallback((value: string) => {
+    setSearchValue(value);
+  }, []);
 
   return (
     <>
@@ -135,7 +134,7 @@ export default function ResumeFeedback() {
           첨삭 이력 검색 및 정렬
         </h2>
 
-        <Search />
+        <Search onSubmit={handleSearchSubmit} />
 
         <fieldset className={filterGroup} aria-label="정렬 기준">
           <legend className="a11y-hidden">정렬 기준</legend>
