@@ -41,14 +41,14 @@ export default function Resume() {
 
   return (
     <div className={container}>
-      <div className={header}>
+      <header className={header}>
         <ResumeTitle
           mode={mode}
           title="내 이력서"
           desc={modeData[mode].desc}
           resumeId={id}
         />
-      </div>
+      </header>
 
       <Suspense fallback={<p>로딩 중...</p>}>
         <Outlet />
