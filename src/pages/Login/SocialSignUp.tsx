@@ -8,6 +8,8 @@ import Text from "@/components/FormElem/text/Text";
 import Select from "@/components/FormElem/text/Select";
 import Button from "@/components/Button/Button";
 import { signUpWithUserInfo } from "@/services/api";
+import { saveAuthToken } from "@/services/auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 import {
   profileContainer,
@@ -81,6 +83,7 @@ const USER_INFO_LABELS: Record<string, string> = {
 
 export default function SocialSignIn() {
   const navigate = useNavigate();
+  const { setLoginToken } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -113,8 +116,8 @@ export default function SocialSignIn() {
         const response = await signUpWithUserInfo(value);
 
         // 회원가입 성공 시 토큰 저장
-        localStorage.setItem("access_token", response.access_token);
-        localStorage.setItem("user", JSON.stringify(response.user));
+        saveAuthToken(response.access_token, response.user);
+        setLoginToken(true);
 
         // 대시보드로 이동
         navigate("/");

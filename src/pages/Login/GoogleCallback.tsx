@@ -1,9 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { saveAuthToken, saveUserInfo, removeOAuthState, getOAuthState } from "@/services/auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function GoogleCallback() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { setLoginToken } = useAuth();
 
   useEffect(() => {
     const handleGoogleCallback = async () => {
@@ -12,28 +15,18 @@ export default function GoogleCallback() {
         const code = searchParams.get("code");
         const state = searchParams.get("state");
         const errorParam = searchParams.get("error");
-        
+        const savedState = getOAuthState();
+
         // Error handling
         if (errorParam) {
-          console.error("Google OAuth error:", errorParam);
-          navigate("/login");
-          return;
+          throw new Error(errorParam);
         }
-
-        // code not received
         if (!code) {
-          console.error("Failed to receive authentication code");
-          navigate("/login");
-          return;
+          throw new Error("Failed to receive authentication code");
         }
-
-        // CSRF attack prevention: state value validation
-        const savedState = localStorage.getItem("oauth2-state");
         if (state !== savedState) {
-          console.error("State value mismatch (CSRF attack detected)");
-          localStorage.removeItem("oauth2-state");
-          navigate("/login");
-          return;
+          removeOAuthState();
+          throw new Error("State value mismatch (CSRF attack detected)");
         }
 
         // 서버에 토큰 인증 및 로그인 요청
@@ -51,25 +44,19 @@ export default function GoogleCallback() {
           throw new Error(data.message || "An error occurred during login processing");
         }        
 
-        // 성공 시 유저정보 저장
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.removeItem("oauth2-state");
-
         // 최초 사용자는 OAuth 정보를 localStorage에 저장
         if(data["is_new_user"]) {
-            localStorage.setItem("oauth_provider", data.user.provider || "google");
-            localStorage.setItem("oauth_provider_id", data.user.provider_id || "");
-            localStorage.setItem("oauth_user_type", "job_seeker");
+            saveUserInfo(data.user, data.user.provider || "google", data.user.provider_id || "", "1");
+            removeOAuthState();
             navigate("/socialSignUp");
             return;
         }
 
-        // 로그인 성공 시 토큰 저장
-        localStorage.setItem("access_token", data.accessToken);
-        
-        
-        // 기존 사용자면 대시보드 이동
-        navigate("/");
+        // 기존 사용자 로그인 성공 시 토큰 저장
+        saveAuthToken(data.access_token, data.user);
+        setLoginToken(true);
+        removeOAuthState();
+        navigate("/dashboard", { replace: true });
       } catch (err) {
         console.error("Error processing Google callback:", err);
         // 에러 발생 시 알림 후 로그인 페이지로 이동

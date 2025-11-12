@@ -12,6 +12,8 @@ import {
 import logo from "@/assets/logo/logo.svg";
 import { ICONS } from "@/constants/icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { clearAuth } from "@/services/auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface MenuItem {
   id: string;
@@ -22,13 +24,24 @@ interface MenuItem {
 
 function MenuItemComponent({ item }: { item: MenuItem }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { setLoginToken } = useAuth();
   const isActive = location.pathname === item.menuURL;
   const isLogout = item.id === "logout";
+
+  const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    clearAuth();
+    setLoginToken(false);
+    // 랜딩 페이지로 이동
+    navigate("/landing", { replace: true });
+  };
 
   return (
     <li className={`${menuItem}`}>
       <Link
         to={item.menuURL}
+        onClick={isLogout ? handleLogout : undefined}
         className={`${menuLink} ${isLogout ? logoutLink : ""} ${
           isActive ? menuItemActive : ""
         }`}
