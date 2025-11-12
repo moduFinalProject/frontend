@@ -151,10 +151,6 @@ export const jobList = style({
   flexDirection: "column",
   gap: vars.spacing.md,
   listStyle: "none",
-
-  "li article:hover": {
-    boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
-  },
 });
 
 export const card = style({
@@ -165,6 +161,11 @@ export const card = style({
   borderRadius: vars.borderRadius.lg,
   transition:
     "border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease",
+  selectors: {
+    "&:hover": {
+      boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
+    },
+  },
 });
 
 export const cardVariant = styleVariants({

@@ -1,13 +1,41 @@
-import { card, grid } from "./JobCard.css.ts";
+import { vars } from "@/design-system/index.ts";
+import { card, grid, titleText } from "./JobCard.css.ts";
+import { Button } from "@/components/index.ts";
 
 type rowData = {
   children: React.ReactNode;
+  title?: string;
+  isMust?: boolean;
+  useButton?: boolean;
   span?: number;
 };
 
-export default function JobCard({ children }: rowData) {
+export default function JobCard({
+  title,
+  children,
+  isMust = false,
+  useButton = false,
+}: rowData) {
   return (
     <section className={card} style={{ gridColumn: "span 2" }}>
+      <h3 className={titleText}>
+        {title}
+        {isMust && <span style={{ color: vars.color.delete }}> *</span>}
+      </h3>
+      {useButton && (
+        <div>
+          <Button
+            callback={() => {
+              alert("개발중입니다.");
+            }}
+            color="white"
+            text="추가"
+            widthStyle="fit"
+            icon="PLUSBLACK"
+          />
+        </div>
+      )}
+
       <div className={grid}>{children}</div>
     </section>
   );

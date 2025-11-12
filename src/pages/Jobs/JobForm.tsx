@@ -280,9 +280,9 @@ export default function JobForm({ mode }: JobFormProps) {
         }}
       >
         <div className={`${innerContainer} ${cardSectionList}`}>
-          <JobCard isMust>
+          <JobCard>
             <JobCardRow
-              value="* 표시는 필수 항목입니다. (채용 제목, 회사명, 내용 요약, 자격 요건)"
+              value="표시는 필수 항목입니다. (채용 제목, 회사명, 내용 요약, 자격 요건)"
               widthType="full"
             />
           </JobCard>

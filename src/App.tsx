@@ -15,14 +15,16 @@ import ResumeDetail from "@/pages/Resume/ResumeDetail";
 import ResumeCorrection from "@/pages/Resume/ResumeCorrection";
 import ResumeForm from "@/pages/Resume/ResumeForm";
 
-import ResumeFeedback from "@/pages/ResumeFeedback";
-import ResumeFeedbackList from "@/pages/ResumeFeedback/ResumeFeedbackList";
+import ResumeFeedbackLayout, {
+  ResumeFeedbackList,
+} from "@/pages/ResumeFeedback";
 import ResumeFeedbackDetail from "@/pages/ResumeFeedback/ResumeFeedbackDetail";
 
 import Jobs from "@/pages/Jobs";
 import JobList from "@/pages/Jobs/JobList";
 import JobDetail from "@/pages/Jobs/JobDetail";
 import JobForm from "@/pages/Jobs/JobForm";
+import ResumeFeedbackForm from "./pages/ResumeFeedback/ResumeFeedbackForm";
 
 // 임시 페이지
 const Interview = () => (
@@ -130,12 +132,11 @@ function App() {
       </Route>
 
       <Route
-        path="/resumeFeedbackHis"
+        path="/resumeFeedback"
         element={
           loginToken ? (
             <Layout>
-              {/* <ProtectedRoute element={<ResumeFeedback />} /> */}
-              <ResumeFeedback />
+              <ProtectedRoute element={<ResumeFeedbackLayout />} />
             </Layout>
           ) : (
             <Landing />
@@ -143,6 +144,7 @@ function App() {
         }
       >
         <Route index element={<ResumeFeedbackList />} />
+        <Route path="new" element={<ResumeFeedbackForm />} />
         <Route path=":id" element={<ResumeFeedbackDetail />} />
       </Route>
 
