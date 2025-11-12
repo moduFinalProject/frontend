@@ -5,7 +5,7 @@ import JobCard from "./components/card/JobCard";
 import JobCardRow from "./components/card/JobCardRow";
 import { cardSectionList } from "./JobDetail.css.ts";
 import { container, innerContainer } from "./index.css.ts";
-import { fetchJobDetail, type JobDetailData } from "./api";
+import { fetchJobDetail, type JobDetailData } from "./api.ts";
 
 const EMPTY_MESSAGE = "등록된 내용이 없습니다.";
 
@@ -18,7 +18,7 @@ export default function JobDetail() {
     error,
   } = useQuery<JobDetailData>({
     queryKey: ["job-detail", id],
-    queryFn: () => fetchJobDetail(id ?? ""),
+    queryFn: () => fetchJobDetail(id!),
     enabled: Boolean(id),
   });
 
@@ -51,13 +51,6 @@ export default function JobDetail() {
     );
   }
 
-  const qualificationItems = jobData.qualification.filter(
-    (item) => item.trim().length > 0
-  );
-  const preferItems = (jobData.prefer ?? []).filter(
-    (item) => item.trim().length > 0
-  );
-
   return (
     <main className={`${container} ${innerContainer} ${cardSectionList}`}>
       <JobCard title="기본 정보">
@@ -78,24 +71,16 @@ export default function JobDetail() {
       </JobCard>
 
       <JobCard title="자격 요건">
-        {qualificationItems.length > 0 ? (
-          qualificationItems.map((requirement) => (
-            <JobCardRow
-              key={requirement}
-              value={requirement}
-              widthType="full"
-            />
-          ))
+        {jobData.qualification ? (
+          <JobCardRow desc={jobData.qualification} widthType="full" isPreWrap />
         ) : (
           <JobCardRow value={EMPTY_MESSAGE} widthType="full" />
         )}
       </JobCard>
 
       <JobCard title="우대 사항">
-        {preferItems.length > 0 ? (
-          preferItems.map((preference) => (
-            <JobCardRow key={preference} value={preference} widthType="full" />
-          ))
+        {jobData.prefer ? (
+          <JobCardRow desc={jobData.prefer} widthType="full" isPreWrap />
         ) : (
           <JobCardRow value={EMPTY_MESSAGE} widthType="full" />
         )}

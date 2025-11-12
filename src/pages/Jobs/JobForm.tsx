@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 
 import Text, { Textarea } from "@/components/FormElem/text";
@@ -7,20 +7,33 @@ import JobCard from "./components/card/JobCard";
 import JobCardRow from "./components/card/JobCardRow";
 import { cardSectionList } from "./JobDetail.css.ts";
 import { container, innerContainer } from "./index.css.ts";
-import {
-  fetchJobDetail,
-  saveJob,
-  type JobDetailData,
-  type JobUpsertInput,
-} from "./api";
 
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  createJobPosting,
+  updateJobPosting,
+  fetchJobDetail,
+  type CreateJobPostingData,
+  type JobPosting as JobDetailData,
+} from "./api";
 
 const MIN_TITLE_LENGTH = 2;
 const MIN_COMPANY_LENGTH = 2;
 const MIN_CONTENT_LENGTH = 10;
 const MIN_QUALIFICATION_LENGTH = 2;
+
+const optionalUrlValidator = ({ value }: { value: string }) => {
+  const trimmed = (value ?? "").trim();
+  if (!trimmed) return undefined;
+
+  try {
+    new URL(trimmed);
+    return undefined;
+  } catch {
+    return "유효한 URL을 입력해주세요.";
+  }
+};
 
 const jobInfoSchema = z.object({
   id: z.string().optional(),
@@ -72,47 +85,9 @@ const createEmptyFormValues = (): JobFormValues => ({
   memo: "",
 });
 
-const createMinLengthValidator =
-  (min: number, message: string) =>
-  ({ value }: { value: string }) => {
-    const trimmed = (value ?? "").trim();
-    return trimmed.length >= min ? undefined : message;
-  };
-
-const optionalUrlValidator = ({ value }: { value: string }) => {
-  const trimmed = (value ?? "").trim();
-  if (!trimmed) return undefined;
-  try {
-    new URL(trimmed);
-    return undefined;
-  } catch {
-    return "유효한 URL을 입력해주세요.";
-  }
-};
-
-const splitByLine = (source: string) =>
-  source
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0);
-
-function mapDetailToFormValues(
-  detail: Awaited<ReturnType<typeof fetchJobDetail>>
-): JobFormValues {
-  return {
-    id: detail.id,
-    url: detail.url ?? "",
-    title: detail.title,
-    company: detail.company ?? "",
-    content: detail.content,
-    qualification: detail.qualification.join("\n"),
-    prefer: (detail.prefer ?? []).join("\n"),
-    memo: detail.memo ?? "",
-  };
-}
-
 export default function JobForm({ mode }: JobFormProps) {
   const { id } = useParams();
+  const navigate = useNavigate();
   const isEditMode = mode === "edit" && Boolean(id);
 
   const titleRef = useRef<HTMLInputElement>(null);
@@ -140,22 +115,36 @@ export default function JobForm({ mode }: JobFormProps) {
     data: jobDetail,
     isPending: isDetailPending,
     isError: isDetailError,
-    error: detailError,
+    error: _detailError,
   } = useQuery<JobDetailData>({
     queryKey: ["job-detail", id],
-    queryFn: () => fetchJobDetail(id ?? ""),
+    queryFn: () => fetchJobDetail(id!),
     enabled: isEditMode && Boolean(id),
   });
 
   const queryClient = useQueryClient();
 
   const saveMutation = useMutation({
-    mutationFn: saveJob,
-    onSuccess: async (detail) => {
+    mutationFn: ({
+      payload,
+      isEdit,
+    }: {
+      payload: CreateJobPostingData & { id?: string };
+      isEdit: boolean;
+    }) => {
+      if (isEdit) {
+        return updateJobPosting(Number(payload.id), payload);
+      }
+      return createJobPosting(payload);
+    },
+    onSuccess: async (savedJob) => {
       await queryClient.invalidateQueries({
-        queryKey: ["job-detail", detail.id],
+        queryKey: ["job-detail", String(savedJob.posting_id)],
       });
-      await queryClient.invalidateQueries({ queryKey: ["job-list"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["job-list"],
+        exact: true,
+      });
     },
   });
 
@@ -174,32 +163,31 @@ export default function JobForm({ mode }: JobFormProps) {
           memo: value.memo.trim(),
         };
 
-        jobInfoSchema.parse(trimmedValue);
-
-        const qualificationValues = splitByLine(trimmedValue.qualification);
-        const preferValues = splitByLine(trimmedValue.prefer);
-
-        const payload: JobUpsertInput = {
-          id: trimmedValue.id?.trim() ? trimmedValue.id : undefined,
-          userId: jobDetail?.userId,
-          url: trimmedValue.url?.trim() ? trimmedValue.url.trim() : undefined,
-          title: trimmedValue.title,
-          company: trimmedValue.company,
-          content: trimmedValue.content,
-          qualification: qualificationValues,
-          prefer: preferValues.length > 0 ? preferValues : undefined,
-          memo: trimmedValue.memo ? trimmedValue.memo : undefined,
+        const payload: CreateJobPostingData & { id?: string } = {
+          ...trimmedValue,
+          id: isEditMode ? id : undefined,
+          url: trimmedValue.url || undefined,
+          prefer: trimmedValue.prefer || undefined,
+          memo: trimmedValue.memo || undefined,
         };
 
-        console.log(
-          isEditMode ? "Edit mode payload:" : "Create mode payload:",
-          payload
-        );
-        await saveMutation.mutateAsync(payload);
+        const savedJob = await saveMutation.mutateAsync({
+          payload,
+          isEdit: isEditMode,
+        });
+
         alert("채용공고가 저장되었습니다.");
+        if (!isEditMode) {
+          navigate(`/jobs/${savedJob.posting_id}`);
+        }
       } catch (err) {
         if (err instanceof z.ZodError) {
           console.error("검증 오류:", err.issues);
+        } else if (err instanceof Error) {
+          console.error("저장 실패:", err);
+          alert(`저장에 실패했습니다: ${err.message}`);
+        } else {
+          alert("알 수 없는 오류로 저장에 실패했습니다.");
         }
       }
     },
@@ -244,8 +232,18 @@ export default function JobForm({ mode }: JobFormProps) {
 
   useEffect(() => {
     if (jobDetail) {
-      const mapped = mapDetailToFormValues(jobDetail);
-      jobInfoForm.reset(mapped);
+      // API 응답 데이터를 폼 값으로 변환합니다.
+      const formValues = {
+        id: String(jobDetail.posting_id),
+        url: jobDetail.url ?? "",
+        title: jobDetail.title,
+        company: jobDetail.company ?? "",
+        content: jobDetail.content,
+        qualification: jobDetail.qualification,
+        prefer: jobDetail.prefer ?? "",
+        memo: jobDetail.memo ?? "",
+      };
+      jobInfoForm.reset(formValues);
     }
   }, [jobDetail, jobInfoForm]);
 
@@ -259,8 +257,8 @@ export default function JobForm({ mode }: JobFormProps) {
 
   if (isEditMode && isDetailError) {
     const message =
-      detailError instanceof Error
-        ? detailError.message
+      _detailError instanceof Error
+        ? _detailError.message
         : "채용공고 정보를 불러오지 못했습니다.";
     return (
       <main className={`${container} ${cardSectionList}`}>
@@ -290,12 +288,7 @@ export default function JobForm({ mode }: JobFormProps) {
           <JobCard title="기본 정보" isMust>
             <jobInfoForm.Field
               name="title"
-              validators={{
-                onChange: createMinLengthValidator(
-                  MIN_TITLE_LENGTH,
-                  `제목은 ${MIN_TITLE_LENGTH}글자 이상이어야 합니다.`
-                ),
-              }}
+              validators={{ onChange: jobInfoSchema.shape.title }}
             >
               {(field) => (
                 <JobCardRow
@@ -318,12 +311,7 @@ export default function JobForm({ mode }: JobFormProps) {
 
             <jobInfoForm.Field
               name="company"
-              validators={{
-                onChange: createMinLengthValidator(
-                  MIN_COMPANY_LENGTH,
-                  `회사명은 ${MIN_COMPANY_LENGTH}글자 이상이어야 합니다.`
-                ),
-              }}
+              validators={{ onChange: jobInfoSchema.shape.company }}
             >
               {(field) => (
                 <JobCardRow
@@ -346,9 +334,7 @@ export default function JobForm({ mode }: JobFormProps) {
 
             <jobInfoForm.Field
               name="url"
-              validators={{
-                onBlur: optionalUrlValidator,
-              }}
+              validators={{ onBlur: optionalUrlValidator }}
             >
               {(field) => (
                 <JobCardRow
@@ -369,12 +355,7 @@ export default function JobForm({ mode }: JobFormProps) {
 
             <jobInfoForm.Field
               name="qualification"
-              validators={{
-                onChange: createMinLengthValidator(
-                  MIN_QUALIFICATION_LENGTH,
-                  "자격 요건을 입력해주세요."
-                ),
-              }}
+              validators={{ onChange: jobInfoSchema.shape.qualification }}
             >
               {(field) => (
                 <JobCardRow

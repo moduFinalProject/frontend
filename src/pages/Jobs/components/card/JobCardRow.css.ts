@@ -44,6 +44,10 @@ export const descText = style({
   fontSize: vars.typography.fontSize.sm,
 });
 
+export const preWrap = style({
+  whiteSpace: "pre-wrap",
+});
+
 export const descTextLink = style({
   textDecoration: "none",
   color: "inherit",

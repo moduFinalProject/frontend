@@ -10,7 +10,7 @@ import {
 interface InputProps {
   label?: string;
   placeholder?: string;
-  name: string;
+  name?: string;
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
@@ -44,7 +44,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, InputProps>(function Textarea(
         </label>
       )}
       <textarea
-        name={name}
+        name={name ?? ""}
         ref={ref}
         style={{ resize: "none" }}
         className={`${inputBase} ${error && errorInput}`}
@@ -57,7 +57,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, InputProps>(function Textarea(
       />
       <p>글자 수: {value?.length}</p>
       {error && (
-        <span id={name} className={errorMessage}>
+        <span id={name ? `${name}-error` : undefined} className={errorMessage}>
           {error}
         </span>
       )}

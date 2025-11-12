@@ -16,6 +16,7 @@ import {
   noImg,
   imgRow,
 } from "./JobCardRow.css.ts";
+import { preWrap } from "./JobCardRow.css.ts";
 
 import type { ReactNode } from "react";
 import { ICONS } from "@/constants/icons.ts";
@@ -31,6 +32,7 @@ type rowData = {
   isLisence?: boolean;
   isUrl?: boolean;
   isPhoto?: boolean;
+  isPreWrap?: boolean;
   input?: ReactNode;
   widthType: "half" | "full";
 };
@@ -46,6 +48,7 @@ export default function JobCardRow({
   isLisence = false,
   isUrl = false,
   isPhoto = false,
+  isPreWrap = false,
   input,
   widthType,
 }: rowData) {
@@ -71,22 +74,25 @@ export default function JobCardRow({
           {date && <p className={dateText}>{date}</p>}
         </div>
       )}
-      {desc && (
-        <div className={descText}>
-          {desc.split("\n").map((line, idx) => (
-            <Fragment key={idx}>
-              {isUrl ? (
-                <a className={descTextLink} href={line} target="_blank">
-                  {line}
-                </a>
-              ) : (
-                line
-              )}
-              <br />
-            </Fragment>
-          ))}
-        </div>
-      )}
+      {desc &&
+        (isPreWrap ? (
+          <p className={`${descText} ${preWrap}`}>{desc}</p>
+        ) : (
+          <div className={descText}>
+            {desc.split("\n").map((line, idx) => (
+              <Fragment key={idx}>
+                {isUrl ? (
+                  <a className={descTextLink} href={line} target="_blank">
+                    {line}
+                  </a>
+                ) : (
+                  line
+                )}
+                <br />
+              </Fragment>
+            ))}
+          </div>
+        ))}
       <div className={imgRow}>
         {isPhoto && (
           <div id="imgWrap" className={imgWrap}>
