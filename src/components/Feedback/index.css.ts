@@ -61,10 +61,13 @@ export const resultList = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.md,
+
+  gridColumn: "span 2",
 });
 
 export const resume = style({
   fontSize: vars.typography.fontSize.sm,
+  gridColumn: "span 2",
 
   h4: {
     fontWeight: vars.typography.fontWeight.normal,
@@ -132,6 +135,7 @@ export const resultPart = styleVariants({
 export const keywordMatching = style({
   paddingBottom: vars.spacing.md,
   borderBottom: `1px solid ${vars.color.line}`,
+  gridColumn: "span 2",
 });
 
 export const progressTitle = style({
@@ -157,4 +161,7 @@ export const progressValue = style({
 });
 export const progressText = style({
   fontSize: vars.typography.fontSize.sm,
+});
+export const btnWrap = style({
+  gridColumn: "span 2",
 });
