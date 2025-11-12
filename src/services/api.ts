@@ -29,6 +29,7 @@ export interface JobPosting {
   qualification: string;
   prefer: string | null;
   memo: string | null;
+  end_date: string | null;
   posting_id: number;
   user_id: number;
   created_at: string;
@@ -39,6 +40,7 @@ export interface CreateJobPostingData {
   url?: string | null;
   title: string;
   company: string;
+  end_date: string;
   qualification: string;
   prefer?: string | null;
   memo?: string | null;

@@ -8,6 +8,20 @@ import { container, innerContainer } from "./index.css.ts";
 import { fetchJobDetail, type JobDetailData } from "./api.ts";
 
 const EMPTY_MESSAGE = "등록된 내용이 없습니다.";
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+
+const formatEndDate = (value: string | null | undefined) => {
+  if (!value) return EMPTY_MESSAGE;
+  if (DATE_REGEX.test(value)) return value;
+  const tentative = value.slice(0, 10);
+  if (DATE_REGEX.test(tentative)) return tentative;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return EMPTY_MESSAGE;
+  const year = parsed.getUTCFullYear();
+  const month = String(parsed.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(parsed.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export default function JobDetail() {
   const { id } = useParams();
@@ -64,10 +78,11 @@ export default function JobDetail() {
           value={jobData.company || EMPTY_MESSAGE}
           widthType="half"
         />
-      </JobCard>
-
-      <JobCard title="내용 요약">
-        <JobCardRow desc={jobData.content || EMPTY_MESSAGE} widthType="full" />
+        <JobCardRow
+          label="마감일"
+          value={formatEndDate(jobData.end_date)}
+          widthType="half"
+        />
       </JobCard>
 
       <JobCard title="자격 요건">

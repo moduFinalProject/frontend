@@ -21,6 +21,7 @@ import {
 const MIN_TITLE_LENGTH = 2;
 const MIN_COMPANY_LENGTH = 2;
 const MIN_QUALIFICATION_LENGTH = 2;
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 const optionalUrlValidator = ({ value }: { value: string }) => {
   const trimmed = (value ?? "").trim();
@@ -53,6 +54,23 @@ const flattenErrors = (errors: unknown[]): string =>
     .filter(Boolean)
     .join(", ");
 
+const normalizeDateString = (value: string | null | undefined) => {
+  if (!value) return "";
+  if (DATE_REGEX.test(value)) return value;
+  const tentative = value.slice(0, 10);
+  if (DATE_REGEX.test(tentative)) {
+    return tentative;
+  }
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return "";
+  }
+  const year = parsed.getUTCFullYear();
+  const month = String(parsed.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(parsed.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 const jobInfoSchema = z.object({
   id: z.string().optional(),
   url: z
@@ -67,6 +85,7 @@ const jobInfoSchema = z.object({
       MIN_COMPANY_LENGTH,
       `회사명은 ${MIN_COMPANY_LENGTH}글자 이상이어야 합니다.`
     ),
+  end_date: z.string().regex(DATE_REGEX, "마감일을 선택해주세요."),
   qualification: z
     .string()
     .min(MIN_QUALIFICATION_LENGTH, "자격 요건을 입력해주세요."),
@@ -83,6 +102,7 @@ type JobFormValues = {
   url: string;
   title: string;
   company: string;
+  end_date: string;
   qualification: string;
   prefer: string;
   memo: string;
@@ -93,6 +113,7 @@ const createEmptyFormValues = (): JobFormValues => ({
   url: "",
   title: "",
   company: "",
+  end_date: "",
   qualification: "",
   prefer: "",
   memo: "",
@@ -105,16 +126,22 @@ export default function JobForm({ mode }: JobFormProps) {
 
   const titleRef = useRef<HTMLInputElement>(null);
   const companyRef = useRef<HTMLInputElement>(null);
+  const endDateRef = useRef<HTMLInputElement>(null);
   const qualificationRef = useRef<HTMLTextAreaElement>(null);
 
   const fieldRefs = {
     title: titleRef,
     company: companyRef,
-
+    end_date: endDateRef,
     qualification: qualificationRef,
   } as const;
 
-  const requiredFieldOrder = ["title", "company", "qualification"] as const;
+  const requiredFieldOrder = [
+    "title",
+    "company",
+    "end_date",
+    "qualification",
+  ] as const;
 
   const defaultFormValues = useMemo(() => createEmptyFormValues(), []);
 
@@ -164,15 +191,19 @@ export default function JobForm({ mode }: JobFormProps) {
           url: value.url.trim(),
           title: value.title.trim(),
           company: value.company.trim(),
+          end_date: value.end_date.trim(),
           qualification: value.qualification.trim(),
           prefer: value.prefer.trim(),
           memo: value.memo.trim(),
         };
 
+        jobInfoSchema.parse(trimmedValue);
+
         const payload: CreateJobPostingData & { id?: string } = {
           ...trimmedValue,
           id: isEditMode ? id : undefined,
           url: trimmedValue.url || undefined,
+          end_date: trimmedValue.end_date,
           prefer: trimmedValue.prefer || undefined,
           memo: trimmedValue.memo || undefined,
         };
@@ -244,6 +275,7 @@ export default function JobForm({ mode }: JobFormProps) {
         url: jobDetail.url ?? "",
         title: jobDetail.title,
         company: jobDetail.company ?? "",
+        end_date: normalizeDateString(jobDetail.end_date),
         qualification: jobDetail.qualification,
         prefer: jobDetail.prefer ?? "",
         memo: jobDetail.memo ?? "",
@@ -285,7 +317,7 @@ export default function JobForm({ mode }: JobFormProps) {
         <div className={`${innerContainer} ${cardSectionList}`}>
           <JobCard isMust={true}>
             <JobCardRow
-              value="표시는 필수 항목입니다. (채용 제목, 회사명, 내용 요약, 자격 요건)"
+              value="표시는 필수 항목입니다. (채용 제목, 회사명, 마감일, url, 자격 요건, 우대 사항)"
               widthType="full"
             />
           </JobCard>
@@ -331,6 +363,29 @@ export default function JobForm({ mode }: JobFormProps) {
                       error={flattenErrors(field.state.meta.errors)}
                       placeholder="네이버"
                       ref={companyRef}
+                    />
+                  }
+                />
+              )}
+            </jobInfoForm.Field>
+
+            <jobInfoForm.Field
+              name="end_date"
+              validators={{ onBlur: jobInfoSchema.shape.end_date }}
+            >
+              {(field) => (
+                <JobCardRow
+                  widthType="half"
+                  input={
+                    <Text
+                      isMust
+                      type="date"
+                      label="마감일"
+                      value={field.state.value}
+                      onChange={field.handleChange}
+                      onBlur={field.handleBlur}
+                      error={flattenErrors(field.state.meta.errors)}
+                      ref={endDateRef}
                     />
                   }
                 />
