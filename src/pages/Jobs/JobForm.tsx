@@ -20,7 +20,6 @@ import {
 
 const MIN_TITLE_LENGTH = 2;
 const MIN_COMPANY_LENGTH = 2;
-const MIN_CONTENT_LENGTH = 10;
 const MIN_QUALIFICATION_LENGTH = 2;
 
 const optionalUrlValidator = ({ value }: { value: string }) => {
