@@ -291,7 +291,7 @@ export const basicInfoSchema = z.object({
       MAX_TITLE_LENGTH,
       `이력서 이름을 ${MAX_TITLE_LENGTH}글자 이하 입력하세요.`
     ),
-  // photoUrl: z.union([photoUrlFileSchema, photoUrlStringSchema]).optional(),
+  photoUrl: z.union([photoUrlFileSchema, photoUrlStringSchema]).optional(),
   user_info: z.object({
     name: z
       .string()
