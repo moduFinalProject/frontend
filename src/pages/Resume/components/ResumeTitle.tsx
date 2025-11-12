@@ -41,7 +41,7 @@ export default function ResumeTitle({
             widthStyle="fit"
             icon="PREV"
             callback={() => {
-              navigate(-1);
+              navigate("/resume");
             }}
           />
         )}
