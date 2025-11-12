@@ -34,7 +34,7 @@ export const FIELD_LABELS: Record<string, labelPlaceholderSet> = {
   projects: {
     label: "프로젝트",
   },
-  activites: {
+  activiteis: {
     label: "대외 활동",
   },
   qualifications: {

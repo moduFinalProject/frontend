@@ -89,7 +89,7 @@ type ResumeFormValues = {
   self_introduction: string;
   experiences?: ExperienceItem[];
   projects?: ProjectItem[];
-  activites?: ActivityItem[];
+  activiteis?: ActivityItem[];
   technology_stacks?: string[];
   qualifications?: QualificationItem[];
 };
@@ -168,7 +168,7 @@ const resumeDataSample: ResumeFormValues = {
         "- 사내 업무 효율화를 위한 관리 시스템 개발\n- 실시간 데이터 동기화를 위한 WebSocket 구현\n- Chart.js를 활용한 데이터 시각화 대시보드 개발\n- 사용자 권한 관리 시스템 구축",
     },
   ],
-  activites: [
+  activiteis: [
     {
       title: "오픈소스 프로젝트 기여",
       start_date: "2020-06",
@@ -271,7 +271,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         self_introduction: "",
         experiences: [],
         projects: [],
-        activites: [],
+        activiteis: [],
         technology_stacks: [],
         qualifications: [],
       };
@@ -296,23 +296,27 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           ...resumeData,
         };
 
+        const formData = new FormData();
         if (dataToFlatten.user_info) {
           const flattenedData = {
             ...dataToFlatten.user_info,
             ...dataToFlatten,
+            resume_type: "1",
           };
           delete flattenedData.user_info;
 
           const finalData = flattenedData;
           console.log(finalData);
 
-          const formData = new FormData();
           formData.append("data", JSON.stringify(finalData));
 
           if (photoFile) {
             formData.append("photo", photoFile, photoFile.name);
           }
         }
+        console.log(formData);
+        console.log(formData.get("photo"));
+        console.log(formData.get("data"));
 
         // fetch 요청
         // fetch("/api/resumes", {
@@ -746,7 +750,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
             if (key === "experiences") newItem = emptyExperienceItem;
             else if (key === "educations") newItem = emptyEducationItem;
             else if (key === "projects") newItem = emptyProjectItem;
-            else if (key === "activites") newItem = emptyActivityItem;
+            else if (key === "activiteis") newItem = emptyActivityItem;
             else if (key === "qualifications") newItem = emptyQualificationItem;
 
             if (newItem) {
@@ -934,7 +938,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     "마감년월을 입력하세요."
                                   ),
                               },
-                              activites: {
+                              activiteis: {
                                 title: z
                                   .string()
                                   .trim()
@@ -1045,7 +1049,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                       ? EXPERIENCE_LABELS[k].label
                                       : key === "projects"
                                       ? PROJECT_LABELS[k].label
-                                      : key === "activites"
+                                      : key === "activiteis"
                                       ? ACTIVITY_LABELS[k].label
                                       : QUALIFICATIONS_LABELS[k].label
                                   }
@@ -1060,7 +1064,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                       ? EXPERIENCE_LABELS[k].placeholder
                                       : key === "projects"
                                       ? PROJECT_LABELS[k].placeholder
-                                      : key === "activites"
+                                      : key === "activiteis"
                                       ? ACTIVITY_LABELS[k].placeholder
                                       : QUALIFICATIONS_LABELS[k].placeholder
                                   }
@@ -1095,7 +1099,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                         ? EXPERIENCE_LABELS[k].label
                                         : key === "projects"
                                         ? PROJECT_LABELS[k].label
-                                        : key === "activites"
+                                        : key === "activiteis"
                                         ? ACTIVITY_LABELS[k].label
                                         : QUALIFICATIONS_LABELS[k].label
                                     }
@@ -1106,7 +1110,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                         ? EXPERIENCE_LABELS[k].placeholder
                                         : key === "projects"
                                         ? PROJECT_LABELS[k].placeholder
-                                        : key === "activites"
+                                        : key === "activiteis"
                                         ? ACTIVITY_LABELS[k].placeholder
                                         : QUALIFICATIONS_LABELS[k].placeholder
                                     }
