@@ -1,6 +1,7 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Layout from "@/components/Layout/Layout";
+import { useAuth } from "@/contexts/AuthContext";
 
 import Landing from "@/pages/Landing";
 import NotFound from "@/pages/NotFound";
@@ -51,29 +52,21 @@ const StudyGuide = () => (
 );
 
 function App() {
-  const loginToken: boolean = true;
-  // const loginToken: boolean = !!localStorage.getItem("access_token");
-
-  const ProtectedRoute = ({ element }: { element: React.ReactNode }) => {
-    if (!loginToken) {
-      return <Landing />;
-    }
-    return element as React.ReactElement;
-  };
+  const { loginToken } = useAuth();
 
   return (
     <Routes>
-      <Route path="/landing" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/googleCallback" element={<GoogleCallback />} />
-      <Route path="/SocialSignUp" element={<SocialSignUp />} />
+      <Route path="/landing" element={loginToken ? <Navigate to="/dashboard" replace /> : <Landing />} />
+      <Route path="/login" element={loginToken ? <Navigate to="/dashboard" replace /> : <Login />} />
+      <Route path="/googleCallback" element={loginToken ? <Navigate to="/dashboard" replace /> : <GoogleCallback />} />
+      <Route path="/SocialSignUp" element={loginToken ? <Navigate to="/dashboard" replace /> : <SocialSignUp />} />
 
       <Route
         path="/"
         element={
           loginToken ? (
             <Layout>
-              <ProtectedRoute element={<Dashboard />} />
+              <Dashboard />
             </Layout>
           ) : (
             <Landing />
@@ -86,7 +79,7 @@ function App() {
         element={
           loginToken ? (
             <Layout>
-              <ProtectedRoute element={<Dashboard />} />
+              <Dashboard />
             </Layout>
           ) : (
             <Landing />
@@ -136,7 +129,7 @@ function App() {
         element={
           loginToken ? (
             <Layout>
-              <ProtectedRoute element={<ResumeFeedbackLayout />} />
+              <ResumeFeedbackLayout />
             </Layout>
           ) : (
             <Landing />
@@ -153,7 +146,7 @@ function App() {
         element={
           loginToken ? (
             <Layout>
-              <ProtectedRoute element={<Interview />} />
+              <Interview />
             </Layout>
           ) : (
             <Landing />
@@ -166,7 +159,7 @@ function App() {
         element={
           loginToken ? (
             <Layout>
-              <ProtectedRoute element={<StudyGuide />} />
+              <StudyGuide />
             </Layout>
           ) : (
             <Landing />
@@ -179,7 +172,7 @@ function App() {
         element={
           loginToken ? (
             <Layout>
-              <ProtectedRoute element={<Profile />} />
+              <Profile />
             </Layout>
           ) : (
             <Landing />

@@ -7,6 +7,8 @@ import Button from "@/components/Button/Button";
 import Text from "@/components/FormElem/text/Text";
 import logo from "@/assets/logo/logo.svg";
 import { loginWithEmail } from "@/services/api";
+import { saveAuthToken } from "@/services/auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Zod 스키마 정의
 const loginSchema = z.object({
@@ -20,7 +22,7 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>;
 
-async function loginProcess(formData: LoginForm, navigate: ReturnType<typeof useNavigate>, setError: (error: string | null) => void, setLoading: (loading: boolean) => void): Promise<void> {
+async function loginProcess(formData: LoginForm, navigate: ReturnType<typeof useNavigate>, setError: (error: string | null) => void, setLoading: (loading: boolean) => void, setLoginToken: (token: boolean) => void): Promise<void> {
   try {
     setError(null);
     setLoading(true);
@@ -28,8 +30,8 @@ async function loginProcess(formData: LoginForm, navigate: ReturnType<typeof use
     const response = await loginWithEmail(formData.email, formData.password);
 
     // 로그인 성공 시 토큰 저장
-    localStorage.setItem("access_token", response.access_token);
-    localStorage.setItem("user", JSON.stringify(response.user));
+    saveAuthToken(response.access_token, response.user);
+    setLoginToken(true);
 
     // 대시보드로 이동
     navigate("/");
@@ -102,6 +104,7 @@ function googleOAuth2SignIn(): void {
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setLoginToken } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -111,7 +114,7 @@ export default function Login() {
       password: '',
     } as LoginForm,
     onSubmit: async ({ value }) => {
-      loginProcess(value, navigate, setError, setLoading);
+      loginProcess(value, navigate, setError, setLoading, setLoginToken);
     },
   });
 
