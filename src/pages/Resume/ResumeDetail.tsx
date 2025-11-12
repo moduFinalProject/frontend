@@ -185,7 +185,7 @@ export default function ResumeDetail() {
   // };
 
   useEffect(() => {
-    if (!id && isLoad) return;
+    if (!id && isLoading) return;
 
     setIsLoading(false);
 
