@@ -1,12 +1,34 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components";
 import { headerText, subPage, btnsWrap, prevWrap } from "./ResumeTitle.css.ts";
+import { fetchWithAuth } from "@/services/api.ts";
 
 interface ResumeProps {
   mode: "list" | "view" | "create" | "edit" | "correction";
   title: string;
   desc: string;
   resumeId?: string;
+}
+
+async function delResume(resume_id: string | undefined) {
+  if (resume_id === undefined) return;
+  console.log(resume_id, "삭제 시도");
+
+  try {
+    const response = await fetchWithAuth(`/resumes/${resume_id}`, {
+      method: "PATCH",
+    });
+
+    if (!response.ok) {
+      throw new Error(`API 요청 실패: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error("로딩 중 에러:", error);
+  }
 }
 
 export default function ResumeTitle({
@@ -41,7 +63,7 @@ export default function ResumeTitle({
             widthStyle="fit"
             icon="PREV"
             callback={() => {
-              navigate(-1);
+              navigate("/resume");
             }}
           />
         )}
@@ -92,8 +114,14 @@ export default function ResumeTitle({
               text="삭제"
               color="red"
               widthStyle="fit"
-              callback={() => {
-                if (confirm("삭제하시겠습니까?")) alert("삭제되었습니다");
+              callback={async () => {
+                if (confirm("삭제하시겠습니까?")) {
+                  const result = await delResume(id);
+                  console.log(result);
+
+                  alert("삭제되었습니다");
+                  navigate("/resume");
+                }
               }}
             />
             <Button

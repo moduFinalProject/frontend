@@ -6,7 +6,7 @@ type labelPlaceholderSet = { label: string; placeholder?: string };
 export const FIELD_LABELS: Record<string, labelPlaceholderSet> = {
   // 최상위 필드
   title: { label: "이력서 제목", placeholder: "이력서 제목을 입력하세요" },
-  photoUrl: {
+  image_url: {
     label: "증명사진",
     placeholder: "권장 크기: 3:4 비율 (예: 300x400px)",
   },
@@ -34,7 +34,7 @@ export const FIELD_LABELS: Record<string, labelPlaceholderSet> = {
   projects: {
     label: "프로젝트",
   },
-  activiteis: {
+  activities: {
     label: "대외 활동",
   },
   qualifications: {
