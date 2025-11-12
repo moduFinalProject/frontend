@@ -31,6 +31,7 @@ import {
   MAX_TITLE_LENGTH,
 } from "./components/form/validators.ts";
 import { errorInput } from "@/components/FormElem/text/Input.css.ts";
+import { fetchWithAuth } from "@/services/api.ts";
 
 interface ResumeFormProps {
   mode: "create" | "edit";
@@ -89,7 +90,7 @@ type ResumeFormValues = {
   self_introduction: string;
   experiences?: ExperienceItem[];
   projects?: ProjectItem[];
-  activiteis?: ActivityItem[];
+  activities?: ActivityItem[];
   technology_stacks?: string[];
   qualifications?: QualificationItem[];
 };
@@ -168,7 +169,7 @@ const resumeDataSample: ResumeFormValues = {
         "- 사내 업무 효율화를 위한 관리 시스템 개발\n- 실시간 데이터 동기화를 위한 WebSocket 구현\n- Chart.js를 활용한 데이터 시각화 대시보드 개발\n- 사용자 권한 관리 시스템 구축",
     },
   ],
-  activiteis: [
+  activities: [
     {
       title: "오픈소스 프로젝트 기여",
       start_date: "2020-06",
@@ -210,6 +211,28 @@ const resumeDataSample: ResumeFormValues = {
     },
   ],
 };
+
+async function createResume(formData, id = null) {
+  const url = "/resumes";
+  const methodType = "POST";
+  console.log(formData.get("photo"));
+
+  try {
+    const response = await fetchWithAuth(url, {
+      method: methodType,
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`API 요청 실패: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("로딩 중 에러:", error);
+  }
+}
 
 export default function ResumeForm({ mode }: ResumeFormProps) {
   const { id } = useParams();
@@ -271,7 +294,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         self_introduction: "",
         experiences: [],
         projects: [],
-        activiteis: [],
+        activities: [],
         technology_stacks: [],
         qualifications: [],
       };
@@ -294,45 +317,44 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
 
         const dataToFlatten = {
           ...resumeData,
+          photoUrl: photoUrlValue instanceof File ? "" : photoUrlValue,
         };
 
         const formData = new FormData();
-        if (dataToFlatten.user_info) {
-          const flattenedData = {
-            ...dataToFlatten.user_info,
-            ...dataToFlatten,
-            resume_type: "1",
-          };
-          delete flattenedData.user_info;
+        const flattenedData = {
+          ...dataToFlatten.user_info,
+          ...dataToFlatten,
+          resume_type: "1",
+        };
+        delete flattenedData.user_info;
 
-          const finalData = flattenedData;
-          console.log(finalData);
+        const finalData = flattenedData;
+        console.log(finalData);
 
-          formData.append("data", JSON.stringify(finalData));
+        formData.append("data", JSON.stringify(finalData));
 
-          if (photoFile) {
-            formData.append("photo", photoFile, photoFile.name);
-          }
+        if (photoFile) {
+          formData.append("photo", photoFile, photoFile.name);
         }
-        console.log(formData);
-        console.log(formData.get("photo"));
-        console.log(formData.get("data"));
 
         // fetch 요청
-        // fetch("/api/resumes", {
-        //   method: "POST",
-        //   body: formData,
-        // })
-        //   .then((response) => response.json())
-        //   .then((data) => {
-        //     console.log("Success:", data);
-        //     alert("기본 정보가 저장되었습니다.");
-        //   })
-        //   .catch((error) => {
-        //     console.error("Error:", error);
-        //   });
-        // navigate("/resume");
-        alert(`${mode === "edit" ? "수정" : "생성"} 완료!`);
+        if (isEditMode) {
+          const result = await createResume(formData, id);
+          if (!result) {
+            console.log("실패");
+            return;
+          }
+          // navigate("/resume");
+        } else {
+          const result = await createResume(formData);
+          if (!result) {
+            console.log("실패");
+            return;
+          }
+          console.log("사용자 데이터:", result);
+          alert(`${id === null ? "생성" : "수정"} 완료!`);
+          // navigate("/resume");
+        }
       } catch (error) {
         if (error instanceof z.ZodError) {
           console.error("검증 오류:", error.issues);
@@ -580,10 +602,6 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                     .max(
                       MAX_NAME_LENGTH,
                       `주소는 ${MAX_NAME_LENGTH}글자 이하 입력하세요.`
-                    )
-                    .regex(
-                      /^.+시\s+.+구/,
-                      "주소는 'OO시 OO구' 형식으로 입력해주세요"
                     ),
                   military_service: z.enum(
                     ["1", "2", "3", "4", "5", "6"],
@@ -744,13 +762,13 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           // console.log(fieldArrayValue);
 
           // experience, project 등
-          const isEducation = key === "education";
+          const isEducation = key === "educations";
           const handleAddItem = () => {
             let newItem;
             if (key === "experiences") newItem = emptyExperienceItem;
             else if (key === "educations") newItem = emptyEducationItem;
             else if (key === "projects") newItem = emptyProjectItem;
-            else if (key === "activiteis") newItem = emptyActivityItem;
+            else if (key === "activities") newItem = emptyActivityItem;
             else if (key === "qualifications") newItem = emptyQualificationItem;
 
             if (newItem) {
@@ -938,7 +956,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                     "마감년월을 입력하세요."
                                   ),
                               },
-                              activiteis: {
+                              activities: {
                                 title: z
                                   .string()
                                   .trim()
@@ -1049,7 +1067,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                       ? EXPERIENCE_LABELS[k].label
                                       : key === "projects"
                                       ? PROJECT_LABELS[k].label
-                                      : key === "activiteis"
+                                      : key === "activities"
                                       ? ACTIVITY_LABELS[k].label
                                       : QUALIFICATIONS_LABELS[k].label
                                   }
@@ -1064,7 +1082,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                       ? EXPERIENCE_LABELS[k].placeholder
                                       : key === "projects"
                                       ? PROJECT_LABELS[k].placeholder
-                                      : key === "activiteis"
+                                      : key === "activities"
                                       ? ACTIVITY_LABELS[k].placeholder
                                       : QUALIFICATIONS_LABELS[k].placeholder
                                   }
@@ -1099,7 +1117,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                         ? EXPERIENCE_LABELS[k].label
                                         : key === "projects"
                                         ? PROJECT_LABELS[k].label
-                                        : key === "activiteis"
+                                        : key === "activities"
                                         ? ACTIVITY_LABELS[k].label
                                         : QUALIFICATIONS_LABELS[k].label
                                     }
@@ -1110,7 +1128,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
                                         ? EXPERIENCE_LABELS[k].placeholder
                                         : key === "projects"
                                         ? PROJECT_LABELS[k].placeholder
-                                        : key === "activiteis"
+                                        : key === "activities"
                                         ? ACTIVITY_LABELS[k].placeholder
                                         : QUALIFICATIONS_LABELS[k].placeholder
                                     }
