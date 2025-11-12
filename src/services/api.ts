@@ -1,5 +1,6 @@
 // API Base URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://gaechwi.duckdns.org";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "https://gaechwi.duckdns.org";
 
 // API Response Types
 export interface LoginResponse {
@@ -20,8 +21,36 @@ export interface SignUpResponse {
   };
 }
 
+export interface JobPosting {
+  url: string | null;
+  title: string;
+  company: string;
+  content: string;
+  qualification: string;
+  prefer: string | null;
+  memo: string | null;
+  end_date: string | null;
+  posting_id: number;
+  user_id: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateJobPostingData {
+  url?: string | null;
+  title: string;
+  company: string;
+  end_date: string;
+  qualification: string;
+  prefer?: string | null;
+  memo?: string | null;
+}
+
 // Login with email and password
-export async function loginWithEmail(email: string, password: string): Promise<LoginResponse> {
+export async function loginWithEmail(
+  email: string,
+  password: string
+): Promise<LoginResponse> {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: {
@@ -105,4 +134,98 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
   }
 
   return response;
+}
+
+// Create a new job posting
+export async function createJobPosting(
+  jobPostingData: CreateJobPostingData
+): Promise<JobPosting> {
+  const response = await fetchWithAuth(`/job-postings/`, {
+    method: "POST",
+    body: JSON.stringify(jobPostingData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const errorMessage =
+      data.detail?.[0]?.msg || data.message || "채용 공고 생성에 실패했습니다.";
+    throw new Error(errorMessage);
+  }
+
+  return data;
+}
+
+// Get all job postings
+export async function getAllJobPostings(): Promise<JobPosting[]> {
+  const response = await fetchWithAuth("/job-postings/", {
+    method: "GET",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "채용 공고 목록을 불러오는데 실패했습니다."
+    );
+  }
+
+  return data;
+}
+
+// Get a single job posting by ID
+export async function getJobPostingById(
+  postingId: number
+): Promise<JobPosting> {
+  const response = await fetchWithAuth(`/job-postings/${postingId}`, {
+    method: "GET",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "채용 공고를 불러오는데 실패했습니다.");
+  }
+
+  return data;
+}
+
+// Update a job posting by ID
+export async function updateJobPosting(
+  postingId: number,
+  jobPostingData: CreateJobPostingData
+): Promise<JobPosting> {
+  const response = await fetchWithAuth(`/job-postings/${postingId}`, {
+    method: "PUT",
+    body: JSON.stringify(jobPostingData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const errorMessage =
+      data.detail?.[0]?.msg || data.message || "채용 공고 수정에 실패했습니다.";
+    throw new Error(errorMessage);
+  }
+
+  return data;
+}
+
+// Delete a job posting by ID
+export async function deleteJobPosting(postingId: number): Promise<void> {
+  const response = await fetchWithAuth(`/job-postings/${postingId}`, {
+    method: "DELETE",
+  });
+
+  // 204 No Content는 성공이지만, 본문이 없으므로 .json()을 호출하면 안 됩니다.
+  if (response.status === 204) {
+    return;
+  }
+
+  if (!response.ok) {
+    const data = await response.json();
+    const errorMessage =
+      data.detail?.[0]?.msg || data.message || "채용 공고 삭제에 실패했습니다.";
+    throw new Error(errorMessage);
+  }
 }

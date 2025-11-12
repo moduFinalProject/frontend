@@ -56,10 +56,28 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/landing" element={loginToken ? <Navigate to="/dashboard" replace /> : <Landing />} />
-      <Route path="/login" element={loginToken ? <Navigate to="/dashboard" replace /> : <Login />} />
-      <Route path="/googleCallback" element={loginToken ? <Navigate to="/dashboard" replace /> : <GoogleCallback />} />
-      <Route path="/SocialSignUp" element={loginToken ? <Navigate to="/dashboard" replace /> : <SocialSignUp />} />
+      <Route
+        path="/landing"
+        element={
+          loginToken ? <Navigate to="/dashboard" replace /> : <Landing />
+        }
+      />
+      <Route
+        path="/login"
+        element={loginToken ? <Navigate to="/dashboard" replace /> : <Login />}
+      />
+      <Route
+        path="/googleCallback"
+        element={
+          loginToken ? <Navigate to="/dashboard" replace /> : <GoogleCallback />
+        }
+      />
+      <Route
+        path="/SocialSignUp"
+        element={
+          loginToken ? <Navigate to="/dashboard" replace /> : <SocialSignUp />
+        }
+      />
 
       <Route
         path="/"

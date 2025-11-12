@@ -15,7 +15,7 @@ interface InputProps {
   label?: string;
   type?: "text" | "email" | "password" | "tel" | "date" | "month" | "search";
   placeholder?: string;
-  name: string;
+  name?: string;
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
@@ -55,7 +55,7 @@ const Text = forwardRef<HTMLInputElement, InputProps>(function Text(
       <div className={useBtn}>
         <input
           id={id}
-          name={name}
+          name={name ?? ""}
           ref={ref}
           type={type}
           className={`${inputBase} ${error && errorInput}`}
@@ -75,7 +75,7 @@ const Text = forwardRef<HTMLInputElement, InputProps>(function Text(
         )}
       </div>
       {error && (
-        <span id={name} className={errorMessage}>
+        <span id={name ? `${name}-error` : undefined} className={errorMessage}>
           {error}
         </span>
       )}

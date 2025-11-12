@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { jobList, listSection } from "./JobList.css.ts";
 import JobItem from "./components/JobItem.tsx";
 import Search from "./components/form/Search.tsx";
-import { fetchJobList, type JobListItem } from "./api.ts";
+
+import { getAllJobPostings, type JobPosting } from "@/services/api.ts";
 
 export default function JobList() {
   const {
@@ -10,9 +11,9 @@ export default function JobList() {
     isPending,
     isError,
     error,
-  } = useQuery<JobListItem[]>({
+  } = useQuery<JobPosting[]>({
     queryKey: ["job-list"],
-    queryFn: fetchJobList,
+    queryFn: getAllJobPostings,
   });
 
   if (isPending) {
@@ -49,7 +50,7 @@ export default function JobList() {
         </h2>
         <ul className={jobList}>
           {jobs.map((job) => (
-            <JobItem job={job} key={job.id} />
+            <JobItem job={job} key={job.posting_id} />
           ))}
         </ul>
       </div>
