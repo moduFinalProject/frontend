@@ -9,7 +9,7 @@ import {
   btns,
   dropdownTrigger,
 } from "./JobItem.css.ts";
-import type { JobListItem } from "../api.ts";
+import type { JobListItem } from "@/pages/Jobs/api.ts";
 
 interface JobItemProps {
   job: JobListItem;
