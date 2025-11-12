@@ -321,8 +321,7 @@ export const basicInfoSchema = z.object({
       .string()
       .trim()
       .min(MIN_LENGTH, "주소를 입력해주세요")
-      .max(MAX_NAME_LENGTH, `주소는 ${MAX_NAME_LENGTH}글자 이하 입력하세요.`)
-      .regex(/^.+시\s+.+구/, "주소는 'OO시 OO구' 형식으로 입력해주세요"),
+      .max(MAX_NAME_LENGTH, `주소는 ${MAX_NAME_LENGTH}글자 이하 입력하세요.`),
   }),
   self_introduction: z
     .string()
@@ -334,7 +333,7 @@ export const basicInfoSchema = z.object({
   educations: educationSchema,
   experiences: experienceSchema,
   projects: projectSchema,
-  activiteis: activitySchema,
+  activities: activitySchema,
   technology_stacks: technologyStackSchema,
   qualifications: qualificationsSchema,
 });
