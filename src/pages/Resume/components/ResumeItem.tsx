@@ -13,7 +13,7 @@ import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 type Resume = {
-  id: string;
+  resume_id: string;
   name: string;
   desc: string;
   date: string;
@@ -33,7 +33,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       {
         label: "수정",
         onSelect: () => {
-          navigate(`./${resume.id}/edit`);
+          navigate(`./${resume.resume_id}/edit`);
         },
       },
       {
@@ -44,7 +44,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
         },
       },
     ],
-    [navigate, resume.id]
+    [navigate, resume.resume_id]
   );
 
   return (
@@ -52,7 +52,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       <div className={title}>
         <div>
           <div className={titleRow}>
-            <Link to={`./${resume.id}`}>
+            <Link to={`./${resume.resume_id}`}>
               <h4>{resume.name}</h4>
             </Link>
             {resume.url && <span className={noDrag}>공고맞춤</span>}
@@ -89,7 +89,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
           text="첨삭"
           color="white"
           callback={() => {
-            navigate(`./${resume.id}/correction`);
+            navigate(`./${resume.resume_id}/correction`);
           }}
           widthStyle="full"
         />
