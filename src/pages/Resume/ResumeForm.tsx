@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ResumeCard from "./components/card/ResumeCard";
 import ResumeCardRow from "./components/card/ResumeCardRow";
@@ -75,7 +75,7 @@ type QualificationItem = {
 type ResumeFormValues = {
   resume_id: string;
   title: string;
-  photoUrl: string | File;
+  image_url: string | File;
   url?: string;
   user_info: {
     name: string;
@@ -95,126 +95,163 @@ type ResumeFormValues = {
   qualifications?: QualificationItem[];
 };
 
-const resumeDataSample: ResumeFormValues = {
-  resume_id: "1",
-  title: "기본 이력서",
-  photoUrl:
-    "https://i.pinimg.com/736x/95/f0/8a/95f08adb4d08c76eda72fd488700bd3a.jpg",
-  url: "https://career.example.com/job/123456",
-  user_info: {
-    name: "김취업",
-    birth_date: "1996-12-12",
-    email: "email@email.com",
-    phone: "010-0000-0000",
-    gender: "1",
-    military_service: "2",
-    address: "서울시 강남구",
-  },
-  educations: [
-    {
-      organ: "한국대학교",
-      department: "컴퓨터공학과",
-      degree_level: "3",
-      score: "3.8 / 4.5점",
-      start_date: "2020-06",
-      end_date: "2022-02",
-    },
-    {
-      organ: "한국대학교",
-      department: "컴퓨터공학과",
-      degree_level: "3",
-      score: "3.8 / 4.5점",
-      start_date: "2020-06",
-      end_date: "2022-02",
-    },
-  ],
-  self_introduction:
-    "안녕하세요. 3년차 웹 개발자 김취업입니다.\n\n사용자 중심의 인터페이스 설계와 효율적인 코드 작성에 관심이 많으며, 항상 새로운 기술을 배우고 적용하는 것을 즐깁니다. 팀원들과의 원활한 소통을 통해 프로젝트를 성공적으로 이끌어 낸 경험이 있으며, 문제 해결 능력과 책임감을 바탕으로 맡은 업무를 완수하는 것을 목표로 하고 있습니다.\n\n지속적인 학습과 성장을 통해 더 나은 개발자가 되고자 노력하고 있습니다.",
-
-  experiences: [
-    {
-      job_title: "테크스타트업",
-      department: "개발팀",
-      position: "프론트엔드 개발자",
-      start_date: "2022-03",
-      end_date: null,
-      employmont_status: true,
-      job_description:
-        "- React와 TypeScript를 활용한 웹 서비스 개발 및 유지보수\n- Redux를 이용한 상태 관리 구조 설계 및 구현\n- REST API 연동 및 데이터 처리 로직 개발\n- 반응형 웹 디자인 구현으로 모바일 사용자 경험 개선\n- Git을 활용한 버전 관리 및 코드 리뷰 참여\n- 웹 접근성 개선 작업으로 WCAG 2.1 AA 등급 달성",
-    },
-    {
-      job_title: "디지털솔루션",
-      department: "개발팀",
-      position: "주니어 웹 개발자",
-      start_date: "2020-06",
-      end_date: "2022-02",
-      employmont_status: false,
-      job_description:
-        "- HTML, CSS, JavaScript를 활용한 웹 페이지 개발\n- jQuery를 이용한 동적 UI 구현\n- 크로스 브라우저 호환성 테스트 및 이슈 해결\n- 웹사이트 성능 최적화를 통한 로딩 속도 25% 개선\n- UI/UX 디자이너와 협업하여 사용자 경험 개선",
-    },
-  ],
-  projects: [
-    {
-      title: "전자상거래 플랫폼 구축",
-      start_date: "2020-06",
-      end_date: "2022-02",
-      description:
-        "- React와 Next.js를 활용한 SSR 기반 전자상거래 플랫폼 개발\n- 상품 검색, 장바구니, 결제 시스템 등 핵심 기능 구현\n- 5인 개발팀에서 프론트엔드 파트 리딩\n- 페이지 로딩 속도 최적화로 Lighthouse 성능 점수 85점 이상 달성",
-    },
-    {
-      title: "사내 관리 시스템 개발",
-      start_date: "2020-06",
-      end_date: "2022-02",
-      description:
-        "- 사내 업무 효율화를 위한 관리 시스템 개발\n- 실시간 데이터 동기화를 위한 WebSocket 구현\n- Chart.js를 활용한 데이터 시각화 대시보드 개발\n- 사용자 권한 관리 시스템 구축",
-    },
-  ],
-  activities: [
-    {
-      title: "오픈소스 프로젝트 기여",
-      start_date: "2020-06",
-      end_date: "2022-02",
-      description:
-        "- React 관련 오픈소스 라이브러리에 버그 수정 및 기능 개선 PR 제출\n- 총 15개의 PR이 메인 브랜치에 머지됨\n- 프로젝트 문서화 작업에 참여",
-    },
-    {
-      title: "개발자 스터디 그룹 운영",
-      start_date: "2020-06",
-      end_date: "2022-02",
-      description:
-        "- 주 1회 웹 개발 관련 스터디 진행 (총 12명 참여)\n- React, TypeScript 등 최신 기술 스택 학습 및 토론\n- 토이 프로젝트 협업을 통한 실무 경험 공유",
-    },
-  ],
-  technology_stacks: [
-    "React",
-    "TypeScript",
-    "JavaScript",
-    "HTML/CSS",
-    "Redux",
-    "Next.js",
-    "Git",
-    "REST API",
-    "Responsive Design",
-  ],
-  qualifications: [
-    {
-      title: "정보처리기사",
-      organ: "한국산업인력공단",
-      acquisition_date: "2020-08",
-      score: "",
-    },
-    {
-      title: "TOEIC",
-      organ: "ETS",
-      acquisition_date: "2024-05",
-      score: "850점",
-    },
-  ],
+// 항목 추가를 위한 빈 템플릿
+const emptyEducationItem: EducationItem = {
+  organ: "",
+  department: "",
+  degree_level: "0",
+  score: "",
+  start_date: "",
+  end_date: "",
+};
+const emptyExperienceItem: ExperienceItem = {
+  job_title: "",
+  department: "",
+  position: "",
+  start_date: "",
+  end_date: "",
+  employmont_status: false,
+  job_description: "",
+};
+const emptyProjectItem: ProjectItem = {
+  title: "",
+  description: "",
+  start_date: "",
+  end_date: "",
+};
+const emptyActivityItem: ActivityItem = {
+  title: "",
+  description: "",
+  start_date: "",
+  end_date: "",
+};
+const emptyQualificationItem: QualificationItem = {
+  title: "",
+  organ: "",
+  acquisition_date: "",
+  score: "",
 };
 
-async function createResume(formData, id = null) {
-  const url = "/resumes";
-  const methodType = "POST";
+// const resumeDataSample: ResumeFormValues = {
+//   resume_id: "1",
+//   title: "기본 이력서",
+//   image_url:
+//     "https://i.pinimg.com/736x/95/f0/8a/95f08adb4d08c76eda72fd488700bd3a.jpg",
+//   url: "https://career.example.com/job/123456",
+//   user_info: {
+//     name: "김취업",
+//     birth_date: "1996-12-12",
+//     email: "email@email.com",
+//     phone: "010-0000-0000",
+//     gender: "1",
+//     military_service: "2",
+//     address: "서울시 강남구",
+//   },
+//   educations: [
+//     {
+//       organ: "한국대학교",
+//       department: "컴퓨터공학과",
+//       degree_level: "3",
+//       score: "3.8 / 4.5점",
+//       start_date: "2020-06",
+//       end_date: "2022-02",
+//     },
+//     {
+//       organ: "한국대학교",
+//       department: "컴퓨터공학과",
+//       degree_level: "3",
+//       score: "3.8 / 4.5점",
+//       start_date: "2020-06",
+//       end_date: "2022-02",
+//     },
+//   ],
+//   self_introduction:
+//     "안녕하세요. 3년차 웹 개발자 김취업입니다.\n\n사용자 중심의 인터페이스 설계와 효율적인 코드 작성에 관심이 많으며, 항상 새로운 기술을 배우고 적용하는 것을 즐깁니다. 팀원들과의 원활한 소통을 통해 프로젝트를 성공적으로 이끌어 낸 경험이 있으며, 문제 해결 능력과 책임감을 바탕으로 맡은 업무를 완수하는 것을 목표로 하고 있습니다.\n\n지속적인 학습과 성장을 통해 더 나은 개발자가 되고자 노력하고 있습니다.",
+
+//   experiences: [
+//     {
+//       job_title: "테크스타트업",
+//       department: "개발팀",
+//       position: "프론트엔드 개발자",
+//       start_date: "2022-03",
+//       end_date: null,
+//       employmont_status: true,
+//       job_description:
+//         "- React와 TypeScript를 활용한 웹 서비스 개발 및 유지보수\n- Redux를 이용한 상태 관리 구조 설계 및 구현\n- REST API 연동 및 데이터 처리 로직 개발\n- 반응형 웹 디자인 구현으로 모바일 사용자 경험 개선\n- Git을 활용한 버전 관리 및 코드 리뷰 참여\n- 웹 접근성 개선 작업으로 WCAG 2.1 AA 등급 달성",
+//     },
+//     {
+//       job_title: "디지털솔루션",
+//       department: "개발팀",
+//       position: "주니어 웹 개발자",
+//       start_date: "2020-06",
+//       end_date: "2022-02",
+//       employmont_status: false,
+//       job_description:
+//         "- HTML, CSS, JavaScript를 활용한 웹 페이지 개발\n- jQuery를 이용한 동적 UI 구현\n- 크로스 브라우저 호환성 테스트 및 이슈 해결\n- 웹사이트 성능 최적화를 통한 로딩 속도 25% 개선\n- UI/UX 디자이너와 협업하여 사용자 경험 개선",
+//     },
+//   ],
+//   projects: [
+//     {
+//       title: "전자상거래 플랫폼 구축",
+//       start_date: "2020-06",
+//       end_date: "2022-02",
+//       description:
+//         "- React와 Next.js를 활용한 SSR 기반 전자상거래 플랫폼 개발\n- 상품 검색, 장바구니, 결제 시스템 등 핵심 기능 구현\n- 5인 개발팀에서 프론트엔드 파트 리딩\n- 페이지 로딩 속도 최적화로 Lighthouse 성능 점수 85점 이상 달성",
+//     },
+//     {
+//       title: "사내 관리 시스템 개발",
+//       start_date: "2020-06",
+//       end_date: "2022-02",
+//       description:
+//         "- 사내 업무 효율화를 위한 관리 시스템 개발\n- 실시간 데이터 동기화를 위한 WebSocket 구현\n- Chart.js를 활용한 데이터 시각화 대시보드 개발\n- 사용자 권한 관리 시스템 구축",
+//     },
+//   ],
+//   activities: [
+//     {
+//       title: "오픈소스 프로젝트 기여",
+//       start_date: "2020-06",
+//       end_date: "2022-02",
+//       description:
+//         "- React 관련 오픈소스 라이브러리에 버그 수정 및 기능 개선 PR 제출\n- 총 15개의 PR이 메인 브랜치에 머지됨\n- 프로젝트 문서화 작업에 참여",
+//     },
+//     {
+//       title: "개발자 스터디 그룹 운영",
+//       start_date: "2020-06",
+//       end_date: "2022-02",
+//       description:
+//         "- 주 1회 웹 개발 관련 스터디 진행 (총 12명 참여)\n- React, TypeScript 등 최신 기술 스택 학습 및 토론\n- 토이 프로젝트 협업을 통한 실무 경험 공유",
+//     },
+//   ],
+//   technology_stacks: [
+//     "React",
+//     "TypeScript",
+//     "JavaScript",
+//     "HTML/CSS",
+//     "Redux",
+//     "Next.js",
+//     "Git",
+//     "REST API",
+//     "Responsive Design",
+//   ],
+//   qualifications: [
+//     {
+//       title: "정보처리기사",
+//       organ: "한국산업인력공단",
+//       acquisition_date: "2020-08",
+//       score: "",
+//     },
+//     {
+//       title: "TOEIC",
+//       organ: "ETS",
+//       acquisition_date: "2024-05",
+//       score: "850점",
+//     },
+//   ],
+// };
+
+async function handleSubmitResume(formData, id = null) {
+  const url = `/resumes${id ? `/${id}` : ""}`;
+  const methodType = id ? "PUT" : "POST";
   console.log(formData.get("photo"));
 
   try {
@@ -234,50 +271,90 @@ async function createResume(formData, id = null) {
   }
 }
 
+// 폼 초기값 구조
+const initialFormValues = {
+  title: "",
+  url: "",
+  image_url: "",
+  user_info: {
+    name: "",
+    birth_date: "",
+    email: "",
+    phone: "",
+    gender: "0",
+    military_service: "0",
+    address: "",
+  },
+  educations: [emptyEducationItem],
+  self_introduction: "",
+  experiences: [],
+  projects: [],
+  activities: [],
+  technology_stacks: [],
+  qualifications: [],
+};
+
+function transformDataForForm(serverData: any, emptyForm: any): any {
+  if (!serverData) return emptyForm;
+
+  const transformedData = {
+    ...emptyForm,
+    title: serverData.title || emptyForm.title,
+    url: serverData.url || emptyForm.url,
+    image_url: serverData.image_url || emptyForm.image_url,
+    self_introduction:
+      serverData.self_introduction || emptyForm.self_introduction,
+
+    user_info: {
+      ...emptyForm.user_info,
+      // 서버 데이터의 평탄화된 필드를 user_info 내부로 이동
+      name: serverData.name || emptyForm.user_info.name,
+      birth_date: serverData.birth_date || emptyForm.user_info.birth_date,
+      email: serverData.email || emptyForm.user_info.email,
+      phone: serverData.phone || emptyForm.user_info.phone,
+      gender: serverData.gender || emptyForm.user_info.gender,
+      military_service:
+        serverData.military_service || emptyForm.user_info.military_service,
+      address: serverData.address || emptyForm.user_info.address,
+    },
+    // 배열 필드 채우기
+    educations: serverData.educations || emptyForm.educations,
+    experiences: serverData.experiences || emptyForm.experiences,
+    projects: serverData.projects || emptyForm.projects,
+    activities: serverData.activities || emptyForm.activities,
+    technology_stacks:
+      serverData.technology_stacks || emptyForm.technology_stacks,
+    qualifications: serverData.qualifications || emptyForm.qualifications,
+  };
+
+  return transformedData;
+}
+
+async function getResume(resume_id: string | undefined) {
+  if (resume_id === undefined) return;
+  try {
+    const response = await fetchWithAuth(`/resumes/${resume_id}`);
+    if (!response.ok) {
+      throw new Error(`API 요청 실패: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("로딩 중 에러:", error);
+    return null;
+  }
+}
+
 export default function ResumeForm({ mode }: ResumeFormProps) {
-  const { id } = useParams();
+  const { id } = useParams<{ id?: string }>();
   const isEditMode = Boolean(id !== "" && id !== "new");
+
+  const [formData, setFormData] = useState(initialFormValues);
+  const [isLoading, setIsLoading] = useState(id !== undefined); // ID가 있으면 로딩 시작
   const navigate = useNavigate();
 
-  // 항목 추가를 위한 빈 템플릿
-  const emptyEducationItem: EducationItem = {
-    organ: "",
-    department: "",
-    degree_level: "0",
-    score: "",
-    start_date: "",
-    end_date: "",
-  };
-  const emptyExperienceItem: ExperienceItem = {
-    job_title: "",
-    department: "",
-    position: "",
-    start_date: "",
-    end_date: "",
-    employmont_status: false,
-    job_description: "",
-  };
-  const emptyProjectItem: ProjectItem = {
-    title: "",
-    description: "",
-    start_date: "",
-    end_date: "",
-  };
-  const emptyActivityItem: ActivityItem = {
-    title: "",
-    description: "",
-    start_date: "",
-    end_date: "",
-  };
-  const emptyQualificationItem: QualificationItem = {
-    title: "",
-    organ: "",
-    acquisition_date: "",
-    score: "",
-  };
-
   const defaultValues = isEditMode
-    ? resumeDataSample
+    ? formData
     : {
         title: "",
         url: "",
@@ -314,13 +391,13 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         const resumeData: ResumeFormValues = trimmedValue;
 
         // 사진 File 여부 체크
-        const photoUrlValue = resumeData.photoUrl;
+        const photoUrlValue = resumeData.image_url;
         const photoFile: File | null =
           photoUrlValue && photoUrlValue instanceof File ? photoUrlValue : null;
 
         const dataToFlatten = {
           ...resumeData,
-          photoUrl: photoUrlValue instanceof File ? "" : photoUrlValue,
+          image_url: photoUrlValue instanceof File ? "" : photoUrlValue,
         };
 
         // user_info 내부 값 상위로 올리기
@@ -366,9 +443,9 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         // fetch 요청
         let result;
         if (isEditMode) {
-          result = await createResume(formData, id);
+          result = await handleSubmitResume(formData, id);
         } else {
-          result = await createResume(formData);
+          result = await handleSubmitResume(formData);
         }
 
         if (!result) {
@@ -403,16 +480,41 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   });
 
   useEffect(() => {
-    if (isEditMode) {
-      // 기존 이력서 불러오기 로직
-      // fetch(`/api/resume/${resumeId}`).then(...)
-      // setForm(resumeData);
-      // Object.entries(resumeData).forEach(([key, value]) => {
-      //   // @ts-ignore
-      //   basicInfoForm.setFieldValue(key, value);
-      // });
+    if (!id || id === "new") {
+      setIsLoading(false);
+      return;
     }
-  }, [isEditMode]);
+
+    let isMounted = true;
+    const loadAndSetData = async () => {
+      setIsLoading(true);
+      const serverData = await getResume(id);
+      console.log(serverData);
+
+      if (isMounted) {
+        if (serverData) {
+          const transformedData = transformDataForForm(
+            serverData,
+            initialFormValues
+          );
+          setFormData(transformedData);
+        } else {
+          setFormData(initialFormValues);
+        }
+        setIsLoading(false);
+      }
+    };
+
+    loadAndSetData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  if (isLoading) {
+    return <div>이력서 데이터를 불러오는 중입니다...</div>;
+  }
 
   // 필드 렌더 해오기
   function renderFieldByType(
@@ -435,9 +537,9 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     value: string,
     isEditMode: boolean
   ) {
-    if (!isEditMode && key === "url") return null;
+    if (!isEditMode && key === "url" && value === "") return null;
     // 증명사진
-    if (key === "photoUrl")
+    if (key === "image_url")
       return (
         <ResumeCard key={key} title={FIELD_LABELS[key].label} isMust>
           <form.Field
@@ -455,24 +557,27 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
               },
             }}
           >
-            {(field) => (
-              <ResumeCardRow
-                widthType="full"
-                isPhoto
-                input={
-                  <FileElem
-                    name={key}
-                    label="사진 업로드"
-                    type="img"
-                    value={field.state.value}
-                    onChange={field.handleChange}
-                    onBlur={field.handleBlur}
-                    placeholder={FIELD_LABELS[key].placeholder}
-                    error={field.state.meta.errors.join(", ")}
-                  />
-                }
-              />
-            )}
+            {(field) => {
+              return (
+                <ResumeCardRow
+                  widthType="full"
+                  isPhoto
+                  imgUrl={field.state.value}
+                  input={
+                    <FileElem
+                      name={key}
+                      label="사진 업로드"
+                      type="img"
+                      value={field.state.value}
+                      onChange={field.handleChange}
+                      onBlur={field.handleBlur}
+                      placeholder={FIELD_LABELS[key].placeholder}
+                      error={field.state.meta.errors.join(", ")}
+                    />
+                  }
+                />
+              );
+            }}
           </form.Field>
         </ResumeCard>
       );
