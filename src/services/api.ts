@@ -86,13 +86,10 @@ export async function signUpWithUserInfo(userInfo: {
 export async function fetchWithAuth(url: string, options: RequestInit = {}) {
   const access_token = localStorage.getItem("access_token");
 
-  const headers = {
-    "Content-Type": "application/json",
-    ...options.headers,
-  };
+  const headers = { ...options.headers } as Record<string, string>;
 
   if (access_token) {
-    (headers as Record<string, string>)["Authorization"] = `Bearer ${access_token}`;
+    headers["Authorization"] = `Bearer ${access_token}`;
   }
 
   const response = await fetch(`${API_BASE_URL}${url}`, {
