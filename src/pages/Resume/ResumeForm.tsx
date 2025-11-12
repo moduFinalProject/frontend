@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ResumeCard from "./components/card/ResumeCard";
 import ResumeCardRow from "./components/card/ResumeCardRow";
 
@@ -236,7 +236,8 @@ async function createResume(formData, id = null) {
 
 export default function ResumeForm({ mode }: ResumeFormProps) {
   const { id } = useParams();
-  const isEditMode = Boolean(id);
+  const isEditMode = Boolean(id !== "" && id !== "new");
+  const navigate = useNavigate();
 
   // 항목 추가를 위한 빈 템플릿
   const emptyEducationItem: EducationItem = {
@@ -305,12 +306,14 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     onSubmit: async ({ value }) => {
       // console.log(value);
       try {
+        // trim 적용
         const trimmedValue = trimObjectStrings(value);
         basicInfoSchema.parse(trimmedValue);
 
-        // TODO: API 호출
+        // 전송할 데이터
         const resumeData: ResumeFormValues = trimmedValue;
 
+        // 사진 File 여부 체크
         const photoUrlValue = resumeData.photoUrl;
         const photoFile: File | null =
           photoUrlValue && photoUrlValue instanceof File ? photoUrlValue : null;
@@ -320,7 +323,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           photoUrl: photoUrlValue instanceof File ? "" : photoUrlValue,
         };
 
-        const formData = new FormData();
+        // user_info 내부 값 상위로 올리기
         const flattenedData = {
           ...dataToFlatten.user_info,
           ...dataToFlatten,
@@ -328,9 +331,32 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         };
         delete flattenedData.user_info;
 
+        // 학력 날짜에 -01 붙이기
+        if (Array.isArray(flattenedData.educations)) {
+          flattenedData.educations = flattenedData.educations.map((edu) => {
+            if (
+              edu.start_date &&
+              typeof edu.start_date === "string" &&
+              edu.start_date.length === 7
+            ) {
+              edu.start_date = edu.start_date + "-01";
+            }
+            if (
+              edu.end_date &&
+              typeof edu.end_date === "string" &&
+              edu.end_date.length === 7
+            ) {
+              edu.end_date = edu.end_date + "-01";
+            }
+            return edu;
+          });
+        }
+
+        // 최종 수정값
         const finalData = flattenedData;
         console.log(finalData);
 
+        const formData = new FormData();
         formData.append("data", JSON.stringify(finalData));
 
         if (photoFile) {
@@ -338,23 +364,21 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         }
 
         // fetch 요청
+        let result;
         if (isEditMode) {
-          const result = await createResume(formData, id);
-          if (!result) {
-            console.log("실패");
-            return;
-          }
-          // navigate("/resume");
+          result = await createResume(formData, id);
         } else {
-          const result = await createResume(formData);
-          if (!result) {
-            console.log("실패");
-            return;
-          }
-          console.log("사용자 데이터:", result);
-          alert(`${id === null ? "생성" : "수정"} 완료!`);
-          // navigate("/resume");
+          result = await createResume(formData);
         }
+
+        if (!result) {
+          console.log("실패");
+          return;
+        }
+
+        console.log("사용자 데이터:", result);
+        alert(`${!id ? "생성" : "수정"} 완료!`);
+        navigate("/resume");
       } catch (error) {
         if (error instanceof z.ZodError) {
           console.error("검증 오류:", error.issues);
