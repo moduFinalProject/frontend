@@ -334,7 +334,7 @@ export const basicInfoSchema = z.object({
   educations: educationSchema,
   experiences: experienceSchema,
   projects: projectSchema,
-  activites: activitySchema,
+  activiteis: activitySchema,
   technology_stacks: technologyStackSchema,
   qualifications: qualificationsSchema,
 });
