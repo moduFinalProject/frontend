@@ -35,6 +35,25 @@ const optionalUrlValidator = ({ value }: { value: string }) => {
   }
 };
 
+const flattenErrors = (errors: unknown[]): string =>
+  errors
+    .flatMap((error) => {
+      if (!error) return [];
+      if (typeof error === "string") return error;
+      if (Array.isArray(error)) {
+        return flattenErrors(error);
+      }
+      if (
+        typeof error === "object" &&
+        "message" in (error as Record<string, unknown>)
+      ) {
+        return String((error as { message?: unknown }).message);
+      }
+      return String(error);
+    })
+    .filter(Boolean)
+    .join(", ");
+
 const jobInfoSchema = z.object({
   id: z.string().optional(),
   url: z
@@ -49,9 +68,6 @@ const jobInfoSchema = z.object({
       MIN_COMPANY_LENGTH,
       `회사명은 ${MIN_COMPANY_LENGTH}글자 이상이어야 합니다.`
     ),
-  content: z
-    .string()
-    .min(MIN_CONTENT_LENGTH, "내용 요약은 10글자 이상 입력해주세요."),
   qualification: z
     .string()
     .min(MIN_QUALIFICATION_LENGTH, "자격 요건을 입력해주세요."),
@@ -68,7 +84,6 @@ type JobFormValues = {
   url: string;
   title: string;
   company: string;
-  content: string;
   qualification: string;
   prefer: string;
   memo: string;
@@ -79,7 +94,6 @@ const createEmptyFormValues = (): JobFormValues => ({
   url: "",
   title: "",
   company: "",
-  content: "",
   qualification: "",
   prefer: "",
   memo: "",
@@ -92,22 +106,16 @@ export default function JobForm({ mode }: JobFormProps) {
 
   const titleRef = useRef<HTMLInputElement>(null);
   const companyRef = useRef<HTMLInputElement>(null);
-  const contentRef = useRef<HTMLTextAreaElement>(null);
   const qualificationRef = useRef<HTMLTextAreaElement>(null);
 
   const fieldRefs = {
     title: titleRef,
     company: companyRef,
-    content: contentRef,
+
     qualification: qualificationRef,
   } as const;
 
-  const requiredFieldOrder = [
-    "title",
-    "company",
-    "content",
-    "qualification",
-  ] as const;
+  const requiredFieldOrder = ["title", "company", "qualification"] as const;
 
   const defaultFormValues = useMemo(() => createEmptyFormValues(), []);
 
@@ -157,7 +165,6 @@ export default function JobForm({ mode }: JobFormProps) {
           url: value.url.trim(),
           title: value.title.trim(),
           company: value.company.trim(),
-          content: value.content.trim(),
           qualification: value.qualification.trim(),
           prefer: value.prefer.trim(),
           memo: value.memo.trim(),
@@ -238,7 +245,6 @@ export default function JobForm({ mode }: JobFormProps) {
         url: jobDetail.url ?? "",
         title: jobDetail.title,
         company: jobDetail.company ?? "",
-        content: jobDetail.content,
         qualification: jobDetail.qualification,
         prefer: jobDetail.prefer ?? "",
         memo: jobDetail.memo ?? "",
@@ -300,7 +306,7 @@ export default function JobForm({ mode }: JobFormProps) {
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
+                      error={flattenErrors(field.state.meta.errors)}
                       placeholder="프론트엔드 개발자"
                       ref={titleRef}
                     />
@@ -323,7 +329,7 @@ export default function JobForm({ mode }: JobFormProps) {
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
+                      error={flattenErrors(field.state.meta.errors)}
                       placeholder="네이버"
                       ref={companyRef}
                     />
@@ -345,7 +351,7 @@ export default function JobForm({ mode }: JobFormProps) {
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
+                      error={flattenErrors(field.state.meta.errors)}
                       placeholder="https://career.example.com/job/123456"
                     />
                   }
@@ -366,7 +372,7 @@ export default function JobForm({ mode }: JobFormProps) {
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
+                      error={flattenErrors(field.state.meta.errors)}
                       rows={5}
                       placeholder="자격 요건을 줄바꿈으로 구분하여 작성해주세요."
                       ref={qualificationRef}
@@ -386,7 +392,7 @@ export default function JobForm({ mode }: JobFormProps) {
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
+                      error={flattenErrors(field.state.meta.errors)}
                       rows={4}
                       placeholder="우대 사항이 있다면 줄바꿈으로 구분하여 작성해주세요."
                     />
@@ -407,7 +413,7 @@ export default function JobForm({ mode }: JobFormProps) {
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(", ")}
+                      error={flattenErrors(field.state.meta.errors)}
                       rows={3}
                       placeholder="내부 메모가 있다면 작성해주세요."
                     />

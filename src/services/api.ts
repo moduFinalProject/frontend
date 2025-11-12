@@ -39,7 +39,6 @@ export interface CreateJobPostingData {
   url?: string | null;
   title: string;
   company: string;
-  content: string;
   qualification: string;
   prefer?: string | null;
   memo?: string | null;
