@@ -22,6 +22,7 @@ import {
   progressBg,
   progressText,
   progressTitle,
+  btnWrap,
 } from "@/components/Feedback/index.css";
 import { Button } from "../Button";
 
@@ -215,14 +216,16 @@ export default function Feedback({ type, isRecorrection }: FeedbackProps) {
             </li>
           </ul>
           {type === "feedback" && (
-            <Button
-              callback={() => {
-                alert("새 이력서로 생성");
-              }}
-              color="blue"
-              text="수정사항 적용하기"
-              widthStyle="full"
-            />
+            <div className={btnWrap}>
+              <Button
+                callback={() => {
+                  alert("새 이력서로 생성");
+                }}
+                color="blue"
+                text="수정사항 적용하기"
+                widthStyle="full"
+              />
+            </div>
           )}
         </ResumeCard>
       </section>
