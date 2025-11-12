@@ -76,7 +76,7 @@ async function getResume(resume_id: string | undefined) {
 
 export default function ResumeDetail() {
   const { id } = useParams();
-  const [isLoad, setIsLoad] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [resumeData, setResumeData] = useState({});
 
   // const resumeData: ResumeData = {
@@ -185,9 +185,9 @@ export default function ResumeDetail() {
   // };
 
   useEffect(() => {
-    if (!id) return;
+    if (!id && isLoad) return;
 
-    setIsLoad(false);
+    setIsLoading(false);
 
     const loadResumeData = async () => {
       const data = await getResume(id); // ⬅️ 데이터를 기다림
@@ -195,13 +195,15 @@ export default function ResumeDetail() {
       if (data) {
         setResumeData(data); // ⬅️ 실제 데이터를 상태에 저장
       }
-      setIsLoad(true); // ⬅️ 데이터 로딩 완료 상태로 변경
+      setIsLoading(true); // ⬅️ 데이터 로딩 완료 상태로 변경
     };
 
     loadResumeData();
   }, [id]);
 
-  console.log(resumeData);
+  if (!isLoading) {
+    return <div>로딩 중...</div>;
+  }
 
   return (
     <div className={`${container} ${innerContainer}`}>
