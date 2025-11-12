@@ -15,7 +15,11 @@ type Resume = {
 
 async function getResumeList() {
   try {
-    const response = await fetchWithAuth("/resumes/");
+    const response = await fetchWithAuth(`/resumes/?page=${1}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
       // 400, 500 등 다른 오류 발생 시
@@ -24,6 +28,7 @@ async function getResumeList() {
 
     const data = await response.json();
     console.log("사용자 데이터:", data);
+    console.log(data.length);
     return data;
   } catch (error) {
     console.error("로딩 중 에러:", error);
@@ -33,28 +38,41 @@ async function getResumeList() {
 
 export default function ResumeList() {
   const [resumes, setResumes] = useState<Resume[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const listData = getResumeList();
-    setResumes(listData);
+    let isMounted = true;
 
-    // setResumes([
-    //   {
-    //     resume_id: "1",
-    //     name: "기본 이력서",
-    //     desc: "포괄적인 기본 이력서",
-    //     date: "2025.10.28",
-    //   },
-    //   {
-    //     resume_id: "2",
-    //     name: "네이버 이력서",
-    //     desc: "기본 이력서 첨삭",
-    //     date: "2025.10.28",
-    //     url: "https://career.example.com/job/123456",
-    //     end_date: "2025.11.31",
-    //   },
-    // ]);
+    setIsLoading(true);
+
+    const loadResumesData = async () => {
+      const data = await getResumeList();
+
+      if (isMounted) {
+        // ⭐️ 컴포넌트가 마운트된 상태에서만 상태 업데이트
+        if (data) {
+          // 데이터가 도착하면 상태를 업데이트
+          setResumes(data);
+        }
+        // 데이터 유무와 관계없이 로딩 종료
+        setIsLoading(false);
+      }
+    };
+
+    loadResumesData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  if (isLoading) {
+    return <div>이력서 목록 로딩 중...</div>;
+  }
+
+  if (resumes.length === 0) {
+    return <div>등록된 이력서가 없습니다.</div>;
+  }
 
   return (
     <>
@@ -63,9 +81,13 @@ export default function ResumeList() {
         <h3 className="a11y-hidden">이력서 목록</h3>
         <ul className={resumeList}>
           {resumes.length > 0 ? (
-            resumes.map((resume) => (
-              <ResumeItem resume={resume} key={resume.resume_id} />
-            ))
+            resumes.map((resumeItem) => {
+              console.log(resumeItem);
+
+              return (
+                <ResumeItem resume={resumeItem} key={resumeItem.resume_id} />
+              );
+            })
           ) : (
             <li>이력서가 없습니다</li>
           )}

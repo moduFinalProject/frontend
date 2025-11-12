@@ -14,9 +14,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 type Resume = {
   resume_id: string;
-  name: string;
-  desc: string;
-  date: string;
+  title: string;
+  updated_at: string;
+  created_at: string;
+  desc?: string;
   url?: string;
   end_date?: string;
 };
@@ -53,14 +54,17 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
         <div>
           <div className={titleRow}>
             <Link to={`./${resume.resume_id}`}>
-              <h4>{resume.name}</h4>
+              <h4>{resume.title}</h4>
             </Link>
             {resume.url && <span className={noDrag}>공고맞춤</span>}
           </div>
-          <p>{resume.desc}</p>
+          <p>
+            {/* {resume.desc} */}
+            {resume.url ? "첨삭 이력서" : "기본 이력서"}
+          </p>
         </div>
         <OptionsDropdown
-          ariaLabel={`${resume.name} 옵션`}
+          ariaLabel={`${resume.title} 옵션`}
           items={dropdownItems}
           triggerClassName={dropdownTrigger}
           itemWidthStyle="fit"
@@ -69,7 +73,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       <div className={desc}>
         <div>
           <p className={descTitle}>최근 수정</p>
-          <p>{resume.date}</p>
+          <p>{resume.updated_at}</p>
         </div>
         {resume.url && (
           <>
