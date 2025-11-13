@@ -1,28 +1,35 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components";
 import { headerText, subPage, btnsWrap, prevWrap } from "./ResumeTitle.css.ts";
 import { delResume } from "@/services/resumes.ts";
+import { useResumeContext } from "../ResumeContext.tsx";
 
-interface ResumeProps {
-  mode: "list" | "view" | "create" | "edit" | "correction";
-  title: string;
-  desc: string;
-  resumeId?: string;
-}
-
-export default function ResumeTitle({
-  mode,
-  title,
-  desc,
-  resumeId,
-}: ResumeProps) {
-  const { id } = useParams();
+export default function ResumeTitle({ title }: { title: string }) {
+  const { resumeData, id, mode } = useResumeContext();
   const navigate = useNavigate();
 
-  let titleText = title;
-  if (mode === "view") titleText += "보기";
-  else if (mode === "create") titleText += "생성";
-  else if (mode === "edit") titleText += "수정";
+  const modeData = {
+    list: {
+      title: title,
+      desc: "저장된 이력서를 관리하고 새로운 이력서를 작성하세요",
+    },
+    view: {
+      title: (title += "보기"),
+      desc: "이력서 내용을 확인하고 수정할 수 있습니다",
+    },
+    create: {
+      title: (title += "생성"),
+      desc: "정보를 입력하여 이력서를 작성하세요",
+    },
+    edit: {
+      title: (title += "수정"),
+      desc: "정보를 입력하여 이력서를 작성하세요",
+    },
+    correction: {
+      title: resumeData?.title,
+      desc: `최근 수정: ${resumeData?.updated_at}`,
+    },
+  };
 
   return (
     <>
@@ -34,14 +41,19 @@ export default function ResumeTitle({
             widthStyle="fit"
             icon="PREV"
             callback={() => {
-              navigate("/resume");
+              if (mode === "edit") navigate(-1);
+              else navigate("/resume");
             }}
           />
         )}
         <div className={`${headerText} ${mode !== "list" && subPage}`}>
-          <h2 className={mode !== "list" ? "a11y-hidden" : ""}>{titleText}</h2>
-          {mode !== "list" && <p className="title">기본 이력서</p>}
-          <p className="desc">{desc}</p>
+          <h2 className={mode !== "list" ? "a11y-hidden" : ""}>
+            {modeData[mode].title}
+          </h2>
+          {mode !== "list" && (
+            <p className="title">{resumeData?.resume_type_detail}</p>
+          )}
+          <p className="desc">{modeData[mode].desc}</p>
         </div>
       </div>
 

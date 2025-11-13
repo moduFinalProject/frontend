@@ -1,10 +1,10 @@
-import { useParams } from "react-router-dom";
 import ResumeCard from "./components/card/ResumeCard";
 import ResumeCardRow from "./components/card/ResumeCardRow";
 import { Fragment } from "react/jsx-runtime";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { container, innerContainer } from "./index.css.ts";
 import { getResume } from "@/services/resumes.ts";
+import { useResumeContext } from "./ResumeContext.tsx";
 
 type ResumeData = {
   resume_id: string;
@@ -33,7 +33,7 @@ type ResumeData = {
     score: string;
   }[];
   self_introduction: string;
-  experience?: {
+  experiences?: {
     job_title: string;
     position: string;
     department: string;
@@ -64,9 +64,8 @@ type ResumeData = {
 };
 
 export default function ResumeDetail() {
-  const { id } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
-  const [resumeData, setResumeData] = useState<ResumeData | null>(null);
+  const { resumeData, setResume, isLoading, setIsLoading, id } =
+    useResumeContext();
 
   useEffect(() => {
     if (!id && isLoading) return;
@@ -74,12 +73,12 @@ export default function ResumeDetail() {
     setIsLoading(false);
 
     const loadResumeData = async () => {
-      const data = await getResume(id); // ⬅️ 데이터를 기다림
+      const data = await getResume(id);
 
       if (data) {
-        setResumeData(data); // ⬅️ 실제 데이터를 상태에 저장
+        setResume(data);
       }
-      setIsLoading(true); // ⬅️ 데이터 로딩 완료 상태로 변경
+      setIsLoading(true);
     };
 
     loadResumeData();
@@ -107,35 +106,39 @@ export default function ResumeDetail() {
         </ResumeCard>
       )}
       <ResumeCard title="기본 정보">
-        <ResumeCardRow lavel="이름" value={resumeData.name} widthType="half" />
+        <ResumeCardRow
+          lavel="이름"
+          value={resumeData.user_info.name}
+          widthType="half"
+        />
         <ResumeCardRow
           lavel="생일"
-          value={resumeData.birth_date}
+          value={resumeData.user_info.birth_date}
           widthType="half"
         />
         <ResumeCardRow
           lavel="이메일"
-          value={resumeData.email}
+          value={resumeData.user_info.email}
           widthType="half"
         />
         <ResumeCardRow
           lavel="연락처"
-          value={resumeData.phone}
+          value={resumeData.user_info.phone}
           widthType="half"
         />
         <ResumeCardRow
           lavel="성별"
-          value={resumeData.gender_detail}
+          value={resumeData.user_info.gender_detail}
           widthType="half"
         />
         <ResumeCardRow
           lavel="병역 구분"
-          value={resumeData.military_service}
+          value={resumeData.user_info.military_service_detail}
           widthType="half"
         />
         <ResumeCardRow
           lavel="주소"
-          value={resumeData.address}
+          value={resumeData.user_info.address}
           widthType="full"
         />
       </ResumeCard>
@@ -148,7 +151,7 @@ export default function ResumeDetail() {
               {idx > 0 && <hr />}
               <ResumeCardRow
                 key={idx}
-                subTile={`${educationItem.department} · ${educationItem.degree_level}`}
+                subTile={`${educationItem.department} · ${educationItem.degree_level_detail}`}
                 value={educationItem.organ}
                 desc={educationItem.score}
                 date={date}
@@ -167,9 +170,7 @@ export default function ResumeDetail() {
         )}
         {resumeData.experiences?.map((experienceItem, idx) => {
           const date = `${experienceItem.start_date} ~ ${
-            experienceItem.employment_status === "Y"
-              ? "현재"
-              : experienceItem.end_date
+            experienceItem.employment_status ? "현재" : experienceItem.end_date
           }`;
 
           return (

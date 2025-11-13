@@ -3,19 +3,11 @@ import { resumeList } from "./ResumeList.css.ts";
 import ResumeItem from "./components/ResumeItem.tsx";
 import Search from "./components/form/Search.tsx";
 import { getResumeList } from "@/services/resumes.ts";
-
-type Resume = {
-  resume_id: string;
-  name: string;
-  desc: string;
-  date: string;
-  url?: string;
-  end_date?: string;
-};
+import { useResumeContext } from "./ResumeContext.tsx";
 
 export default function ResumeList() {
-  const [resumes, setResumes] = useState<Resume[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { resumes, setResumes, isLoading, setIsLoading, page, setPage } =
+    useResumeContext();
 
   useEffect(() => {
     let isMounted = true;
@@ -23,16 +15,15 @@ export default function ResumeList() {
     setIsLoading(true);
 
     const loadResumesData = async () => {
-      const data = await getResumeList();
+      const data = await getResumeList(page);
 
       if (isMounted) {
-        // ⭐️ 컴포넌트가 마운트된 상태에서만 상태 업데이트
+        // 컴포넌트가 마운트된 상태에서만 상태 업데이트
         if (data) {
-          // 데이터가 도착하면 상태를 업데이트
           setResumes(data);
         }
-        // 데이터 유무와 관계없이 로딩 종료
         setIsLoading(false);
+        setPage((prev) => prev++);
       }
     };
 
@@ -54,6 +45,7 @@ export default function ResumeList() {
   return (
     <>
       <Search />
+
       <div>
         <h3 className="a11y-hidden">이력서 목록</h3>
         <ul className={resumeList}>
