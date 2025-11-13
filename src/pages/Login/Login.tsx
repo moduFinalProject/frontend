@@ -45,8 +45,10 @@ async function loginProcess(formData: LoginForm, navigate: ReturnType<typeof use
 }
 
 // Google OAuth 2.0 설정
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '62731178017-jjj8blkivn8agl7gi99981km5ro2jpbp.apps.googleusercontent.com';
-const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || window.location.origin + '/frontend/googleCallback';
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+const GOOGLE_CLIENT_ID = "62731178017-jjj8blkivn8agl7gi99981km5ro2jpbp.apps.googleusercontent.com";
+const GOOGLE_REDIRECT_URI = isLocal ? "http://localhost:5173/frontend/googleCallback" : "https://modufinalproject.github.io/frontend/googleCallback";
 
 // 랜덤 state 값 생성 (CSRF 공격 방지)
 function generateCryptoRandomState(): string {
@@ -59,9 +61,9 @@ function generateCryptoRandomState(): string {
   );
 
   return btoa(String.fromCharCode.apply(null, Array.from(utf8Array)))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
 function socialLogin(social: string): void {
@@ -77,26 +79,26 @@ function socialLogin(social: string): void {
 function googleOAuth2SignIn(): void {
   // state 값 생성 및 로컬 스토리지에 저장
   const state = generateCryptoRandomState();
-  localStorage.setItem('oauth2-state', state);
+  localStorage.setItem("oauth2-state", state);
 
   // Google OAuth 2.0 엔드포인트
-  const oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+  const oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
   // OAuth 2.0 파라미터
   const params = {
     client_id: GOOGLE_CLIENT_ID,
     redirect_uri: GOOGLE_REDIRECT_URI,
-    response_type: 'code',
-    scope: 'openid profile email',
+    response_type: "code",
+    scope: "openid profile email",
     state: state,
-    include_granted_scopes: 'true',
-    prompt: 'consent',
+    include_granted_scopes: "true",
+    prompt: "consent",
   };
 
   // URL 파라미터 생성
   const queryString = Object.entries(params)
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-    .join('&');
+    .join("&");
 
   // OAuth 2.0 서버로 리다이렉트
   window.location.href = `${oauth2Endpoint}?${queryString}`;
@@ -110,8 +112,8 @@ export default function Login() {
 
   const form = useForm({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     } as LoginForm,
     onSubmit: async ({ value }) => {
       loginProcess(value, navigate, setError, setLoading, setLoginToken);
@@ -157,7 +159,7 @@ export default function Login() {
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(', ')}
+                      error={field.state.meta.errors.join(", ")}
                     />
                   )}
                 />
@@ -179,14 +181,14 @@ export default function Login() {
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
-                      error={field.state.meta.errors.join(', ')}
+                      error={field.state.meta.errors.join(", ")}
                     />
                   )}
                 />
               </fieldset>
 
               {error && (
-                <div style={{ color: '#ef4444', marginBottom: '16px', fontSize: '14px', textAlign: 'center' }}>
+                <div style={{ color: "#ef4444", marginBottom: "16px", fontSize: "14px", textAlign: "center" }}>
                   {error}
                 </div>
               )}
@@ -197,11 +199,11 @@ export default function Login() {
                 text={loading ? "로그인 중..." : "로그인"}
                 callback={() => {
                   // 모든 필드를 터치하여 검증 표시 후 제출
-                  form.setFieldMeta('email', (prev) => ({
+                  form.setFieldMeta("email", (prev) => ({
                     ...prev,
                     isTouched: true,
                   }));
-                  form.setFieldMeta('password', (prev) => ({
+                  form.setFieldMeta("password", (prev) => ({
                     ...prev,
                     isTouched: true,
                   }));
