@@ -10,6 +10,8 @@ import Button from "@/components/Button/Button";
 import { signUpWithUserInfo } from "@/services/api";
 import { saveAuthToken } from "@/services/auth";
 import { useAuth } from "@/contexts/AuthContext";
+import AgreementSection from "./components/AgreementSection";
+import { TERMS_CONTENT, PRIVACY_CONTENT } from "./components/agreementTexts";
 
 import {
   profileContainer,
@@ -18,6 +20,7 @@ import {
   headerText,
   headerTitle,
   headerSubtitle,
+  agreementSection,
 } from "./SocialSignUp.css";
 
 // Zod 스키마 정의
@@ -86,6 +89,8 @@ export default function SocialSignIn() {
   const { setLoginToken } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [termsAgreed, setTermsAgreed] = useState(false);
+  const [privacyAgreed, setPrivacyAgreed] = useState(false);
 
   // localStorage에서 user 정보 가져오기
   const userStr = localStorage.getItem('user');
@@ -344,6 +349,22 @@ export default function SocialSignIn() {
           </ResumeCard>
         </form>
 
+        {/* 약관 동의 섹션 */}
+        <div className={agreementSection}>
+          <AgreementSection
+            title="이용약관 동의"
+            isChecked={termsAgreed}
+            onToggle={() => setTermsAgreed(!termsAgreed)}
+            content={TERMS_CONTENT}
+          />
+          <AgreementSection
+            title="개인정보 수집 동의"
+            isChecked={privacyAgreed}
+            onToggle={() => setPrivacyAgreed(!privacyAgreed)}
+            content={PRIVACY_CONTENT}
+          />
+        </div>
+
         {/* 제출 버튼 */}
         <div>
           {error && (
@@ -358,7 +379,7 @@ export default function SocialSignIn() {
             buttonType="submit"
             form="socialSignInForm"
             callback={() => {}}
-            disabled={!form.state.isValid || loading}
+            disabled={!form.state.isValid || loading || !termsAgreed || !privacyAgreed}
           />
         </div>
       </div>

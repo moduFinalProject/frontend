@@ -5,6 +5,7 @@
 export const colors = {
   // 메인 색상
   main: "#0088FF", // --MainColor
+  mainRgb: "0, 136, 255", // -- MainColorRgb
   white: "#FFFFFF", // --WhiteColor
 
   // 배경 색상

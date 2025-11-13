@@ -141,7 +141,7 @@ export default function Dashboard() {
               widthStyle="fit"
               color="white"
               text="전체보기"
-              callback={() => navigate("/resumes")}
+              callback={() => navigate("/resume")}
             />
           </div>
           {resumes.length > 0 ? (

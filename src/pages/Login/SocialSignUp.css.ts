@@ -43,3 +43,9 @@ export const headerSubtitle = style({
   lineHeight: 1.43,
   color: vars.color.subText,
 });
+
+export const agreementSection = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: vars.spacing.md,
+});
