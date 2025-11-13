@@ -7,6 +7,15 @@ export const jobList = style({
   gap: vars.spacing.md,
 });
 
+export const jobListModal = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: vars.spacing.md,
+  listStyle: "none",
+  padding: 0,
+  margin: 0,
+});
+
 export const listSection = style({
   display: "flex",
   flexDirection: "column",

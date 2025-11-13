@@ -7,7 +7,13 @@ export const form = style({
   gap: vars.spacing.sm,
 });
 
-globalStyle(`${form} input`, {
+export const formModal = style({
+  width: "100%",
+  display: "flex",
+  gap: vars.spacing.sm,
+});
+
+globalStyle(`${form} input, ${formModal} input`, {
   backgroundColor: vars.color.formBg,
   border: "none",
   padding: `${vars.spacing.sm} ${vars.spacing.md}`,
