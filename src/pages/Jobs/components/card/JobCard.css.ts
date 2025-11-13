@@ -9,6 +9,13 @@ export const card = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.lg,
+  gridColumn: "span 2",
+
+  "@media": {
+    "(max-width: 768px)": {
+      gridColumn: "span 1",
+    },
+  },
 });
 
 export const titleText = style({
@@ -18,12 +25,12 @@ export const titleText = style({
 
 export const grid = style({
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(500px, 1fr))",
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
   gap: vars.spacing.lg,
 
   "@media": {
     "(max-width: 768px)": {
-      gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+      gridTemplateColumns: "repeat(1, minmax(0, 1fr))",
       gap: `${vars.spacing.lg} 0`,
     },
   },

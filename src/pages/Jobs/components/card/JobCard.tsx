@@ -17,7 +17,7 @@ export default function JobCard({
   useButton = false,
 }: rowData) {
   return (
-    <section className={card} style={{ gridColumn: "span 2" }}>
+    <section className={card}>
       <h3 className={titleText}>
         {title}
         {isMust && <span style={{ color: vars.color.delete }}> *</span>}
