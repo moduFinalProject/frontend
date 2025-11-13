@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 
@@ -15,7 +16,7 @@ import {
   updateJobPosting,
   fetchJobDetail,
   type CreateJobPostingData,
-  type JobPosting as JobDetailData,
+  type JobDetailData,
 } from "./api";
 
 const MIN_TITLE_LENGTH = 2;
@@ -171,7 +172,10 @@ export default function JobForm({ mode }: JobFormProps) {
       }
       return createJobPosting(payload);
     },
-    onSuccess: async (savedJob) => {
+    onSuccess: async (savedJob, { isEdit }) => {
+      toast.success(
+        isEdit ? "채용공고가 수정되었습니다." : "채용공고가 등록되었습니다."
+      );
       await queryClient.invalidateQueries({
         queryKey: ["job-detail", String(savedJob.posting_id)],
       });
@@ -179,6 +183,13 @@ export default function JobForm({ mode }: JobFormProps) {
         queryKey: ["job-list"],
         exact: true,
       });
+    },
+    onError: (error) => {
+      const message =
+        error instanceof Error
+          ? `저장에 실패했습니다: ${error.message}`
+          : "저장 처리 중 오류가 발생했습니다.";
+      toast.error(message);
     },
   });
 
@@ -213,22 +224,22 @@ export default function JobForm({ mode }: JobFormProps) {
           isEdit: isEditMode,
         });
 
-        alert("채용공고가 저장되었습니다.");
         if (!isEditMode) {
           navigate(`/jobs/${savedJob.posting_id}`);
         }
       } catch (err) {
         if (err instanceof z.ZodError) {
           console.error("검증 오류:", err.issues);
-        } else if (err instanceof Error) {
-          console.error("저장 실패:", err);
-          alert(`저장에 실패했습니다: ${err.message}`);
-        } else {
-          alert("알 수 없는 오류로 저장에 실패했습니다.");
+          const firstIssueMessage =
+            err.issues[0]?.message || "입력값을 다시 확인해주세요.";
+          toast.error(firstIssueMessage);
+          return;
         }
+        console.error("저장 실패:", err);
       }
     },
     onSubmitInvalid: ({ formApi }) => {
+      toast.error("필수 항목을 확인해주세요.");
       requiredFieldOrder.some((fieldName) => {
         const meta = formApi.getFieldMeta(fieldName);
         if (!meta || !Array.isArray(meta.errors)) {
