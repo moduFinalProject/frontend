@@ -5,7 +5,7 @@ import { delResume } from "@/services/resumes.ts";
 import { useResumeContext } from "../ResumeContext.tsx";
 
 export default function ResumeTitle({ title }: { title: string }) {
-  const { resumeData, id, mode } = useResumeContext();
+  const { setResumes, resumeData, id, mode } = useResumeContext();
   const navigate = useNavigate();
 
   const modeData = {
@@ -102,6 +102,11 @@ export default function ResumeTitle({ title }: { title: string }) {
 
                   alert("삭제되었습니다");
                   navigate("/resume");
+
+                  // 새 배열로 상태 업데이트 (불변성 유지)
+                  setResumes((prev) =>
+                    prev.filter((item) => item.resume_id !== id)
+                  );
                 }
               }}
             />
