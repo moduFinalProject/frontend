@@ -2,7 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 
 import { Button } from "@/components/index.ts";
-import { form, formModal } from "./Search.css.ts";
+import { form, formModal, fieldContainer } from "./Search.css.ts";
 import { useEffect } from "react";
 import Text from "@/components/FormElem/text/Text.tsx";
 
@@ -44,37 +44,35 @@ export default function Search({ isModal = false }: SearchProps = {}) {
   return (
     <form
       id="searchForm"
+      className={isModal ? formModal : form}
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         searchForm.handleSubmit();
       }}
     >
-      <div className={isModal ? formModal : form}>
-        <searchForm.Field name="value">
-          {(field) => (
-            <>
-              <Text
-                // label="이력서 제목"
-                value={field.state.value}
-                onChange={field.handleChange}
-                onBlur={field.handleBlur}
-                error={field.state.meta.errors.join(", ")}
-                placeholder="채용공고 제목, 회사명으로 검색..."
-              />
-              <Button
-                color="blue"
-                icon="SEARCH"
-                text="검색"
-                buttonType="submit"
-                form="searchForm"
-                callback={() => {}}
-                widthStyle="fit"
-              />
-            </>
-          )}
-        </searchForm.Field>
-      </div>
+      <searchForm.Field name="value">
+        {(field) => (
+          <div className={fieldContainer}>
+            <Text
+              value={field.state.value}
+              onChange={field.handleChange}
+              onBlur={field.handleBlur}
+              error={field.state.meta.errors.join(", ")}
+              placeholder="채용공고 제목, 회사명으로 검색..."
+            />
+            <Button
+              color="blue"
+              icon="SEARCH"
+              text="검색"
+              buttonType="submit"
+              form="searchForm"
+              callback={() => {}}
+              widthStyle="fit"
+            />
+          </div>
+        )}
+      </searchForm.Field>
     </form>
   );
 }
