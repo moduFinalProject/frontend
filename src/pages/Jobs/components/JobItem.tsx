@@ -9,7 +9,7 @@ import {
   btns,
   dropdownTrigger,
 } from "./JobItem.css.ts";
-import type { JobListItem } from "@/pages/Jobs/api.ts";
+import { deleteJobPosting, type JobListItem } from "../api.ts";
 
 interface JobItemProps {
   job: JobListItem;
@@ -23,8 +23,7 @@ export default function JobItem({ job }: JobItemProps) {
       {
         label: "삭제",
         onSelect: () => {
-          console.log("삭제하기");
-          // TODO: 삭제 로직 연결
+          deleteJobPosting(job.posting_id);
         },
       },
     ],
@@ -38,7 +37,7 @@ export default function JobItem({ job }: JobItemProps) {
           <div
             className={titleRow}
             onClick={() => {
-              navigate(`./${job.id}`);
+              navigate(`./${job.posting_id}`);
             }}
           >
             <h4>{job.title}</h4>
@@ -76,7 +75,7 @@ export default function JobItem({ job }: JobItemProps) {
           color="white"
           widthStyle="full"
           callback={() => {
-            navigate(`./${job.id}`);
+            navigate(`./${job.posting_id}`);
           }}
         />
 
@@ -87,7 +86,7 @@ export default function JobItem({ job }: JobItemProps) {
             icon="LINK_BLACK"
             widthStyle="full"
             callback={() => {
-              window.open(job.url, "_blank", "noopener,noreferrer");
+              window.open(job.url!, "_blank", "noopener,noreferrer");
             }}
           />
         )}
