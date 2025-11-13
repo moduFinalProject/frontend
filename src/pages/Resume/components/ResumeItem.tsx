@@ -12,6 +12,7 @@ import {
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { delResume } from "@/services/resumes.ts";
+import { useResumeContext } from "../ResumeContext.tsx";
 
 type Resume = {
   resume_id: string;
@@ -28,6 +29,7 @@ interface ResumeItemProps {
 }
 
 export default function ResumeItem({ resume }: ResumeItemProps) {
+  const { resumes, setResumes } = useResumeContext();
   const navigate = useNavigate();
 
   const dropdownItems = useMemo(
@@ -47,7 +49,12 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
             console.log(result);
 
             alert("삭제되었습니다");
-            navigate("/resume"); // 새로고침 되어야 함
+            const newItems = resumes.filter(
+              (item) => item.resume_id !== resume.resume_id
+            );
+
+            // 새 배열로 상태 업데이트 (불변성 유지)
+            setResumes(newItems);
           }
         },
       },
@@ -55,7 +62,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
     [navigate, resume.resume_id]
   );
 
-  const date = resume.updated_at.slice(0, 10);
+  const date = resume.updated_at?.slice(0, 10);
 
   return (
     <li className={resumeItem}>
@@ -67,10 +74,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
             </Link>
             {resume.url && <span className={noDrag}>공고맞춤</span>}
           </div>
-          <p>
-            {/* {resume.desc} */}
-            {resume.url ? "첨삭 이력서" : "기본 이력서"}
-          </p>
+          <p>{resume.resume_type_detail}</p>
         </div>
         <OptionsDropdown
           ariaLabel={`${resume.title} 옵션`}
