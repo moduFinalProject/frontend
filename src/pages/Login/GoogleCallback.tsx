@@ -29,8 +29,12 @@ export default function GoogleCallback() {
           throw new Error("State value mismatch (CSRF attack detected)");
         }
 
+        const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+        const googleLoginUrl = isLocal ? "https://gaechwi.duckdns.org/auth/google/localhost" : "https://gaechwi.duckdns.org/auth/google"
+
         // 서버에 토큰 인증 및 로그인 요청
-        const response = await fetch("https://gaechwi.duckdns.org/auth/google", {
+        const response = await fetch(googleLoginUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

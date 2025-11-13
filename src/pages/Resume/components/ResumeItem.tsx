@@ -13,10 +13,11 @@ import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 type Resume = {
-  id: string;
-  name: string;
-  desc: string;
-  date: string;
+  resume_id: string;
+  title: string;
+  updated_at: string;
+  created_at: string;
+  desc?: string;
   url?: string;
   end_date?: string;
 };
@@ -33,7 +34,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       {
         label: "수정",
         onSelect: () => {
-          navigate(`./${resume.id}/edit`);
+          navigate(`./${resume.resume_id}/edit`);
         },
       },
       {
@@ -44,7 +45,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
         },
       },
     ],
-    [navigate, resume.id]
+    [navigate, resume.resume_id]
   );
 
   return (
@@ -52,15 +53,18 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       <div className={title}>
         <div>
           <div className={titleRow}>
-            <Link to={`./${resume.id}`}>
-              <h4>{resume.name}</h4>
+            <Link to={`./${resume.resume_id}`}>
+              <h4>{resume.title}</h4>
             </Link>
             {resume.url && <span className={noDrag}>공고맞춤</span>}
           </div>
-          <p>{resume.desc}</p>
+          <p>
+            {/* {resume.desc} */}
+            {resume.url ? "첨삭 이력서" : "기본 이력서"}
+          </p>
         </div>
         <OptionsDropdown
-          ariaLabel={`${resume.name} 옵션`}
+          ariaLabel={`${resume.title} 옵션`}
           items={dropdownItems}
           triggerClassName={dropdownTrigger}
           itemWidthStyle="fit"
@@ -69,7 +73,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       <div className={desc}>
         <div>
           <p className={descTitle}>최근 수정</p>
-          <p>{resume.date}</p>
+          <p>{resume.updated_at}</p>
         </div>
         {resume.url && (
           <>
@@ -89,7 +93,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
           text="첨삭"
           color="white"
           callback={() => {
-            navigate(`./${resume.id}/correction`);
+            navigate(`./${resume.resume_id}/correction`);
           }}
           widthStyle="full"
         />

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { resumeList } from "./ResumeList.css.ts";
 import ResumeItem from "./components/ResumeItem.tsx";
 import Search from "./components/form/Search.tsx";
+import { fetchWithAuth } from "@/services/api.ts";
 
 type Resume = {
-  id: string;
+  resume_id: string;
   name: string;
   desc: string;
   date: string;
@@ -12,59 +13,66 @@ type Resume = {
   end_date?: string;
 };
 
+async function getResumeList() {
+  try {
+    const response = await fetchWithAuth(`/resumes/?page=${1}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      // 400, 500 등 다른 오류 발생 시
+      throw new Error(`API 요청 실패: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("사용자 데이터:", data);
+    console.log(data.length);
+    return data;
+  } catch (error) {
+    console.error("로딩 중 에러:", error);
+    // UI에 에러 메시지를 표시하거나 다른 처리를 할 수 있습니다.
+  }
+}
+
 export default function ResumeList() {
   const [resumes, setResumes] = useState<Resume[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setResumes([
-      {
-        id: "1",
-        name: "기본 이력서",
-        desc: "포괄적인 기본 이력서",
-        date: "2025.10.28",
-      },
-      {
-        id: "2",
-        name: "네이버 이력서",
-        desc: "기본 이력서 첨삭",
-        date: "2025.10.28",
-        url: "https://career.example.com/job/123456",
-        end_date: "2025.11.31",
-      },
-      {
-        id: "3",
-        name: "쿠팡 이력서",
-        desc: "기본 이력서 첨삭",
-        date: "2025.10.28",
-        url: "https://career.example.com/job/123456",
-        end_date: "2025.11.31",
-      },
-      {
-        id: "4",
-        name: "카카오 이력서",
-        desc: "기본 이력서 첨삭",
-        date: "2025.10.30",
-        url: "https://career.example.com/job/123456",
-        end_date: "2025.11.31",
-      },
-      {
-        id: "5",
-        name: "라인 이력서",
-        desc: "카카오 이력서 첨삭",
-        date: "2025.10.30",
-        url: "https://career.example.com/job/123456",
-        end_date: "2025.11.31",
-      },
-      {
-        id: "6",
-        name: "배민 이력서",
-        desc: "카카오 이력서 첨삭",
-        date: "2025.10.31",
-        url: "https://career.example.com/job/123456",
-        end_date: "2025.11.31",
-      },
-    ]);
+    let isMounted = true;
+
+    setIsLoading(true);
+
+    const loadResumesData = async () => {
+      const data = await getResumeList();
+
+      if (isMounted) {
+        // ⭐️ 컴포넌트가 마운트된 상태에서만 상태 업데이트
+        if (data) {
+          // 데이터가 도착하면 상태를 업데이트
+          setResumes(data);
+        }
+        // 데이터 유무와 관계없이 로딩 종료
+        setIsLoading(false);
+      }
+    };
+
+    loadResumesData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  if (isLoading) {
+    return <div>이력서 목록 로딩 중...</div>;
+  }
+
+  if (resumes.length === 0) {
+    return <div>등록된 이력서가 없습니다.</div>;
+  }
 
   return (
     <>
@@ -72,9 +80,17 @@ export default function ResumeList() {
       <div>
         <h3 className="a11y-hidden">이력서 목록</h3>
         <ul className={resumeList}>
-          {resumes.map((resume) => (
-            <ResumeItem resume={resume} key={resume.id} />
-          ))}
+          {resumes.length > 0 ? (
+            resumes.map((resumeItem) => {
+              console.log(resumeItem);
+
+              return (
+                <ResumeItem resume={resumeItem} key={resumeItem.resume_id} />
+              );
+            })
+          ) : (
+            <li>이력서가 없습니다</li>
+          )}
         </ul>
       </div>
     </>
