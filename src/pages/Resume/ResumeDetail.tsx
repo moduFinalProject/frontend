@@ -24,13 +24,13 @@ type ResumeData = {
   address: string;
   military_service: string;
   military_service_detail?: string;
-  education?: {
+  educations?: {
     organ: string;
     department: string;
     degree_level: string;
+    score: string;
     start_date: string;
     end_date?: string;
-    score: string;
   }[];
   self_introduction: string;
   experiences?: {
@@ -39,20 +39,20 @@ type ResumeData = {
     department: string;
     start_date: string;
     end_date?: string;
-    job_description: string;
     employment_status: "Y" | "N";
+    job_description: string;
   }[];
-  project?: {
+  projects?: {
     title: string;
-    description: string;
     start_date: string;
     end_date: string;
-  }[];
-  activity?: {
-    title: string;
     description: string;
+  }[];
+  activities?: {
+    title: string;
     start_date: string;
     end_date: string;
+    description: string;
   }[];
   technology_stacks?: { title: string }[];
   qualifications?: {

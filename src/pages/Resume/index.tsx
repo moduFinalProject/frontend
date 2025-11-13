@@ -30,10 +30,6 @@ const initialResumeValues = {
 };
 
 export default function Resume() {
-  // const { id } = useParams();
-  // const [resumeData, setResumeData] = useState();
-  // const [isLoading, setIsLoading] = useState(false);
-
   return (
     <ResumeProvider initialResumeData={initialResumeValues}>
       <div className={container}>

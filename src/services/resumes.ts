@@ -1,5 +1,24 @@
 import { fetchWithAuth } from "./api";
 
+export async function getUserInfo() {
+  try {
+    const response = await fetchWithAuth("/user/userinfo", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`API 요청 실패: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("로딩 중 에러:", error);
+  }
+}
+
 // 이력서 리스트
 export async function getResumeList({
   page = 1,
@@ -115,4 +134,28 @@ export async function updateResume(formData, id) {
   } catch (error) {
     console.error("로딩 중 에러:", error);
   }
+}
+
+export function addDay(arrayData) {
+  if (!Array.isArray(arrayData)) return arrayData;
+
+  const result = arrayData.map((item) => {
+    if (
+      item.start_date &&
+      typeof item.start_date === "string" &&
+      item.start_date.length === 7
+    ) {
+      item.start_date = item.start_date + "-01";
+    }
+    if (
+      item.end_date &&
+      typeof item.end_date === "string" &&
+      item.end_date.length === 7
+    ) {
+      item.end_date = item.end_date + "-01";
+    }
+    return item;
+  });
+
+  return result;
 }

@@ -31,7 +31,13 @@ import {
   MAX_TITLE_LENGTH,
 } from "./components/form/validators.ts";
 import { errorInput } from "@/components/FormElem/text/Input.css.ts";
-import { createResume, getResume, updateResume } from "@/services/resumes.ts";
+import {
+  addDay,
+  createResume,
+  getResume,
+  getUserInfo,
+  updateResume,
+} from "@/services/resumes.ts";
 import { useResumeContext } from "./ResumeContext.tsx";
 
 type EducationItem = {
@@ -53,15 +59,15 @@ type ExperienceItem = {
 };
 type ProjectItem = {
   title: string;
-  description: string;
   start_date: string;
   end_date: string;
+  description: string;
 };
 type ActivityItem = {
   title: string;
-  description: string;
   start_date: string;
   end_date: string;
+  description: string;
 };
 type QualificationItem = {
   title: string;
@@ -112,15 +118,15 @@ const emptyExperienceItem: ExperienceItem = {
 };
 const emptyProjectItem: ProjectItem = {
   title: "",
-  description: "",
   start_date: "",
   end_date: "",
+  description: "",
 };
 const emptyActivityItem: ActivityItem = {
   title: "",
-  description: "",
   start_date: "",
   end_date: "",
+  description: "",
 };
 const emptyQualificationItem: QualificationItem = {
   title: "",
@@ -128,6 +134,7 @@ const emptyQualificationItem: QualificationItem = {
   acquisition_date: "",
   score: "",
 };
+
 function transformStacksForForm(stackArray: string[]): { title: string }[] {
   if (!Array.isArray(stackArray) || stackArray.length === 0) {
     return [];
@@ -201,106 +208,111 @@ export default function ResumeForm() {
         delete flattenedData.user_info;
 
         // 학력 날짜에 -01 붙이기
-        if (Array.isArray(flattenedData.educations)) {
-          flattenedData.educations = flattenedData.educations.map((edu) => {
-            if (
-              edu.start_date &&
-              typeof edu.start_date === "string" &&
-              edu.start_date.length === 7
-            ) {
-              edu.start_date = edu.start_date + "-01";
-            }
-            if (
-              edu.end_date &&
-              typeof edu.end_date === "string" &&
-              edu.end_date.length === 7
-            ) {
-              edu.end_date = edu.end_date + "-01";
-            }
-            return edu;
-          });
-        }
+        flattenedData.educations = addDay(flattenedData.educations);
+        // if (Array.isArray(flattenedData.educations)) {
+        //   flattenedData.educations = flattenedData.educations.map((edu) => {
+        //     if (
+        //       edu.start_date &&
+        //       typeof edu.start_date === "string" &&
+        //       edu.start_date.length === 7
+        //     ) {
+        //       edu.start_date = edu.start_date + "-01";
+        //     }
+        //     if (
+        //       edu.end_date &&
+        //       typeof edu.end_date === "string" &&
+        //       edu.end_date.length === 7
+        //     ) {
+        //       edu.end_date = edu.end_date + "-01";
+        //     }
+        //     return edu;
+        //   });
+        // }
 
         // 경력 날짜에 -01 붙이기
-        if (Array.isArray(flattenedData.experiences)) {
-          flattenedData.experiences = flattenedData.experiences.map((exp) => {
-            if (
-              exp.start_date &&
-              typeof exp.start_date === "string" &&
-              exp.start_date.length === 7
-            ) {
-              exp.start_date = exp.start_date + "-01";
-            }
-            if (
-              exp.end_date &&
-              typeof exp.end_date === "string" &&
-              exp.end_date.length === 7
-            ) {
-              exp.end_date = exp.end_date + "-01";
-            }
-            return exp;
-          });
-        }
+        flattenedData.experiences = addDay(flattenedData.experiences);
+        // if (Array.isArray(flattenedData.experiences)) {
+        //   flattenedData.experiences = flattenedData.experiences.map((exp) => {
+        //     if (
+        //       exp.start_date &&
+        //       typeof exp.start_date === "string" &&
+        //       exp.start_date.length === 7
+        //     ) {
+        //       exp.start_date = exp.start_date + "-01";
+        //     }
+        //     if (
+        //       exp.end_date &&
+        //       typeof exp.end_date === "string" &&
+        //       exp.end_date.length === 7
+        //     ) {
+        //       exp.end_date = exp.end_date + "-01";
+        //     }
+        //     return exp;
+        //   });
+        // }
 
         // 프로젝트 날짜에 -01 붙이기
-        if (Array.isArray(flattenedData.projects)) {
-          flattenedData.projects = flattenedData.projects.map((project) => {
-            if (
-              project.start_date &&
-              typeof project.start_date === "string" &&
-              project.start_date.length === 7
-            ) {
-              project.start_date = project.start_date + "-01";
-            }
-            if (
-              project.end_date &&
-              typeof project.end_date === "string" &&
-              project.end_date.length === 7
-            ) {
-              project.end_date = project.end_date + "-01";
-            }
-            return project;
-          });
-        }
+        flattenedData.projects = addDay(flattenedData.projects);
+        // if (Array.isArray(flattenedData.projects)) {
+        //   flattenedData.projects = flattenedData.projects.map((project) => {
+        //     if (
+        //       project.start_date &&
+        //       typeof project.start_date === "string" &&
+        //       project.start_date.length === 7
+        //     ) {
+        //       project.start_date = project.start_date + "-01";
+        //     }
+        //     if (
+        //       project.end_date &&
+        //       typeof project.end_date === "string" &&
+        //       project.end_date.length === 7
+        //     ) {
+        //       project.end_date = project.end_date + "-01";
+        //     }
+        //     return project;
+        //   });
+        // }
 
         // 활동 날짜에 -01 붙이기
-        if (Array.isArray(flattenedData.activities)) {
-          flattenedData.activities = flattenedData.activities.map(
-            (activity) => {
-              if (
-                activity.start_date &&
-                typeof activity.start_date === "string" &&
-                activity.start_date.length === 7
-              ) {
-                activity.start_date = activity.start_date + "-01";
-              }
-              if (
-                activity.end_date &&
-                typeof activity.end_date === "string" &&
-                activity.end_date.length === 7
-              ) {
-                activity.end_date = activity.end_date + "-01";
-              }
-              return activity;
-            }
-          );
-        }
+        flattenedData.activities = addDay(flattenedData.activities);
+        // if (Array.isArray(flattenedData.activities)) {
+        //   flattenedData.activities = flattenedData.activities.map(
+        //     (activity) => {
+        //       if (
+        //         activity.start_date &&
+        //         typeof activity.start_date === "string" &&
+        //         activity.start_date.length === 7
+        //       ) {
+        //         activity.start_date = activity.start_date + "-01";
+        //       }
+        //       if (
+        //         activity.end_date &&
+        //         typeof activity.end_date === "string" &&
+        //         activity.end_date.length === 7
+        //       ) {
+        //         activity.end_date = activity.end_date + "-01";
+        //       }
+        //       return activity;
+        //     }
+        //   );
+        // }
 
         // 자격증/어학 날짜에 -01 붙이기
-        if (Array.isArray(flattenedData.qualifications)) {
-          flattenedData.qualifications = flattenedData.qualifications.map(
-            (qua) => {
-              if (
-                qua.acquisition_date &&
-                typeof qua.acquisition_date === "string" &&
-                qua.acquisition_date.length === 7
-              ) {
-                qua.acquisition_date = qua.acquisition_date + "-01";
-              }
-              return qua;
-            }
-          );
-        }
+        flattenedData.qualifications = addDay(flattenedData.qualifications);
+        // if (Array.isArray(flattenedData.qualifications)) {
+        //   flattenedData.qualifications = flattenedData.qualifications.map(
+        //     (qua) => {
+        //       if (
+        //         qua.acquisition_date &&
+        //         typeof qua.acquisition_date === "string" &&
+        //         qua.acquisition_date.length === 7
+        //       ) {
+        //         qua.acquisition_date = qua.acquisition_date + "-01";
+        //       }
+        //       return qua;
+        //     }
+        //   );
+        // }
 
         // 스택 배열로 만들기
         if (typeof flattenedData.technology_stacks === "string") {
@@ -366,6 +378,25 @@ export default function ResumeForm() {
 
   useEffect(() => {
     if (!isEditMode) {
+      const loadAndSetUserData = async () => {
+        const userInfo = await getUserInfo();
+
+        form.reset({
+          ...defaultValues,
+          user_info: {
+            ...defaultValues.user_info,
+            name: userInfo.name,
+            birth_date: userInfo.birth_date,
+            email: userInfo.email,
+            gender: userInfo.gender,
+            phone: userInfo.phone,
+            address: userInfo.address,
+          },
+        });
+        console.log(userInfo);
+      };
+      loadAndSetUserData();
+
       setIsLoading(false);
       return;
     }
