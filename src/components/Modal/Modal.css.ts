@@ -17,7 +17,6 @@ export const modalContent = style({
   boxShadow: "0 4px 16px rgba(0, 0, 0, 0.15)",
   width: "100%",
   height: "100%",
-  overflowY: "auto",
   display: "flex",
   flexDirection: "column",
   animation: "slideIn 0.3s ease-out",
@@ -28,6 +27,8 @@ export const modalHeader = style({
   justifyContent: "space-between",
   alignItems: "baseline",
   padding: vars.spacing.lg,
+  flexShrink: 0,
+  borderBottom: `1px solid ${vars.color.line}`,
 });
 
 export const modalTitle = style({
@@ -83,6 +84,10 @@ export const modalHeaderButton = style({
 
 export const modalBody = style({
   padding: vars.spacing.lg,
+  flex: 1,
+  overflowY: "auto",
+  display: "flex",
+  flexDirection: "column",
 });
 
 export const modalHeaderButtons = style({
