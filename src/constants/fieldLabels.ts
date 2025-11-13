@@ -6,11 +6,11 @@ type labelPlaceholderSet = { label: string; placeholder?: string };
 export const FIELD_LABELS: Record<string, labelPlaceholderSet> = {
   // 최상위 필드
   title: { label: "이력서 제목", placeholder: "이력서 제목을 입력하세요" },
+  url: { label: "외부 링크" },
   image_url: {
     label: "증명사진",
     placeholder: "권장 크기: 3:4 비율 (예: 300x400px)",
   },
-  url: { label: "외부 링크" },
   self_introduction: {
     label: "자기소개",
     placeholder: "자신의 강점, 경험, 목표 등을 자유롭게 작성해주세요.",
@@ -69,7 +69,7 @@ export const EXPERIENCE_LABELS: Record<string, labelPlaceholderSet> = {
   position: { label: "직무", placeholder: "직무를 입력하세요" },
   start_date: { label: "입사일" },
   end_date: { label: "퇴사일" },
-  employmont_status: { label: "현재 재직중" },
+  employment_status: { label: "현재 재직중" },
   job_description: {
     label: "경력 기술서 (담당 업무 및 성과)",
     placeholder:

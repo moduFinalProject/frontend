@@ -1,58 +1,50 @@
-import { Outlet, useMatch, useParams } from "react-router-dom";
+import { Outlet, useMatch } from "react-router-dom";
 import { Suspense } from "react";
 
 import { container, header } from "./index.css.ts";
 import ResumeTitle from "./components/ResumeTitle.tsx";
+import { ResumeProvider } from "./ResumeContext.tsx";
+
+// 초기값 구조
+const initialResumeValues = {
+  title: "",
+  url: "",
+  image_url: "",
+  updated_at: "",
+  user_info: {
+    name: "",
+    birth_date: "",
+    email: "",
+    phone: "",
+    gender: "0",
+    military_service: "0",
+    address: "",
+  },
+  educations: [],
+  self_introduction: "",
+  experiences: [],
+  projects: [],
+  activities: [],
+  technology_stacks: [],
+  qualifications: [],
+};
 
 export default function Resume() {
-  const { id } = useParams();
-
-  const modeData = {
-    list: {
-      desc: "저장된 이력서를 관리하고 새로운 이력서를 작성하세요",
-    },
-    view: {
-      desc: "이력서 내용을 확인하고 수정할 수 있습니다",
-    },
-    create: {
-      desc: "정보를 입력하여 이력서를 작성하세요",
-    },
-    edit: {
-      desc: "정보를 입력하여 이력서를 작성하세요",
-    },
-    correction: {
-      desc: "최근 수정: ",
-    },
-  };
-
-  const isCreate = useMatch("/resume/new");
-  const isEdit = useMatch("/resume/:id/edit");
-  const isCorrection = useMatch("/resume/:id/correction");
-  const isView = useMatch("/resume/:id");
-  const mode: "view" | "edit" | "create" | "list" | "correction" = isCreate
-    ? "create"
-    : isEdit
-    ? "edit"
-    : isView
-    ? "view"
-    : isCorrection
-    ? "correction"
-    : "list";
+  // const { id } = useParams();
+  // const [resumeData, setResumeData] = useState();
+  // const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <div className={container}>
-      <header className={header}>
-        <ResumeTitle
-          mode={mode}
-          title="내 이력서"
-          desc={modeData[mode].desc}
-          resumeId={id}
-        />
-      </header>
+    <ResumeProvider initialResumeData={initialResumeValues}>
+      <div className={container}>
+        <header className={header}>
+          <ResumeTitle title="내 이력서" />
+        </header>
 
-      <Suspense fallback={<p>로딩 중...</p>}>
-        <Outlet />
-      </Suspense>
-    </div>
+        <Suspense fallback={<p>로딩 중...</p>}>
+          <Outlet />
+        </Suspense>
+      </div>
+    </ResumeProvider>
   );
 }
