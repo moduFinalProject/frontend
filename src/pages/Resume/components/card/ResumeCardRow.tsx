@@ -120,8 +120,8 @@ export default function ResumeCardRow({
       {Array.isArray(keyword) && (
         <div className={stackWrap}>
           {keyword.map((item) => (
-            <span key={item} className={stack}>
-              {item}
+            <span key={item.title} className={stack}>
+              {item.title}
             </span>
           ))}
         </div>

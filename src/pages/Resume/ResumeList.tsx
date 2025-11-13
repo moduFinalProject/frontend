@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { resumeList } from "./ResumeList.css.ts";
 import ResumeItem from "./components/ResumeItem.tsx";
 import Search from "./components/form/Search.tsx";
-import { fetchWithAuth } from "@/services/api.ts";
+import { getResumeList } from "@/services/resumes.ts";
 
 type Resume = {
   resume_id: string;
@@ -12,29 +12,6 @@ type Resume = {
   url?: string;
   end_date?: string;
 };
-
-async function getResumeList() {
-  try {
-    const response = await fetchWithAuth(`/resumes/?page=${1}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      // 400, 500 등 다른 오류 발생 시
-      throw new Error(`API 요청 실패: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log("사용자 데이터:", data);
-    console.log(data.length);
-    return data;
-  } catch (error) {
-    console.error("로딩 중 에러:", error);
-    // UI에 에러 메시지를 표시하거나 다른 처리를 할 수 있습니다.
-  }
-}
 
 export default function ResumeList() {
   const [resumes, setResumes] = useState<Resume[]>([]);

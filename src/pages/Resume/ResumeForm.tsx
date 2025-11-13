@@ -31,7 +31,7 @@ import {
   MAX_TITLE_LENGTH,
 } from "./components/form/validators.ts";
 import { errorInput } from "@/components/FormElem/text/Input.css.ts";
-import { fetchWithAuth } from "@/services/api.ts";
+import { createResume, getResume, updateResume } from "@/services/resumes.ts";
 
 interface ResumeFormProps {
   mode: "create" | "edit";
@@ -91,7 +91,7 @@ type ResumeFormValues = {
   experiences?: ExperienceItem[];
   projects?: ProjectItem[];
   activities?: ActivityItem[];
-  technology_stacks?: string[];
+  technology_stacks?: { title: string }[];
   qualifications?: QualificationItem[];
 };
 
@@ -132,145 +132,6 @@ const emptyQualificationItem: QualificationItem = {
   score: "",
 };
 
-// const resumeDataSample: ResumeFormValues = {
-//   resume_id: "1",
-//   title: "기본 이력서",
-//   image_url:
-//     "https://i.pinimg.com/736x/95/f0/8a/95f08adb4d08c76eda72fd488700bd3a.jpg",
-//   url: "https://career.example.com/job/123456",
-//   user_info: {
-//     name: "김취업",
-//     birth_date: "1996-12-12",
-//     email: "email@email.com",
-//     phone: "010-0000-0000",
-//     gender: "1",
-//     military_service: "2",
-//     address: "서울시 강남구",
-//   },
-//   educations: [
-//     {
-//       organ: "한국대학교",
-//       department: "컴퓨터공학과",
-//       degree_level: "3",
-//       score: "3.8 / 4.5점",
-//       start_date: "2020-06",
-//       end_date: "2022-02",
-//     },
-//     {
-//       organ: "한국대학교",
-//       department: "컴퓨터공학과",
-//       degree_level: "3",
-//       score: "3.8 / 4.5점",
-//       start_date: "2020-06",
-//       end_date: "2022-02",
-//     },
-//   ],
-//   self_introduction:
-//     "안녕하세요. 3년차 웹 개발자 김취업입니다.\n\n사용자 중심의 인터페이스 설계와 효율적인 코드 작성에 관심이 많으며, 항상 새로운 기술을 배우고 적용하는 것을 즐깁니다. 팀원들과의 원활한 소통을 통해 프로젝트를 성공적으로 이끌어 낸 경험이 있으며, 문제 해결 능력과 책임감을 바탕으로 맡은 업무를 완수하는 것을 목표로 하고 있습니다.\n\n지속적인 학습과 성장을 통해 더 나은 개발자가 되고자 노력하고 있습니다.",
-
-//   experiences: [
-//     {
-//       job_title: "테크스타트업",
-//       department: "개발팀",
-//       position: "프론트엔드 개발자",
-//       start_date: "2022-03",
-//       end_date: null,
-//       employmont_status: true,
-//       job_description:
-//         "- React와 TypeScript를 활용한 웹 서비스 개발 및 유지보수\n- Redux를 이용한 상태 관리 구조 설계 및 구현\n- REST API 연동 및 데이터 처리 로직 개발\n- 반응형 웹 디자인 구현으로 모바일 사용자 경험 개선\n- Git을 활용한 버전 관리 및 코드 리뷰 참여\n- 웹 접근성 개선 작업으로 WCAG 2.1 AA 등급 달성",
-//     },
-//     {
-//       job_title: "디지털솔루션",
-//       department: "개발팀",
-//       position: "주니어 웹 개발자",
-//       start_date: "2020-06",
-//       end_date: "2022-02",
-//       employmont_status: false,
-//       job_description:
-//         "- HTML, CSS, JavaScript를 활용한 웹 페이지 개발\n- jQuery를 이용한 동적 UI 구현\n- 크로스 브라우저 호환성 테스트 및 이슈 해결\n- 웹사이트 성능 최적화를 통한 로딩 속도 25% 개선\n- UI/UX 디자이너와 협업하여 사용자 경험 개선",
-//     },
-//   ],
-//   projects: [
-//     {
-//       title: "전자상거래 플랫폼 구축",
-//       start_date: "2020-06",
-//       end_date: "2022-02",
-//       description:
-//         "- React와 Next.js를 활용한 SSR 기반 전자상거래 플랫폼 개발\n- 상품 검색, 장바구니, 결제 시스템 등 핵심 기능 구현\n- 5인 개발팀에서 프론트엔드 파트 리딩\n- 페이지 로딩 속도 최적화로 Lighthouse 성능 점수 85점 이상 달성",
-//     },
-//     {
-//       title: "사내 관리 시스템 개발",
-//       start_date: "2020-06",
-//       end_date: "2022-02",
-//       description:
-//         "- 사내 업무 효율화를 위한 관리 시스템 개발\n- 실시간 데이터 동기화를 위한 WebSocket 구현\n- Chart.js를 활용한 데이터 시각화 대시보드 개발\n- 사용자 권한 관리 시스템 구축",
-//     },
-//   ],
-//   activities: [
-//     {
-//       title: "오픈소스 프로젝트 기여",
-//       start_date: "2020-06",
-//       end_date: "2022-02",
-//       description:
-//         "- React 관련 오픈소스 라이브러리에 버그 수정 및 기능 개선 PR 제출\n- 총 15개의 PR이 메인 브랜치에 머지됨\n- 프로젝트 문서화 작업에 참여",
-//     },
-//     {
-//       title: "개발자 스터디 그룹 운영",
-//       start_date: "2020-06",
-//       end_date: "2022-02",
-//       description:
-//         "- 주 1회 웹 개발 관련 스터디 진행 (총 12명 참여)\n- React, TypeScript 등 최신 기술 스택 학습 및 토론\n- 토이 프로젝트 협업을 통한 실무 경험 공유",
-//     },
-//   ],
-//   technology_stacks: [
-//     "React",
-//     "TypeScript",
-//     "JavaScript",
-//     "HTML/CSS",
-//     "Redux",
-//     "Next.js",
-//     "Git",
-//     "REST API",
-//     "Responsive Design",
-//   ],
-//   qualifications: [
-//     {
-//       title: "정보처리기사",
-//       organ: "한국산업인력공단",
-//       acquisition_date: "2020-08",
-//       score: "",
-//     },
-//     {
-//       title: "TOEIC",
-//       organ: "ETS",
-//       acquisition_date: "2024-05",
-//       score: "850점",
-//     },
-//   ],
-// };
-
-async function handleSubmitResume(formData, id = null) {
-  const url = `/resumes${id ? `/${id}` : ""}`;
-  const methodType = id ? "PUT" : "POST";
-  console.log(formData.get("photo"));
-
-  try {
-    const response = await fetchWithAuth(url, {
-      method: methodType,
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error(`API 요청 실패: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("로딩 중 에러:", error);
-  }
-}
-
 // 폼 초기값 구조
 const initialFormValues = {
   title: "",
@@ -290,9 +151,42 @@ const initialFormValues = {
   experiences: [],
   projects: [],
   activities: [],
-  technology_stacks: [],
+  technology_stacks: [{ title: "React" }],
   qualifications: [],
 };
+
+const formatMonthDate = (
+  dateString: string | undefined
+): string | undefined => {
+  if (typeof dateString === "string" && dateString.length >= 7) {
+    // YYYY-MM-DD 형태(10글자)라면 YYYY-MM (7글자)까지만 자릅니다.
+    return dateString.slice(0, 7);
+  }
+  return dateString;
+};
+
+const transformStacksFormServer = (
+  stackArray: { title: string }[]
+): string[] => {
+  // 배열이 비어있거나 유효하지 않으면 빈 배열 반환
+  if (!Array.isArray(stackArray) || stackArray.length === 0) {
+    return [];
+  }
+
+  // map을 사용하여 각 객체에서 title 값만 추출
+  return stackArray.map((item) => item.title);
+};
+function transformStacksForForm(stackArray: string[]): { title: string }[] {
+  if (!Array.isArray(stackArray) || stackArray.length === 0) {
+    return [];
+  }
+
+  return stackArray
+    .filter((stack: string) => stack.trim().length > 0)
+    .map((stack: string) => ({
+      title: stack,
+    }));
+}
 
 function transformDataForForm(serverData: any, emptyForm: any): any {
   if (!serverData) return emptyForm;
@@ -318,36 +212,50 @@ function transformDataForForm(serverData: any, emptyForm: any): any {
       address: serverData.address || emptyForm.user_info.address,
     },
     // 배열 필드 채우기
-    educations: serverData.educations || emptyForm.educations,
-    experiences: serverData.experiences || emptyForm.experiences,
-    projects: serverData.projects || emptyForm.projects,
-    activities: serverData.activities || emptyForm.activities,
-    technology_stacks:
-      serverData.technology_stacks || emptyForm.technology_stacks,
-    qualifications: serverData.qualifications || emptyForm.qualifications,
+    educations: (serverData.educations || emptyForm.educations).map(
+      (item: any) => ({
+        ...item,
+        start_date: formatMonthDate(item.start_date),
+        end_date: formatMonthDate(item.end_date),
+      })
+    ),
+    experiences: (serverData.experiences || emptyForm.experiences).map(
+      (item: any) => ({
+        ...item,
+        start_date: formatMonthDate(item.start_date),
+        end_date: formatMonthDate(item.end_date),
+      })
+    ),
+    projects: (serverData.projects || emptyForm.projects).map((item: any) => ({
+      ...item,
+      start_date: formatMonthDate(item.start_date),
+      end_date: formatMonthDate(item.end_date),
+    })),
+    activities: (serverData.activities || emptyForm.activities).map(
+      (item: any) => ({
+        ...item,
+        start_date: formatMonthDate(item.start_date),
+        end_date: formatMonthDate(item.end_date),
+      })
+    ),
+    technology_stacks: transformStacksFormServer(
+      serverData.technology_stacks || emptyForm.technology_stacks
+    ),
+    qualifications: (serverData.qualifications || emptyForm.qualifications).map(
+      (item: any) => ({
+        ...item,
+        acquisition_date: formatMonthDate(item.acquisition_date),
+      })
+    ),
   };
 
   return transformedData;
 }
 
-async function getResume(resume_id: string | undefined) {
-  if (resume_id === undefined) return;
-  try {
-    const response = await fetchWithAuth(`/resumes/${resume_id}`);
-    if (!response.ok) {
-      throw new Error(`API 요청 실패: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("로딩 중 에러:", error);
-    return null;
-  }
-}
-
 export default function ResumeForm({ mode }: ResumeFormProps) {
   const { id } = useParams<{ id?: string }>();
-  const isEditMode = Boolean(id !== "" && id !== "new");
+  const isEditMode = Boolean(id);
+  console.log(isEditMode);
 
   const [formData, setFormData] = useState(initialFormValues);
   const [isLoading, setIsLoading] = useState(id !== undefined); // ID가 있으면 로딩 시작
@@ -358,7 +266,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     : {
         title: "",
         url: "",
-        photoUrl: "",
+        image_url: "",
         user_info: {
           name: "",
           birth_date: "",
@@ -429,6 +337,98 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
           });
         }
 
+        // 경력 날짜에 -01 붙이기
+        if (Array.isArray(flattenedData.experiences)) {
+          flattenedData.experiences = flattenedData.experiences.map((exp) => {
+            if (
+              exp.start_date &&
+              typeof exp.start_date === "string" &&
+              exp.start_date.length === 7
+            ) {
+              exp.start_date = exp.start_date + "-01";
+            }
+            if (
+              exp.end_date &&
+              typeof exp.end_date === "string" &&
+              exp.end_date.length === 7
+            ) {
+              exp.end_date = exp.end_date + "-01";
+            }
+            return exp;
+          });
+        }
+
+        // 프로젝트 날짜에 -01 붙이기
+        if (Array.isArray(flattenedData.projects)) {
+          flattenedData.projects = flattenedData.projects.map((project) => {
+            if (
+              project.start_date &&
+              typeof project.start_date === "string" &&
+              project.start_date.length === 7
+            ) {
+              project.start_date = project.start_date + "-01";
+            }
+            if (
+              project.end_date &&
+              typeof project.end_date === "string" &&
+              project.end_date.length === 7
+            ) {
+              project.end_date = project.end_date + "-01";
+            }
+            return project;
+          });
+        }
+
+        // 활동 날짜에 -01 붙이기
+        if (Array.isArray(flattenedData.activities)) {
+          flattenedData.activities = flattenedData.activities.map(
+            (activity) => {
+              if (
+                activity.start_date &&
+                typeof activity.start_date === "string" &&
+                activity.start_date.length === 7
+              ) {
+                activity.start_date = activity.start_date + "-01";
+              }
+              if (
+                activity.end_date &&
+                typeof activity.end_date === "string" &&
+                activity.end_date.length === 7
+              ) {
+                activity.end_date = activity.end_date + "-01";
+              }
+              return activity;
+            }
+          );
+        }
+
+        // 자격증/어학 날짜에 -01 붙이기
+        if (Array.isArray(flattenedData.qualifications)) {
+          flattenedData.qualifications = flattenedData.qualifications.map(
+            (qua) => {
+              if (
+                qua.acquisition_date &&
+                typeof qua.acquisition_date === "string" &&
+                qua.acquisition_date.length === 7
+              ) {
+                qua.acquisition_date = qua.acquisition_date + "-01";
+              }
+              return qua;
+            }
+          );
+        }
+
+        // 스택 배열로 만들기
+        if (typeof flattenedData.technology_stacks === "string") {
+          flattenedData.technology_stacks = flattenedData.technology_stacks
+            .split(",")
+            .map((stack: string) => stack.trim());
+        }
+
+        flattenedData.technology_stacks = transformStacksForForm(
+          flattenedData.technology_stacks
+        );
+
         // 최종 수정값
         const finalData = flattenedData;
         console.log(finalData);
@@ -442,10 +442,11 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
 
         // fetch 요청
         let result;
+
         if (isEditMode) {
-          result = await handleSubmitResume(formData, id);
+          result = await updateResume(formData, id);
         } else {
-          result = await handleSubmitResume(formData);
+          result = await createResume(formData);
         }
 
         if (!result) {
@@ -454,8 +455,8 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
         }
 
         console.log("사용자 데이터:", result);
-        alert(`${!id ? "생성" : "수정"} 완료!`);
-        navigate("/resume");
+        alert(`${!isEditMode ? "생성" : "수정"} 완료!`);
+        navigate(`/resume/${result.resume_id}`);
       } catch (error) {
         if (error instanceof z.ZodError) {
           console.error("검증 오류:", error.issues);
@@ -480,7 +481,7 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
   });
 
   useEffect(() => {
-    if (!id || id === "new") {
+    if (!isEditMode) {
       setIsLoading(false);
       return;
     }
@@ -537,7 +538,8 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
     value: string,
     isEditMode: boolean
   ) {
-    if (!isEditMode && key === "url" && value === "") return null;
+    if ((!isEditMode || (isEditMode && value === "")) && key === "url")
+      return null;
     // 증명사진
     if (key === "image_url")
       return (

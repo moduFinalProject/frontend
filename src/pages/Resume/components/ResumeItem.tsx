@@ -11,12 +11,13 @@ import {
 } from "./ResumeItem.css.ts";
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { delResume } from "@/services/resumes.ts";
 
 type Resume = {
   resume_id: string;
   title: string;
   updated_at: string;
-  created_at: string;
+  created_at?: string;
   desc?: string;
   url?: string;
   end_date?: string;
@@ -39,14 +40,22 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       },
       {
         label: "삭제",
-        onSelect: () => {
+        onSelect: async () => {
           // TODO: 삭제 기능 구현 필요
-          if (confirm("삭제하시겠습니까?")) alert("삭제되었습니다");
+          if (confirm("삭제하시겠습니까?")) {
+            const result = await delResume(resume.resume_id);
+            console.log(result);
+
+            alert("삭제되었습니다");
+            navigate("/resume"); // 새로고침 되어야 함
+          }
         },
       },
     ],
     [navigate, resume.resume_id]
   );
+
+  const date = resume.updated_at.slice(0, 10);
 
   return (
     <li className={resumeItem}>
@@ -73,7 +82,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       <div className={desc}>
         <div>
           <p className={descTitle}>최근 수정</p>
-          <p>{resume.updated_at}</p>
+          <p>{date}</p>
         </div>
         {resume.url && (
           <>
