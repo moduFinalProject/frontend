@@ -71,14 +71,16 @@ function transformDataForForm(serverData: any, emptyForm: any): any {
         end_date: formatMonthDate(item.end_date),
       })
     ),
-    experiences: (serverData.experiences || emptyForm.experiences).map(
-      (item: any) => ({
-        ...item,
-        start_date: formatMonthDate(item.start_date),
-        end_date: formatMonthDate(item.end_date),
-        job_description: item.job_description,
-      })
-    ),
+    experiences: serverData.experiences.map((item: any) => ({
+      // ...item,
+      job_title: item.title,
+      department: item.department,
+      position: item.position,
+      start_date: formatMonthDate(item.start_date),
+      employment_status: item.employment_status,
+      end_date: formatMonthDate(item.end_date),
+      job_description: item.job_description,
+    })),
     projects: (serverData.projects || emptyForm.projects).map((item: any) => ({
       ...item,
       start_date: formatMonthDate(item.start_date),
@@ -96,8 +98,10 @@ function transformDataForForm(serverData: any, emptyForm: any): any {
     ),
     qualifications: (serverData.qualifications || emptyForm.qualifications).map(
       (item: any) => ({
-        ...item,
+        title: item.title,
+        organ: item.organ,
         acquisition_date: formatMonthDate(item.acquisition_date),
+        score: item.score,
       })
     ),
   };
