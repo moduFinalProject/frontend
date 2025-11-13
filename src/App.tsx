@@ -1,4 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Layout from "@/components/Layout/Layout";
 import { useAuth } from "@/contexts/AuthContext";
@@ -51,155 +53,176 @@ const StudyGuide = () => (
   </div>
 );
 
+const TOAST_AUTO_CLOSE_DELAY = 3000;
+
 function App() {
   const { loginToken } = useAuth();
 
   return (
-    <Routes>
-      <Route
-        path="/landing"
-        element={
-          loginToken ? <Navigate to="/dashboard" replace /> : <Landing />
-        }
-      />
-      <Route
-        path="/login"
-        element={loginToken ? <Navigate to="/dashboard" replace /> : <Login />}
-      />
-      <Route
-        path="/googleCallback"
-        element={
-          loginToken ? <Navigate to="/dashboard" replace /> : <GoogleCallback />
-        }
-      />
-      <Route
-        path="/SocialSignUp"
-        element={
-          loginToken ? <Navigate to="/dashboard" replace /> : <SocialSignUp />
-        }
-      />
+    <>
+      <Routes>
+        <Route
+          path="/landing"
+          element={
+            loginToken ? <Navigate to="/dashboard" replace /> : <Landing />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            loginToken ? <Navigate to="/dashboard" replace /> : <Login />
+          }
+        />
+        <Route
+          path="/googleCallback"
+          element={
+            loginToken ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <GoogleCallback />
+            )
+          }
+        />
+        <Route
+          path="/SocialSignUp"
+          element={
+            loginToken ? <Navigate to="/dashboard" replace /> : <SocialSignUp />
+          }
+        />
 
-      <Route
-        path="/"
-        element={
-          loginToken ? (
-            <Layout>
-              <Dashboard />
-            </Layout>
-          ) : (
-            <Landing />
-          )
-        }
+        <Route
+          path="/"
+          element={
+            loginToken ? (
+              <Layout>
+                <Dashboard />
+              </Layout>
+            ) : (
+              <Landing />
+            )
+          }
+        />
+
+        <Route
+          path="/dashboard"
+          element={
+            loginToken ? (
+              <Layout>
+                <Dashboard />
+              </Layout>
+            ) : (
+              <Landing />
+            )
+          }
+        />
+
+        <Route
+          path="/resume"
+          element={
+            loginToken ? (
+              <Layout>
+                <Resume />
+              </Layout>
+            ) : (
+              <Landing />
+            )
+          }
+        >
+          <Route index element={<ResumeList />} />
+          <Route path="new" element={<ResumeForm mode="create" />} />
+          <Route path=":id" element={<ResumeDetail />} />
+          <Route path=":id/edit" element={<ResumeForm mode="edit" />} />
+          <Route path=":id/correction" element={<ResumeCorrection />} />
+        </Route>
+
+        <Route
+          path="/jobs"
+          element={
+            loginToken ? (
+              <Layout>
+                <Jobs />
+              </Layout>
+            ) : (
+              <Landing />
+            )
+          }
+        >
+          <Route index element={<JobList />} />
+          <Route path="new" element={<JobForm mode="create" />} />
+          <Route path=":id" element={<JobDetail />} />
+          <Route path=":id/edit" element={<JobForm mode="edit" />} />
+        </Route>
+
+        <Route
+          path="/resumeFeedback"
+          element={
+            loginToken ? (
+              <Layout>
+                <ResumeFeedbackLayout />
+              </Layout>
+            ) : (
+              <Landing />
+            )
+          }
+        >
+          <Route index element={<ResumeFeedbackList />} />
+          <Route path="new" element={<ResumeFeedbackForm />} />
+          <Route path=":id" element={<ResumeFeedbackDetail />} />
+        </Route>
+
+        <Route
+          path="/interview"
+          element={
+            loginToken ? (
+              <Layout>
+                <Interview />
+              </Layout>
+            ) : (
+              <Landing />
+            )
+          }
+        />
+
+        <Route
+          path="/studyGuide"
+          element={
+            loginToken ? (
+              <Layout>
+                <StudyGuide />
+              </Layout>
+            ) : (
+              <Landing />
+            )
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            loginToken ? (
+              <Layout>
+                <Profile />
+              </Layout>
+            ) : (
+              <Landing />
+            )
+          }
+        />
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={TOAST_AUTO_CLOSE_DELAY}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
       />
-
-      <Route
-        path="/dashboard"
-        element={
-          loginToken ? (
-            <Layout>
-              <Dashboard />
-            </Layout>
-          ) : (
-            <Landing />
-          )
-        }
-      />
-
-      <Route
-        path="/resume"
-        element={
-          loginToken ? (
-            <Layout>
-              <Resume />
-            </Layout>
-          ) : (
-            <Landing />
-          )
-        }
-      >
-        <Route index element={<ResumeList />} />
-        <Route path="new" element={<ResumeForm mode="create" />} />
-        <Route path=":id" element={<ResumeDetail />} />
-        <Route path=":id/edit" element={<ResumeForm mode="edit" />} />
-        <Route path=":id/correction" element={<ResumeCorrection />} />
-      </Route>
-
-      <Route
-        path="/jobs"
-        element={
-          loginToken ? (
-            <Layout>
-              <Jobs />
-            </Layout>
-          ) : (
-            <Landing />
-          )
-        }
-      >
-        <Route index element={<JobList />} />
-        <Route path="new" element={<JobForm mode="create" />} />
-        <Route path=":id" element={<JobDetail />} />
-        <Route path=":id/edit" element={<JobForm mode="edit" />} />
-      </Route>
-
-      <Route
-        path="/resumeFeedback"
-        element={
-          loginToken ? (
-            <Layout>
-              <ResumeFeedbackLayout />
-            </Layout>
-          ) : (
-            <Landing />
-          )
-        }
-      >
-        <Route index element={<ResumeFeedbackList />} />
-        <Route path="new" element={<ResumeFeedbackForm />} />
-        <Route path=":id" element={<ResumeFeedbackDetail />} />
-      </Route>
-
-      <Route
-        path="/interview"
-        element={
-          loginToken ? (
-            <Layout>
-              <Interview />
-            </Layout>
-          ) : (
-            <Landing />
-          )
-        }
-      />
-
-      <Route
-        path="/studyGuide"
-        element={
-          loginToken ? (
-            <Layout>
-              <StudyGuide />
-            </Layout>
-          ) : (
-            <Landing />
-          )
-        }
-      />
-
-      <Route
-        path="/profile"
-        element={
-          loginToken ? (
-            <Layout>
-              <Profile />
-            </Layout>
-          ) : (
-            <Landing />
-          )
-        }
-      />
-
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    </>
   );
 }
 

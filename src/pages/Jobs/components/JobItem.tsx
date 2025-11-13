@@ -1,5 +1,7 @@
-﻿import { useMemo } from "react";
+﻿import { useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 import { Button, OptionsDropdown } from "@/components/index.ts";
 import {
@@ -26,17 +28,36 @@ export default function JobItem({
   onSelect,
 }: JobItemProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { mutate: mutateDelete } = useMutation({
+    mutationFn: (postingId: number) => deleteJobPosting(postingId),
+    onSuccess: async () => {
+      toast.success("채용공고가 삭제되었습니다.");
+      await queryClient.invalidateQueries({
+        queryKey: ["job-list"],
+      });
+    },
+    onError: (error) => {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "채용공고 삭제에 실패했습니다.";
+      toast.error(message);
+    },
+  });
+
+  const handleDelete = useCallback(() => {
+    mutateDelete(job.posting_id);
+  }, [mutateDelete, job.posting_id]);
 
   const dropdownItems = useMemo(
     () => [
       {
         label: "삭제",
-        onSelect: () => {
-          deleteJobPosting(job.posting_id);
-        },
+        onSelect: handleDelete,
       },
     ],
-    []
+    [handleDelete]
   );
 
   const handleSelect = () => {
