@@ -4,7 +4,7 @@ import ResumeCardRow from "./components/card/ResumeCardRow";
 import { Fragment } from "react/jsx-runtime";
 import { useEffect, useState } from "react";
 import { container, innerContainer } from "./index.css.ts";
-import { fetchWithAuth } from "@/services/api.ts";
+import { getResume } from "@/services/resumes.ts";
 
 type ResumeData = {
   id: string;
@@ -56,23 +56,6 @@ type ResumeData = {
     score?: string;
   }[];
 };
-
-async function getResume(resume_id: string | undefined) {
-  if (resume_id === undefined) return;
-
-  try {
-    const response = await fetchWithAuth(`/resumes/${resume_id}`);
-
-    if (!response.ok) {
-      throw new Error(`API 요청 실패: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("로딩 중 에러:", error);
-  }
-}
 
 export default function ResumeDetail() {
   const { id } = useParams();
