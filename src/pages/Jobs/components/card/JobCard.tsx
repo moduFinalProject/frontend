@@ -18,10 +18,12 @@ export default function JobCard({
 }: rowData) {
   return (
     <section className={card}>
-      <h3 className={titleText}>
-        {title}
-        {isMust && <span style={{ color: vars.color.delete }}> *</span>}
-      </h3>
+      {title && (
+        <h3 className={titleText}>
+          {title}
+          {isMust && <span style={{ color: vars.color.delete }}> * </span>}
+        </h3>
+      )}
       {useButton && (
         <div>
           <Button
