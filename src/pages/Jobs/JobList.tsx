@@ -1,11 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { jobList, listSection } from "./JobList.css.ts";
+import { jobList, jobListModal, listSection } from "./JobList.css.ts";
 import JobItem from "./components/JobItem.tsx";
 import Search from "./components/form/Search.tsx";
 
 import { getAllJobPostings, type JobPosting } from "@/services/api.ts";
 
-export default function JobList() {
+interface JobListProps {
+  isModal?: boolean;
+  onSelect?: (job: JobPosting) => void;
+}
+
+export default function JobList({ isModal = false, onSelect }: JobListProps = {}) {
+  
   const {
     data: jobs = [],
     isPending,
@@ -19,7 +25,7 @@ export default function JobList() {
   if (isPending) {
     return (
       <>
-        <Search />
+        <Search isModal={isModal} />
         <div>채용공고를 불러오는 중입니다...</div>
       </>
     );
@@ -32,7 +38,7 @@ export default function JobList() {
         : "채용공고를 불러오지 못했습니다.";
     return (
       <>
-        <Search />
+        <Search isModal={isModal} />
         <div>{message}</div>
       </>
     );
@@ -41,16 +47,17 @@ export default function JobList() {
   return (
     <section className={listSection} aria-labelledby="job-list-heading">
       <header>
-        <Search />
+        <Search isModal={isModal} />
       </header>
 
       <div>
         <h2 id="job-list-heading" className="a11y-hidden">
           채용공고 목록
         </h2>
-        <ul className={jobList}>
+        <ul className={isModal ? jobListModal : jobList}>
+          {/* {jobs.map((job) => ( */}
           {jobs.map((job) => (
-            <JobItem job={job} key={job.posting_id} />
+            <JobItem job={job} key={job.posting_id} isModal={isModal} onSelect={onSelect} />
           ))}
         </ul>
       </div>

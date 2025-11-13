@@ -2,7 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 
 import { Button } from "@/components/index.ts";
-import { form } from "./Search.css.ts";
+import { form, formModal } from "./Search.css.ts";
 import { useEffect } from "react";
 import Text from "@/components/FormElem/text/Text.tsx";
 
@@ -10,7 +10,11 @@ const searchSchema = z.object({
   value: "",
 });
 
-export default function Search() {
+interface SearchProps {
+  isModal?: boolean;
+}
+
+export default function Search({ isModal = false }: SearchProps = {}) {
   const searchForm = useForm({
     defaultValues: {
       value: "",
@@ -46,7 +50,7 @@ export default function Search() {
         searchForm.handleSubmit();
       }}
     >
-      <div className={form}>
+      <div className={isModal ? formModal : form}>
         <searchForm.Field name="value">
           {(field) => (
             <>

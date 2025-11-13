@@ -4,18 +4,22 @@ import { useNavigate } from "react-router-dom";
 import { Button, OptionsDropdown } from "@/components/index.ts";
 import {
   jobItem,
+  jobItemModal,
   title,
   titleRow,
   btns,
+  btnsModal,
   dropdownTrigger,
 } from "./JobItem.css.ts";
 import { deleteJobPosting, type JobListItem } from "../api.ts";
 
 interface JobItemProps {
-  job: JobListItem;
+  job: JobPosting;
+  isModal?: boolean;
+  onSelect?: (job: JobPosting) => void;
 }
 
-export default function JobItem({ job }: JobItemProps) {
+export default function JobItem({ job, isModal = false, onSelect }: JobItemProps) {
   const navigate = useNavigate();
 
   const dropdownItems = useMemo(
@@ -30,8 +34,14 @@ export default function JobItem({ job }: JobItemProps) {
     []
   );
 
+  const handleSelect = () => {
+    if (isModal && onSelect) {
+      onSelect(job);
+    }
+  };
+
   return (
-    <li className={jobItem}>
+    <li className={isModal? jobItemModal:jobItem} onClick={isModal ? handleSelect : undefined}>
       <header className={title}>
         <div>
           <div
@@ -41,7 +51,7 @@ export default function JobItem({ job }: JobItemProps) {
             }}
           >
             <h4>{job.title}</h4>
-            {job.url && (
+            {!isModal && job.url && (
               <div
                 onClick={(event) => {
                   event.stopPropagation();
@@ -61,25 +71,25 @@ export default function JobItem({ job }: JobItemProps) {
           </div>
           <p>{job.company}</p>
         </div>
-        <OptionsDropdown
+        {!isModal && <OptionsDropdown
           ariaLabel={`${job.title} 옵션`}
           items={dropdownItems}
           itemWidthStyle="fit"
           triggerClassName={dropdownTrigger}
-        />
+        />}
       </header>
 
-      <footer className={btns}>
-        <Button
+      <footer className={isModal ? btnsModal:btns}>
+        {!isModal && <Button
           text="상세보기"
           color="white"
           widthStyle="full"
           callback={() => {
             navigate(`./${job.posting_id}`);
           }}
-        />
+        />}
 
-        {job.url && (
+        {!isModal && job.url && (
           <Button
             text="지원하기"
             color="blue"
@@ -89,6 +99,23 @@ export default function JobItem({ job }: JobItemProps) {
               window.open(job.url!, "_blank", "noopener,noreferrer");
             }}
           />
+        )}
+        {isModal && job.url && (
+          <div
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          >
+            <Button
+              text=""
+              color="none"
+              widthStyle="fit"
+              icon="LINK_BLACK"
+              callback={() => {
+                window.open(job.url!, "_blank", "noopener,noreferrer");
+              }}
+            />
+          </div>
         )}
       </footer>
     </li>

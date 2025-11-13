@@ -16,6 +16,24 @@ export const jobItem = style({
     boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
   },
 });
+
+export const jobItemModal = style({
+  listStyle: "none",
+  backgroundColor: vars.color.white,
+  margin: 0,
+  padding: vars.spacing.lg,
+  display: "flex",
+  flexDirection: "row",
+  gap: vars.spacing.lg,
+  border: `1px solid ${vars.color.line}`,
+  borderRadius: vars.borderRadius.lg,
+  alignItems: "center",
+  justifyContent: "space-between",
+
+  ":hover": {
+    boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
+  },
+});
 export const title = style({
   display: "flex",
   justifyContent: "space-between",
@@ -64,7 +82,19 @@ export const btns = style({
   alignItems: "end",
 });
 
+export const btnsModal = style({
+  display: "flex",
+  gap: vars.spacing.sm,
+  justifyContent: "flex-end",
+  alignItems: "center",
+});
+
 globalStyle(`${btns} button`, {
+  fontSize: vars.typography.fontSize.sm,
+  alignSelf: "auto",
+});
+
+globalStyle(`${btnsModal} button`, {
   fontSize: vars.typography.fontSize.sm,
   alignSelf: "auto",
 });
