@@ -14,15 +14,15 @@ export default function ResumeTitle({ title }: { title: string }) {
       desc: "저장된 이력서를 관리하고 새로운 이력서를 작성하세요",
     },
     view: {
-      title: (title += "보기"),
+      title: `${title} 보기`,
       desc: "이력서 내용을 확인하고 수정할 수 있습니다",
     },
     create: {
-      title: (title += "생성"),
+      title: `${title} 생성`,
       desc: "정보를 입력하여 이력서를 작성하세요",
     },
     edit: {
-      title: (title += "수정"),
+      title: `${title} 수정`,
       desc: "정보를 입력하여 이력서를 작성하세요",
     },
     correction: {
@@ -47,10 +47,12 @@ export default function ResumeTitle({ title }: { title: string }) {
           />
         )}
         <div className={`${headerText} ${mode !== "list" && subPage}`}>
-          <h2 className={mode !== "list" ? "a11y-hidden" : ""}>
+          <h2
+            className={!["list", "create"].includes(mode) ? "a11y-hidden" : ""}
+          >
             {modeData[mode].title}
           </h2>
-          {mode !== "list" && (
+          {["list", "create"].includes(mode) && (
             <p className="title">{resumeData?.resume_type_detail}</p>
           )}
           <p className="desc">{modeData[mode].desc}</p>
