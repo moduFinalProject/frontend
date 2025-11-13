@@ -155,6 +155,16 @@ const initialFormValues = {
   qualifications: [],
 };
 
+const formatMonthDate = (
+  dateString: string | undefined
+): string | undefined => {
+  if (typeof dateString === "string" && dateString.length >= 7) {
+    // YYYY-MM-DD 형태(10글자)라면 YYYY-MM (7글자)까지만 자릅니다.
+    return dateString.slice(0, 7);
+  }
+  return dateString;
+};
+
 function transformDataForForm(serverData: any, emptyForm: any): any {
   if (!serverData) return emptyForm;
 
@@ -179,13 +189,40 @@ function transformDataForForm(serverData: any, emptyForm: any): any {
       address: serverData.address || emptyForm.user_info.address,
     },
     // 배열 필드 채우기
-    educations: serverData.educations || emptyForm.educations,
-    experiences: serverData.experiences || emptyForm.experiences,
-    projects: serverData.projects || emptyForm.projects,
-    activities: serverData.activities || emptyForm.activities,
+    educations: (serverData.educations || emptyForm.educations).map(
+      (item: any) => ({
+        ...item,
+        start_date: formatMonthDate(item.start_date),
+        end_date: formatMonthDate(item.end_date),
+      })
+    ),
+    experiences: (serverData.experiences || emptyForm.experiences).map(
+      (item: any) => ({
+        ...item,
+        start_date: formatMonthDate(item.start_date),
+        end_date: formatMonthDate(item.end_date),
+      })
+    ),
+    projects: (serverData.projects || emptyForm.projects).map((item: any) => ({
+      ...item,
+      start_date: formatMonthDate(item.start_date),
+      end_date: formatMonthDate(item.end_date),
+    })),
+    activities: (serverData.activities || emptyForm.activities).map(
+      (item: any) => ({
+        ...item,
+        start_date: formatMonthDate(item.start_date),
+        end_date: formatMonthDate(item.end_date),
+      })
+    ),
     technology_stacks:
       serverData.technology_stacks || emptyForm.technology_stacks,
-    qualifications: serverData.qualifications || emptyForm.qualifications,
+    qualifications: (serverData.qualifications || emptyForm.qualifications).map(
+      (item: any) => ({
+        ...item,
+        acquisition_date: formatMonthDate(item.acquisition_date),
+      })
+    ),
   };
 
   return transformedData;

@@ -17,7 +17,7 @@ type Resume = {
   resume_id: string;
   title: string;
   updated_at: string;
-  created_at: string;
+  created_at?: string;
   desc?: string;
   url?: string;
   end_date?: string;
@@ -55,6 +55,8 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
     [navigate, resume.resume_id]
   );
 
+  const date = resume.updated_at.slice(0, 10);
+
   return (
     <li className={resumeItem}>
       <div className={title}>
@@ -80,7 +82,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       <div className={desc}>
         <div>
           <p className={descTitle}>최근 수정</p>
-          <p>{resume.updated_at}</p>
+          <p>{date}</p>
         </div>
         {resume.url && (
           <>
