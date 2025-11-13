@@ -15,13 +15,13 @@ export interface JobPosting {
 }
 
 export interface CreateJobPostingData {
-  url?: string | null;
+  url: string;
   title: string;
   company: string;
   end_date: string;
   qualification: string;
-  prefer?: string | null;
-  memo?: string | null;
+  prefer: string;
+  memo: string;
 }
 
 const JSON_HEADERS = {

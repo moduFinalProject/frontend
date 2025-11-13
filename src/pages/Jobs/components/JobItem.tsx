@@ -14,7 +14,7 @@ import {
   dropdownTrigger,
 } from "./JobItem.css.ts";
 import { deleteJobPosting, type JobListItem } from "../api.ts";
-import type { JobPosting } from "@/services/api.ts";
+import type { JobPosting } from "@/services/jobs";
 
 interface JobItemProps {
   job: JobListItem;

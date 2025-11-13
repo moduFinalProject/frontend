@@ -24,18 +24,6 @@ const MIN_COMPANY_LENGTH = 2;
 const MIN_QUALIFICATION_LENGTH = 2;
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
-const optionalUrlValidator = ({ value }: { value: string }) => {
-  const trimmed = (value ?? "").trim();
-  if (!trimmed) return undefined;
-
-  try {
-    new URL(trimmed);
-    return undefined;
-  } catch {
-    return "유효한 URL을 입력해주세요.";
-  }
-};
-
 const flattenErrors = (errors: unknown[]): string =>
   errors
     .flatMap((error) => {
@@ -72,11 +60,15 @@ const normalizeDateString = (value: string | null | undefined) => {
   return `${year}-${month}-${day}`;
 };
 
+const MIN_PREFER_LENGTH = 2;
+const MIN_MEMO_LENGTH = 2;
+
 const jobInfoSchema = z.object({
   id: z.string().optional(),
   url: z
-    .union([z.literal(""), z.string().url("유효한 URL을 입력해주세요.")])
-    .optional(),
+    .string()
+    .min(1, "공고 URL을 입력해주세요.")
+    .url("유효한 URL을 입력해주세요."),
   title: z
     .string()
     .min(MIN_TITLE_LENGTH, `제목은 ${MIN_TITLE_LENGTH}글자 이상이어야 합니다.`),
@@ -90,8 +82,15 @@ const jobInfoSchema = z.object({
   qualification: z
     .string()
     .min(MIN_QUALIFICATION_LENGTH, "자격 요건을 입력해주세요."),
-  prefer: z.string().optional(),
-  memo: z.string().optional(),
+  prefer: z
+    .string()
+    .min(
+      MIN_PREFER_LENGTH,
+      `우대 사항은 ${MIN_PREFER_LENGTH}글자 이상이어야 합니다.`
+    ),
+  memo: z
+    .string()
+    .min(MIN_MEMO_LENGTH, `메모는 ${MIN_MEMO_LENGTH}글자 이상이어야 합니다.`),
 });
 
 interface JobFormProps {
@@ -129,19 +128,28 @@ export default function JobForm({ mode }: JobFormProps) {
   const companyRef = useRef<HTMLInputElement>(null);
   const endDateRef = useRef<HTMLInputElement>(null);
   const qualificationRef = useRef<HTMLTextAreaElement>(null);
+  const urlRef = useRef<HTMLInputElement>(null);
+  const preferRef = useRef<HTMLTextAreaElement>(null);
+  const memoRef = useRef<HTMLTextAreaElement>(null);
 
   const fieldRefs = {
     title: titleRef,
     company: companyRef,
     end_date: endDateRef,
     qualification: qualificationRef,
+    url: urlRef,
+    prefer: preferRef,
+    memo: memoRef,
   } as const;
 
   const requiredFieldOrder = [
     "title",
     "company",
     "end_date",
+    "url",
     "qualification",
+    "prefer",
+    "memo",
   ] as const;
 
   const defaultFormValues = useMemo(() => createEmptyFormValues(), []);
@@ -213,10 +221,6 @@ export default function JobForm({ mode }: JobFormProps) {
         const payload: CreateJobPostingData & { id?: string } = {
           ...trimmedValue,
           id: isEditMode ? id : undefined,
-          url: trimmedValue.url || undefined,
-          end_date: trimmedValue.end_date,
-          prefer: trimmedValue.prefer || undefined,
-          memo: trimmedValue.memo || undefined,
         };
 
         const savedJob = await saveMutation.mutateAsync({
@@ -328,7 +332,7 @@ export default function JobForm({ mode }: JobFormProps) {
         <div className={`${innerContainer} ${cardSectionList}`}>
           <JobCard isMust={true}>
             <JobCardRow
-              value="표시는 필수 항목입니다. (채용 제목, 회사명, 마감일, url, 자격 요건, 우대 사항)"
+              value="표시는 필수 항목입니다. (채용 제목, 회사명, 마감일, 공고 URL, 자격 요건, 우대 사항, 메모)"
               widthType="full"
             />
           </JobCard>
@@ -405,19 +409,21 @@ export default function JobForm({ mode }: JobFormProps) {
 
             <jobInfoForm.Field
               name="url"
-              validators={{ onBlur: optionalUrlValidator }}
+              validators={{ onBlur: jobInfoSchema.shape.url }}
             >
               {(field) => (
                 <JobCardRow
                   widthType="half"
                   input={
                     <Text
+                      isMust
                       label="공고 URL"
                       value={field.state.value}
                       onChange={field.handleChange}
                       onBlur={field.handleBlur}
                       error={flattenErrors(field.state.meta.errors)}
                       placeholder="https://career.example.com/job/123456"
+                      ref={urlRef}
                     />
                   }
                 />
@@ -447,12 +453,16 @@ export default function JobForm({ mode }: JobFormProps) {
               )}
             </jobInfoForm.Field>
 
-            <jobInfoForm.Field name="prefer">
+            <jobInfoForm.Field
+              name="prefer"
+              validators={{ onChange: jobInfoSchema.shape.prefer }}
+            >
               {(field) => (
                 <JobCardRow
                   widthType="full"
                   input={
                     <Textarea
+                      isMust
                       label="우대 사항"
                       value={field.state.value}
                       onChange={field.handleChange}
@@ -460,6 +470,7 @@ export default function JobForm({ mode }: JobFormProps) {
                       error={flattenErrors(field.state.meta.errors)}
                       rows={4}
                       placeholder="우대 사항이 있다면 줄바꿈으로 구분하여 작성해주세요."
+                      ref={preferRef}
                     />
                   }
                 />
@@ -467,13 +478,17 @@ export default function JobForm({ mode }: JobFormProps) {
             </jobInfoForm.Field>
           </JobCard>
 
-          <JobCard title="추가 메모">
-            <jobInfoForm.Field name="memo">
+          <JobCard title="추가 메모" isMust>
+            <jobInfoForm.Field
+              name="memo"
+              validators={{ onChange: jobInfoSchema.shape.memo }}
+            >
               {(field) => (
                 <JobCardRow
                   widthType="full"
                   input={
                     <Textarea
+                      isMust
                       label="메모"
                       value={field.state.value}
                       onChange={field.handleChange}
@@ -481,6 +496,7 @@ export default function JobForm({ mode }: JobFormProps) {
                       error={flattenErrors(field.state.meta.errors)}
                       rows={3}
                       placeholder="내부 메모가 있다면 작성해주세요."
+                      ref={memoRef}
                     />
                   }
                 />

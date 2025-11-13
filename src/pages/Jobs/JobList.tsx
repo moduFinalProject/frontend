@@ -2,16 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { jobList, jobListModal, listSection } from "./JobList.css.ts";
 import JobItem from "./components/JobItem.tsx";
 import Search from "./components/form/Search.tsx";
-
-import { getAllJobPostings, type JobPosting } from "@/services/api.ts";
+import { getAllJobPostings, type JobPosting } from "@/services/jobs.ts";
 
 interface JobListProps {
   isModal?: boolean;
   onSelect?: (job: JobPosting) => void;
 }
 
-export default function JobList({ isModal = false, onSelect }: JobListProps = {}) {
-  
+export default function JobList({
+  isModal = false,
+  onSelect,
+}: JobListProps = {}) {
   const {
     data: jobs = [],
     isPending,
@@ -57,7 +58,12 @@ export default function JobList({ isModal = false, onSelect }: JobListProps = {}
         <ul className={isModal ? jobListModal : jobList}>
           {/* {jobs.map((job) => ( */}
           {jobs.map((job) => (
-            <JobItem job={job} key={job.posting_id} isModal={isModal} onSelect={onSelect} />
+            <JobItem
+              job={job}
+              key={job.posting_id}
+              isModal={isModal}
+              onSelect={onSelect}
+            />
           ))}
         </ul>
       </div>
