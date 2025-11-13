@@ -12,14 +12,19 @@ import {
   dropdownTrigger,
 } from "./JobItem.css.ts";
 import { deleteJobPosting, type JobListItem } from "../api.ts";
+import type { JobPosting } from "@/services/api.ts";
 
 interface JobItemProps {
-  job: JobPosting;
+  job: JobListItem;
   isModal?: boolean;
   onSelect?: (job: JobPosting) => void;
 }
 
-export default function JobItem({ job, isModal = false, onSelect }: JobItemProps) {
+export default function JobItem({
+  job,
+  isModal = false,
+  onSelect,
+}: JobItemProps) {
   const navigate = useNavigate();
 
   const dropdownItems = useMemo(
@@ -41,7 +46,10 @@ export default function JobItem({ job, isModal = false, onSelect }: JobItemProps
   };
 
   return (
-    <li className={isModal? jobItemModal:jobItem} onClick={isModal ? handleSelect : undefined}>
+    <li
+      className={isModal ? jobItemModal : jobItem}
+      onClick={isModal ? handleSelect : undefined}
+    >
       <header className={title}>
         <div>
           <div
@@ -71,23 +79,27 @@ export default function JobItem({ job, isModal = false, onSelect }: JobItemProps
           </div>
           <p>{job.company}</p>
         </div>
-        {!isModal && <OptionsDropdown
-          ariaLabel={`${job.title} 옵션`}
-          items={dropdownItems}
-          itemWidthStyle="fit"
-          triggerClassName={dropdownTrigger}
-        />}
+        {!isModal && (
+          <OptionsDropdown
+            ariaLabel={`${job.title} 옵션`}
+            items={dropdownItems}
+            itemWidthStyle="fit"
+            triggerClassName={dropdownTrigger}
+          />
+        )}
       </header>
 
-      <footer className={isModal ? btnsModal:btns}>
-        {!isModal && <Button
-          text="상세보기"
-          color="white"
-          widthStyle="full"
-          callback={() => {
-            navigate(`./${job.posting_id}`);
-          }}
-        />}
+      <footer className={isModal ? btnsModal : btns}>
+        {!isModal && (
+          <Button
+            text="상세보기"
+            color="white"
+            widthStyle="full"
+            callback={() => {
+              navigate(`./${job.posting_id}`);
+            }}
+          />
+        )}
 
         {!isModal && job.url && (
           <Button
