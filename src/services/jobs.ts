@@ -29,19 +29,28 @@ const JSON_HEADERS = {
   Accept: "application/json",
 } as const;
 
-export async function getAllJobPostings(): Promise<JobPosting[]> {
-  const response = await fetchWithAuth("/job-postings/", {
+export async function getAllJobPostings(
+  page = 1,
+  pageSize = 6
+): Promise<JobPosting[]> {
+  const query = new URLSearchParams({
+    page: String(page),
+    page_size: String(pageSize),
+  });
+
+  const response = await fetchWithAuth(`/job-postings/?${query.toString()}`, {
     method: "GET",
   });
 
+  const data = await response.json();
+
   if (!response.ok) {
-    const data = await response.json();
     throw new Error(
-      data.message || "채용 공고 목록을 불러오는데 실패했습니다."
+      data?.message || "채용 공고 목록을 불러오는데 실패했습니다."
     );
   }
 
-  return response.json();
+  return data;
 }
 
 export async function getJobPostingById(
