@@ -102,7 +102,7 @@ export async function updateJobPosting(
 
 export async function deleteJobPosting(postingId: number): Promise<void> {
   const response = await fetchWithAuth(`/job-postings/${postingId}`, {
-    method: "DELETE",
+    method: "PATCH",
   });
 
   if (response.status === 204) {
