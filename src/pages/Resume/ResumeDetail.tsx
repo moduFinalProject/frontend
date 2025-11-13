@@ -48,7 +48,7 @@ type ResumeData = {
     start_date: string;
     end_date: string;
   }[];
-  technology_stack?: string[];
+  technology_stacks?: { title: string }[];
   qualifications?: {
     title: string;
     organ: string;
@@ -190,6 +190,9 @@ export default function ResumeDetail() {
 
   return (
     <div className={`${container} ${innerContainer}`}>
+      <ResumeCard title="이력서 이름">
+        <ResumeCardRow desc={resumeData.title} widthType="full" />
+      </ResumeCard>
       <ResumeCard title="증명사진">
         <ResumeCardRow
           imgUrl={resumeData.image_url}
@@ -253,6 +256,9 @@ export default function ResumeDetail() {
         <ResumeCardRow desc={resumeData.self_introduction} widthType="full" />
       </ResumeCard>
       <ResumeCard title="경력">
+        {resumeData.experiences.length <= 0 && (
+          <ResumeCardRow value="등록된 항목이 없습니다." widthType="full" />
+        )}
         {resumeData.experiences?.map((experienceItem, idx) => {
           const date = `${experienceItem.start_date} ~ ${
             experienceItem.employment_status === "Y"
@@ -276,6 +282,9 @@ export default function ResumeDetail() {
         })}
       </ResumeCard>
       <ResumeCard title="경험/활동">
+        {resumeData.activities.length <= 0 && (
+          <ResumeCardRow value="등록된 항목이 없습니다." widthType="full" />
+        )}
         {resumeData.activities?.map((activityItem, idx) => {
           const date = `${activityItem.start_date} ~ ${
             activityItem.end_date === "" ? "현재" : activityItem.end_date
@@ -296,12 +305,22 @@ export default function ResumeDetail() {
         })}
       </ResumeCard>
       <ResumeCard title="기술 스택">
-        <ResumeCardRow
-          keyword={resumeData.technology_stacks}
-          widthType="full"
-        />
+        {resumeData.technology_stacks.length <= 0 ? (
+          <ResumeCardRow
+            value="작성한 기술 스텍이 없습니다."
+            widthType="full"
+          />
+        ) : (
+          <ResumeCardRow
+            keyword={resumeData.technology_stacks}
+            widthType="full"
+          />
+        )}
       </ResumeCard>
       <ResumeCard title="자격증 및 어학">
+        {resumeData.qualifications.length <= 0 && (
+          <ResumeCardRow value="등록된 항목이 없습니다." widthType="full" />
+        )}
         {resumeData.qualifications?.map((qualificationItem, idx) => {
           const subTile = `${qualificationItem.organ} · ${
             qualificationItem.acquisition_date

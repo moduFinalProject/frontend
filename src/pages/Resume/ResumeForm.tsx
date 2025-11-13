@@ -91,7 +91,7 @@ type ResumeFormValues = {
   experiences?: ExperienceItem[];
   projects?: ProjectItem[];
   activities?: ActivityItem[];
-  technology_stacks?: string[];
+  technology_stacks?: { title: string }[];
   qualifications?: QualificationItem[];
 };
 
@@ -151,7 +151,7 @@ const initialFormValues = {
   experiences: [],
   projects: [],
   activities: [],
-  technology_stacks: [],
+  technology_stacks: [{ title: "React" }],
   qualifications: [],
 };
 
@@ -164,6 +164,29 @@ const formatMonthDate = (
   }
   return dateString;
 };
+
+const transformStacksFormServer = (
+  stackArray: { title: string }[]
+): string[] => {
+  // 배열이 비어있거나 유효하지 않으면 빈 배열 반환
+  if (!Array.isArray(stackArray) || stackArray.length === 0) {
+    return [];
+  }
+
+  // map을 사용하여 각 객체에서 title 값만 추출
+  return stackArray.map((item) => item.title);
+};
+function transformStacksForForm(stackArray: string[]): { title: string }[] {
+  if (!Array.isArray(stackArray) || stackArray.length === 0) {
+    return [];
+  }
+
+  return stackArray
+    .filter((stack: string) => stack.trim().length > 0)
+    .map((stack: string) => ({
+      title: stack,
+    }));
+}
 
 function transformDataForForm(serverData: any, emptyForm: any): any {
   if (!serverData) return emptyForm;
@@ -215,8 +238,9 @@ function transformDataForForm(serverData: any, emptyForm: any): any {
         end_date: formatMonthDate(item.end_date),
       })
     ),
-    technology_stacks:
-      serverData.technology_stacks || emptyForm.technology_stacks,
+    technology_stacks: transformStacksFormServer(
+      serverData.technology_stacks || emptyForm.technology_stacks
+    ),
     qualifications: (serverData.qualifications || emptyForm.qualifications).map(
       (item: any) => ({
         ...item,
@@ -312,6 +336,98 @@ export default function ResumeForm({ mode }: ResumeFormProps) {
             return edu;
           });
         }
+
+        // 경력 날짜에 -01 붙이기
+        if (Array.isArray(flattenedData.experiences)) {
+          flattenedData.experiences = flattenedData.experiences.map((exp) => {
+            if (
+              exp.start_date &&
+              typeof exp.start_date === "string" &&
+              exp.start_date.length === 7
+            ) {
+              exp.start_date = exp.start_date + "-01";
+            }
+            if (
+              exp.end_date &&
+              typeof exp.end_date === "string" &&
+              exp.end_date.length === 7
+            ) {
+              exp.end_date = exp.end_date + "-01";
+            }
+            return exp;
+          });
+        }
+
+        // 프로젝트 날짜에 -01 붙이기
+        if (Array.isArray(flattenedData.projects)) {
+          flattenedData.projects = flattenedData.projects.map((project) => {
+            if (
+              project.start_date &&
+              typeof project.start_date === "string" &&
+              project.start_date.length === 7
+            ) {
+              project.start_date = project.start_date + "-01";
+            }
+            if (
+              project.end_date &&
+              typeof project.end_date === "string" &&
+              project.end_date.length === 7
+            ) {
+              project.end_date = project.end_date + "-01";
+            }
+            return project;
+          });
+        }
+
+        // 활동 날짜에 -01 붙이기
+        if (Array.isArray(flattenedData.activities)) {
+          flattenedData.activities = flattenedData.activities.map(
+            (activity) => {
+              if (
+                activity.start_date &&
+                typeof activity.start_date === "string" &&
+                activity.start_date.length === 7
+              ) {
+                activity.start_date = activity.start_date + "-01";
+              }
+              if (
+                activity.end_date &&
+                typeof activity.end_date === "string" &&
+                activity.end_date.length === 7
+              ) {
+                activity.end_date = activity.end_date + "-01";
+              }
+              return activity;
+            }
+          );
+        }
+
+        // 자격증/어학 날짜에 -01 붙이기
+        if (Array.isArray(flattenedData.qualifications)) {
+          flattenedData.qualifications = flattenedData.qualifications.map(
+            (qua) => {
+              if (
+                qua.acquisition_date &&
+                typeof qua.acquisition_date === "string" &&
+                qua.acquisition_date.length === 7
+              ) {
+                qua.acquisition_date = qua.acquisition_date + "-01";
+              }
+              return qua;
+            }
+          );
+        }
+
+        // 스택 배열로 만들기
+        if (typeof flattenedData.technology_stacks === "string") {
+          flattenedData.technology_stacks = flattenedData.technology_stacks
+            .split(",")
+            .map((stack: string) => stack.trim());
+        }
+
+        flattenedData.technology_stacks = transformStacksForForm(
+          flattenedData.technology_stacks
+        );
 
         // 최종 수정값
         const finalData = flattenedData;
