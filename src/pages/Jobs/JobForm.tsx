@@ -398,7 +398,7 @@ export default function JobForm({ mode }: JobFormProps) {
             >
               {(field) => (
                 <JobCardRow
-                  widthType="full"
+                  widthType="half"
                   input={
                     <Text
                       label="공고 URL"

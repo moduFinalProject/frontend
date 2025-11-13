@@ -1,34 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components";
 import { headerText, subPage, btnsWrap, prevWrap } from "./ResumeTitle.css.ts";
-import { fetchWithAuth } from "@/services/api.ts";
+import { delResume } from "@/services/resumes.ts";
 
 interface ResumeProps {
   mode: "list" | "view" | "create" | "edit" | "correction";
   title: string;
   desc: string;
   resumeId?: string;
-}
-
-async function delResume(resume_id: string | undefined) {
-  if (resume_id === undefined) return;
-  console.log(resume_id, "삭제 시도");
-
-  try {
-    const response = await fetchWithAuth(`/resumes/${resume_id}`, {
-      method: "PATCH",
-    });
-
-    if (!response.ok) {
-      throw new Error(`API 요청 실패: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error("로딩 중 에러:", error);
-  }
 }
 
 export default function ResumeTitle({
@@ -44,14 +23,6 @@ export default function ResumeTitle({
   if (mode === "view") titleText += "보기";
   else if (mode === "create") titleText += "생성";
   else if (mode === "edit") titleText += "수정";
-
-  function handleSubmit() {
-    if (mode === "create") {
-      console.log("새 이력서 생성");
-    } else {
-      console.log("이력서 수정");
-    }
-  }
 
   return (
     <>
@@ -102,9 +73,7 @@ export default function ResumeTitle({
               widthStyle="fit"
               buttonType="submit"
               form="resumeForm"
-              callback={() => {
-                handleSubmit();
-              }}
+              callback={() => {}}
             />
           </>
         )}

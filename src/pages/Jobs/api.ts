@@ -1,6 +1,12 @@
 import {
-  getJobPostingById,
+  type JobPosting,
   type JobPosting as JobDetailData,
+  getAllJobPostings,
+  createJobPosting,
+  updateJobPosting,
+  deleteJobPosting,
+  getJobPostingById,
+  type CreateJobPostingData,
 } from "@/services/api";
 
 export {
@@ -9,11 +15,12 @@ export {
   updateJobPosting,
   deleteJobPosting,
   getJobPostingById,
-  type JobPosting,
   type CreateJobPostingData,
-} from "@/services/api";
+};
 
 export type { JobDetailData };
+
+export type JobListItem = JobPosting;
 
 export async function fetchJobDetail(id: string): Promise<JobDetailData> {
   return getJobPostingById(Number(id));
