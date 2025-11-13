@@ -29,7 +29,7 @@ interface ResumeItemProps {
 }
 
 export default function ResumeItem({ resume }: ResumeItemProps) {
-  const { resumes, setResumes } = useResumeContext();
+  const { setResumes } = useResumeContext();
   const navigate = useNavigate();
 
   const dropdownItems = useMemo(
@@ -49,12 +49,10 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
             console.log(result);
 
             alert("삭제되었습니다");
-            const newItems = resumes.filter(
-              (item) => item.resume_id !== resume.resume_id
-            );
 
-            // 새 배열로 상태 업데이트 (불변성 유지)
-            setResumes(newItems);
+            setResumes((prev) =>
+              prev.filter((item) => item.resume_id !== resume.resume_id)
+            );
           }
         },
       },
@@ -62,7 +60,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
     [navigate, resume.resume_id]
   );
 
-  const date = resume.updated_at?.slice(0, 10);
+  const date = resume.created_at?.slice(0, 10);
 
   return (
     <li className={resumeItem}>
@@ -72,7 +70,9 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
             <Link to={`./${resume.resume_id}`}>
               <h4>{resume.title}</h4>
             </Link>
-            {resume.url && <span className={noDrag}>공고맞춤</span>}
+            {resume.resume_type === 2 && (
+              <span className={noDrag}>공고맞춤</span>
+            )}
           </div>
           <p>{resume.resume_type_detail}</p>
         </div>
@@ -85,7 +85,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
       </div>
       <div className={desc}>
         <div>
-          <p className={descTitle}>최근 수정</p>
+          <p className={descTitle}>작성일</p>
           <p>{date}</p>
         </div>
         {resume.url && (

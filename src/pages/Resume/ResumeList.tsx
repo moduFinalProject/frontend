@@ -34,14 +34,6 @@ export default function ResumeList() {
     };
   }, []);
 
-  if (isLoading) {
-    return <div>이력서 목록 로딩 중...</div>;
-  }
-
-  if (resumes.length === 0) {
-    return <div>등록된 이력서가 없습니다.</div>;
-  }
-
   return (
     <>
       <Search />
@@ -49,7 +41,9 @@ export default function ResumeList() {
       <div>
         <h3 className="a11y-hidden">이력서 목록</h3>
         <ul className={resumeList}>
-          {resumes.length > 0 ? (
+          {isLoading ? (
+            <div>이력서 목록 로딩 중...</div>
+          ) : resumes.length > 0 ? (
             resumes.map((resumeItem) => {
               console.log(resumeItem);
 
@@ -58,7 +52,7 @@ export default function ResumeList() {
               );
             })
           ) : (
-            <li>이력서가 없습니다</li>
+            <li>등록된 이력서가 없습니다.</li>
           )}
         </ul>
       </div>

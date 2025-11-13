@@ -232,7 +232,7 @@ export default function ResumeDetail() {
           const subTile = `${qualificationItem.organ} · ${
             qualificationItem.acquisition_date
           }${
-            qualificationItem.score === undefined
+            qualificationItem.score === ""
               ? ""
               : ` · ${qualificationItem.score}`
           }`;

@@ -6,22 +6,26 @@ import { form } from "./Search.css.ts";
 import { useEffect } from "react";
 import Text from "@/components/FormElem/text/Text.tsx";
 import { useResumeContext } from "../../ResumeContext.tsx";
-
-const searchSchema = z.object({
-  value: "",
-});
+import { getResumeList } from "@/services/resumes.ts";
 
 export default function Search() {
-  const { resumes, setResumes, setPage, search, setSearch } =
-    useResumeContext();
+  const { setResumes, setPage, search, setSearch } = useResumeContext();
+
   const searchForm = useForm({
     defaultValues: {
-      value: "",
+      search: search,
     },
     onSubmit: async ({ value }) => {
+      console.log("검색:", value);
+      console.log(value.search);
+
       try {
-        searchSchema.parse(value);
-        console.log("검색:", value);
+        const data = await getResumeList({ page: 1, search: value.search });
+        console.log(data);
+
+        setResumes(data);
+        setSearch(value.search);
+        setPage(2);
       } catch (error) {
         if (error instanceof z.ZodError) {
           console.error("검증 오류:", error.issues);
@@ -32,7 +36,7 @@ export default function Search() {
 
   useEffect(() => {
     // 검색 로직
-  }, [searchForm]);
+  }, []);
 
   return (
     <form
@@ -44,12 +48,11 @@ export default function Search() {
       }}
     >
       <div className={form}>
-        <searchForm.Field name="value">
+        <searchForm.Field name="search">
           {(field) => (
             <>
               <Text
                 // label="이력서 제목"
-                name="search"
                 value={field.state.value}
                 onChange={field.handleChange}
                 onBlur={field.handleBlur}

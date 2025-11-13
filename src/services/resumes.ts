@@ -10,8 +10,8 @@ export async function getResumeList({
   limit?: number;
   search?: string;
 }) {
-  const limitParam = limit ? `&limit=${limit}` : "";
-  const searchParam = search ? `&search=${search}` : "";
+  const limitParam = limit ? `&page_size=${limit}` : "";
+  const searchParam = search ? `&title=${search}` : "";
   try {
     const response = await fetchWithAuth(
       `/resumes/?page=${page}${limitParam}${searchParam}`,
