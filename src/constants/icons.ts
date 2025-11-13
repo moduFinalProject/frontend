@@ -19,6 +19,7 @@ import downIcon from "@/assets/icons/Icon-download.svg";
 import google from "@/assets/icons/icon-google.svg";
 import imgIcon from "@/assets/icons/Icon-img.svg";
 import upIcon from "@/assets/icons/Icon-upload.svg";
+import hamburger from "@/assets/icons/icon-menu-hamburger.svg";
 
 export const ICONS = {
   DEL: delIcon,
@@ -42,4 +43,5 @@ export const ICONS = {
   GOOGLE: google,
   IMG: imgIcon,
   UP: upIcon,
+  HAMBURGER: hamburger,
 } as const;

@@ -19,4 +19,9 @@ export const layoutMain = style({
   flex: 1,
   justifyContent: "center",
   backgroundColor: vars.color.mainBg,
+  "@media": {
+    "(max-width: 1024px)": {
+      marginLeft: 0,
+    },
+  },
 });
