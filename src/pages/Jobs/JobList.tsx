@@ -56,7 +56,6 @@ export default function JobList({
           채용공고 목록
         </h2>
         <ul className={isModal ? jobListModal : jobList}>
-          {/* {jobs.map((job) => ( */}
           {jobs.map((job) => (
             <JobItem
               job={job}
