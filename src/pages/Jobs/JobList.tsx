@@ -33,10 +33,7 @@ export default function JobList({
   }
 
   if (isError) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : "채용공고를 불러오지 못했습니다.";
+    const message = "채용공고를 불러오지 못했습니다.";
     return (
       <>
         <Search isModal={isModal} />
