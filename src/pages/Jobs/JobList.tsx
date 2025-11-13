@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useRef } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { jobList, jobListModal, listSection } from "./JobList.css.ts";
 import JobItem from "./components/JobItem.tsx";
 import Search from "./components/form/Search.tsx";
@@ -13,22 +14,69 @@ export default function JobList({
   isModal = false,
   onSelect,
 }: JobListProps = {}) {
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const PAGE_SIZE = 6;
+
   const {
-    data: jobs = [],
-    isPending,
-    isError,
-  } = useQuery<JobPosting[]>({
+    data,
+    status,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     queryKey: ["job-list"],
-    queryFn: getAllJobPostings,
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) => getAllJobPostings(pageParam, PAGE_SIZE),
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage || lastPage.length < PAGE_SIZE) {
+        return undefined;
+      }
+
+      return allPages.length + 1;
+    },
   });
 
+  const jobs = useMemo(
+    () => (data?.pages ? data.pages.flatMap((page) => page) : []),
+    [data]
+  );
+
+  useEffect(() => {
+    const node = loadMoreRef.current;
+    if (!node) return;
+    if (!hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const firstEntry = entries[0];
+        if (firstEntry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        rootMargin: "200px",
+      }
+    );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
   const renderContent = () => {
-    if (isPending) {
+    if (status === "pending") {
       return <div>채용공고를 불러오는 중입니다...</div>;
     }
 
-    if (isError) {
-      return <div>채용공고를 불러오지 못했습니다.</div>;
+    if (status === "error") {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "채용공고를 불러오지 못했습니다.";
+      return <div>{message}</div>;
     }
 
     if (jobs.length === 0) {
@@ -36,16 +84,23 @@ export default function JobList({
     }
 
     return (
-      <ul className={isModal ? jobListModal : jobList}>
-        {jobs.map((job) => (
-          <JobItem
-            job={job}
-            key={job.posting_id}
-            isModal={isModal}
-            onSelect={onSelect}
-          />
-        ))}
-      </ul>
+      <>
+        <ul className={isModal ? jobListModal : jobList}>
+          {jobs.map((job) => (
+            <JobItem
+              job={job}
+              key={job.posting_id}
+              isModal={isModal}
+              onSelect={onSelect}
+            />
+          ))}
+        </ul>
+        <div ref={loadMoreRef} aria-hidden="true" />
+        {isFetchingNextPage && <div>추가 공고를 불러오는 중입니다...</div>}
+        {!hasNextPage && jobs.length > 0 && (
+          <div>마지막 채용공고까지 모두 확인하셨습니다.</div>
+        )}
+      </>
     );
   };
 
