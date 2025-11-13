@@ -24,14 +24,6 @@ export default function ResumeTitle({
   else if (mode === "create") titleText += "생성";
   else if (mode === "edit") titleText += "수정";
 
-  function handleSubmit() {
-    if (mode === "create") {
-      console.log("새 이력서 생성");
-    } else {
-      console.log("이력서 수정");
-    }
-  }
-
   return (
     <>
       <div className={prevWrap}>
@@ -81,9 +73,7 @@ export default function ResumeTitle({
               widthStyle="fit"
               buttonType="submit"
               form="resumeForm"
-              callback={() => {
-                handleSubmit();
-              }}
+              callback={() => {}}
             />
           </>
         )}
