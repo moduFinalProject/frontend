@@ -7,7 +7,7 @@ import {
   deleteJobPosting,
   getJobPostingById,
   type CreateJobPostingData,
-} from "@/services/api";
+} from "@/services/jobs";
 
 export {
   getAllJobPostings,
