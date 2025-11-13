@@ -5,12 +5,15 @@ import { Button } from "@/components/index.ts";
 import { form } from "./Search.css.ts";
 import { useEffect } from "react";
 import Text from "@/components/FormElem/text/Text.tsx";
+import { useResumeContext } from "../../ResumeContext.tsx";
 
 const searchSchema = z.object({
   value: "",
 });
 
 export default function Search() {
+  const { resumes, setResumes, setPage, search, setSearch } =
+    useResumeContext();
   const searchForm = useForm({
     defaultValues: {
       value: "",
@@ -19,12 +22,6 @@ export default function Search() {
       try {
         searchSchema.parse(value);
         console.log("검색:", value);
-        // if (value !== "") {
-        //   console.log("검색 진행");
-        // } else {
-        //   console.log("검색 리셋");
-        // }
-        // TODO: API 호출
       } catch (error) {
         if (error instanceof z.ZodError) {
           console.error("검증 오류:", error.issues);
@@ -52,6 +49,7 @@ export default function Search() {
             <>
               <Text
                 // label="이력서 제목"
+                name="search"
                 value={field.state.value}
                 onChange={field.handleChange}
                 onBlur={field.handleBlur}
@@ -64,9 +62,7 @@ export default function Search() {
                 text="검색"
                 buttonType="submit"
                 form="searchForm"
-                callback={() => {
-                  console.log("검색 진행");
-                }}
+                callback={() => {}}
                 widthStyle="fit"
               />
             </>

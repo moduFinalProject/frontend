@@ -1,13 +1,26 @@
 import { fetchWithAuth } from "./api";
 
 // 이력서 리스트
-export async function getResumeList() {
+export async function getResumeList({
+  page = 1,
+  limit,
+  search,
+}: {
+  page: number;
+  limit?: number;
+  search?: string;
+}) {
+  const limitParam = limit ? `&limit=${limit}` : "";
+  const searchParam = search ? `&search=${search}` : "";
   try {
-    const response = await fetchWithAuth(`/resumes/?page=${1}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetchWithAuth(
+      `/resumes/?page=${page}${limitParam}${searchParam}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       // 400, 500 등 다른 오류 발생 시
