@@ -33,10 +33,7 @@ export default function JobList({
   }
 
   if (isError) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : "채용공고를 불러오지 못했습니다.";
+    const message = "채용공고를 불러오지 못했습니다.";
     return (
       <>
         <Search isModal={isModal} />
@@ -56,7 +53,6 @@ export default function JobList({
           채용공고 목록
         </h2>
         <ul className={isModal ? jobListModal : jobList}>
-          {/* {jobs.map((job) => ( */}
           {jobs.map((job) => (
             <JobItem
               job={job}
