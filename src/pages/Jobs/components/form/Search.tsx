@@ -3,18 +3,18 @@ import { z } from "zod";
 
 import { Button } from "@/components/index.ts";
 import { form, formModal, fieldContainer } from "./Search.css.ts";
-import { useEffect } from "react";
 import Text from "@/components/FormElem/text/Text.tsx";
 
 const searchSchema = z.object({
-  value: "",
+  value: z.string(),
 });
 
 interface SearchProps {
   isModal?: boolean;
+  onSearch: (keyword: string) => void;
 }
 
-export default function Search({ isModal = false }: SearchProps = {}) {
+export default function Search({ isModal = false, onSearch }: SearchProps) {
   const searchForm = useForm({
     defaultValues: {
       value: "",
@@ -22,13 +22,7 @@ export default function Search({ isModal = false }: SearchProps = {}) {
     onSubmit: async ({ value }) => {
       try {
         searchSchema.parse(value);
-        console.log("검색:", value);
-        // if (value !== "") {
-        //   console.log("검색 진행");
-        // } else {
-        //   console.log("검색 리셋");
-        // }
-        // TODO: API 호출
+        onSearch(value.value.trim());
       } catch (error) {
         if (error instanceof z.ZodError) {
           console.error("검증 오류:", error.issues);
@@ -36,10 +30,6 @@ export default function Search({ isModal = false }: SearchProps = {}) {
       }
     },
   });
-
-  useEffect(() => {
-    // 검색 로직
-  }, [searchForm]);
 
   return (
     <form

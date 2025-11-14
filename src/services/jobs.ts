@@ -31,12 +31,17 @@ const JSON_HEADERS = {
 
 export async function getAllJobPostings(
   page = 1,
-  pageSize = 6
+  pageSize = 6,
+  title?: string
 ): Promise<JobPosting[]> {
   const query = new URLSearchParams({
     page: String(page),
     page_size: String(pageSize),
   });
+
+  if (title && title.trim()) {
+    query.set("title", title.trim());
+  }
 
   const response = await fetchWithAuth(`/job-postings/?${query.toString()}`, {
     method: "GET",
