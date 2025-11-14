@@ -228,9 +228,8 @@ export default function JobForm({ mode }: JobFormProps) {
           isEdit: isEditMode,
         });
 
-        if (!isEditMode) {
-          navigate(`/jobs/${savedJob.posting_id}`);
-        }
+        // 생성 또는 수정 후 해당 공고 상세 페이지로 이동
+        navigate(`/jobs/${savedJob.posting_id}`);
       } catch (err) {
         if (err instanceof z.ZodError) {
           console.error("검증 오류:", err.issues);
