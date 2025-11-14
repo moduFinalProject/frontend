@@ -48,11 +48,13 @@ export default function ResumeTitle({ title }: { title: string }) {
         )}
         <div className={`${headerText} ${mode !== "list" && subPage}`}>
           <h2
-            className={!["list", "create"].includes(mode) ? "a11y-hidden" : ""}
+            className={
+              !["list", "create", "edit"].includes(mode) ? "a11y-hidden" : ""
+            }
           >
             {modeData[mode].title}
           </h2>
-          {!["list", "create"].includes(mode) && (
+          {!["list", "create", "edit"].includes(mode) && (
             <p className="title">{resumeData?.resume_type_detail}</p>
           )}
           <p className="desc">{modeData[mode].desc}</p>
