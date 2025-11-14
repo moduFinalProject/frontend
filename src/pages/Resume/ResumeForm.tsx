@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ResumeCard from "./components/card/ResumeCard";
 import ResumeCardRow from "./components/card/ResumeCardRow";
 
@@ -38,66 +38,16 @@ import {
   getUserInfo,
   updateResume,
 } from "@/services/resumes.ts";
-import { useResumeContext } from "./ResumeContext.tsx";
+import {
+  useResumeContext,
+  type ActivityItem,
+  type EducationItem,
+  type ExperienceItem,
+  type ProjectItem,
+  type QualificationItem,
+  type ResumeData,
+} from "./ResumeContext.tsx";
 import { toast } from "react-toastify";
-
-type EducationItem = {
-  organ: string;
-  department?: string;
-  degree_level?: "0" | "1" | "2" | "3" | "4" | "5";
-  score: string;
-  start_date: string;
-  end_date: string;
-};
-type ExperienceItem = {
-  job_title: string;
-  department?: string;
-  position: string;
-  start_date: string;
-  end_date: string | null;
-  employment_status: boolean;
-  job_description: string;
-};
-type ProjectItem = {
-  title: string;
-  start_date: string;
-  end_date: string;
-  description: string;
-};
-type ActivityItem = {
-  title: string;
-  start_date: string;
-  end_date: string;
-  description: string;
-};
-type QualificationItem = {
-  title: string;
-  organ: string;
-  acquisition_date: string;
-  score?: string;
-};
-type ResumeFormValues = {
-  resume_id: string;
-  title: string;
-  image_url: string | File;
-  url?: string;
-  user_info: {
-    name: string;
-    birth_date: string;
-    email: string;
-    phone: string;
-    gender: "0" | "1" | "2";
-    military_service: "0" | "1" | "2" | "3" | "4" | "5" | "6";
-    address: string;
-  };
-  educations?: EducationItem[];
-  self_introduction: string;
-  experiences?: ExperienceItem[];
-  projects?: ProjectItem[];
-  activities?: ActivityItem[];
-  technology_stacks?: { title: string }[];
-  qualifications?: QualificationItem[];
-};
 
 // 항목 추가를 위한 빈 템플릿
 const emptyEducationItem: EducationItem = {
@@ -149,8 +99,21 @@ function transformStacksForForm(stackArray: string[]): { title: string }[] {
 }
 
 export default function ResumeForm() {
-  const { resumeData, setResume, isLoading, setIsLoading, isEditMode, id } =
-    useResumeContext();
+  const {
+    resumeData,
+    setResume,
+    isLoading,
+    setIsLoading,
+    isEditMode,
+    id,
+  }: {
+    resumeData: ResumeData;
+    setResume: (arg0: ResumeData) => void;
+    isLoading: boolean;
+    setIsLoading: (arg0: boolean) => void;
+    isEditMode: boolean;
+    id: string;
+  } = useResumeContext();
   const navigate = useNavigate();
 
   const defaultValues = isEditMode
@@ -178,20 +141,19 @@ export default function ResumeForm() {
       };
 
   // 기본 정보 폼
-  const form = useForm<ResumeFormValues>({
+  const form = useForm<ResumeData>({
     defaultValues,
     onSubmit: async ({ value }) => {
-      // console.log(value);
       try {
         // trim 적용
         const trimmedValue = trimObjectStrings(value);
         basicInfoSchema.parse(trimmedValue);
 
         // 전송할 데이터
-        const resumeData: ResumeFormValues = trimmedValue;
+        const resumeData: ResumeData = trimmedValue;
 
         // 사진 File 여부 체크
-        const photoUrlValue = resumeData.image_url;
+        const photoUrlValue: File | string = resumeData.image_url;
         const photoFile: File | null =
           photoUrlValue && photoUrlValue instanceof File ? photoUrlValue : null;
 
@@ -236,7 +198,6 @@ export default function ResumeForm() {
 
         // 최종 수정값
         const finalData = flattenedData;
-        console.log(finalData);
 
         const formData = new FormData();
         formData.append("data", JSON.stringify(finalData));
@@ -255,11 +216,15 @@ export default function ResumeForm() {
         }
 
         if (!result) {
-          console.log("실패");
+          toast.error(
+            `${!isEditMode ? "생성" : "수정"} 중 문제가 발생했습니다.`,
+            {
+              className: "custom-error-toast",
+            }
+          );
           return;
         }
 
-        console.log("사용자 데이터:", result);
         toast.success(`${!isEditMode ? "생성" : "수정"} 완료!`, {
           className: "custom-success-toast",
         });
@@ -314,7 +279,6 @@ export default function ResumeForm() {
             address: userInfo.address,
           },
         });
-        console.log(userInfo);
       };
       loadAndSetUserData();
 
@@ -326,7 +290,6 @@ export default function ResumeForm() {
       const loadAndSetData = async () => {
         setIsLoading(true);
         const serverData = await getResume(id);
-        console.log(serverData);
 
         if (serverData) {
           setResume(serverData);
@@ -490,17 +453,17 @@ export default function ResumeForm() {
   function renderObjectField(
     form: any,
     key: string,
-    value: Record<string, any>
+    value: Record<string, string>
   ) {
     return (
       <ResumeCard key={key} title={FIELD_LABELS[key]?.label} isMust>
         {value &&
-          Object.entries(value).map(([subKey, subValue], idx) => (
+          Object.entries(value).map(([subKey, subValue]) => (
             <form.Field
               key={subKey}
               name={`${key}.${subKey}`}
               validators={{
-                onChange: ({ value }) => {
+                onChange: ({ value }: { value: string }) => {
                   // basicInfoSchema.parseAsync(value)
                   const userInfoSchema: {
                     name: z.ZodString;
@@ -647,7 +610,17 @@ export default function ResumeForm() {
   }
 
   // 배열 필드 (학력, 경력, 프로젝트, 대외활동, 자격증)
-  function renderArrayField(form: any, key: string, value: any[]) {
+  function renderArrayField(
+    form: any,
+    key: string,
+    value: (
+      | EducationItem
+      | ExperienceItem
+      | ProjectItem
+      | ActivityItem
+      | QualificationItem
+    )[]
+  ) {
     // 스택
     if (key === "technology_stacks")
       return (
@@ -655,7 +628,7 @@ export default function ResumeForm() {
           <form.Field
             name="technology_stacks"
             validators={{
-              onChange: ({ value }) => {
+              onChange: ({ value }: { value: string }) => {
                 const result = z
                   .preprocess(
                     (val) => {
@@ -721,7 +694,6 @@ export default function ResumeForm() {
       <form.Field key={key} name={key}>
         {(field) => {
           const fieldArrayValue = field.state.value as any[];
-          // console.log(fieldArrayValue);
 
           // experience, project 등
           const isEducation = key === "educations";
@@ -735,8 +707,6 @@ export default function ResumeForm() {
 
             if (newItem) {
               field.pushValue(newItem);
-              console.log(newItem);
-              console.log("추가완료");
             }
           };
 
@@ -783,7 +753,7 @@ export default function ResumeForm() {
                           key={k}
                           name={`${key}[${idx}].${k}`}
                           validators={{
-                            onChange: ({ value }) => {
+                            onChange: ({ value }: { value: string }) => {
                               // basicInfoSchema.parseAsync(value)
                               const itemSchema = {
                                 educations: {

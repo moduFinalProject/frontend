@@ -30,7 +30,8 @@ interface ResumeItemProps {
 }
 
 export default function ResumeItem({ resume }: ResumeItemProps) {
-  const { setResumes } = useResumeContext();
+  const { setResumes }: { setResumes: (arg0: Resume[]) => void } =
+    useResumeContext();
   const navigate = useNavigate();
 
   const dropdownItems = useMemo(
@@ -46,8 +47,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
         onSelect: async () => {
           // TODO: 삭제 기능 구현 필요
           if (confirm("삭제하시겠습니까?")) {
-            const result = await delResume(resume.resume_id);
-            console.log(result);
+            await delResume(resume.resume_id);
 
             toast.success("삭제되었습니다.", {
               className: "custom-success-toast",

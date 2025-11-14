@@ -5,23 +5,29 @@ import { Button } from "@/components/index.ts";
 import { form } from "./Search.css.ts";
 import { useEffect } from "react";
 import Text from "@/components/FormElem/text/Text.tsx";
-import { useResumeContext } from "../../ResumeContext.tsx";
+import { useResumeContext, type Resume } from "../../ResumeContext.tsx";
 import { getResumeList } from "@/services/resumes.ts";
 
 export default function Search() {
-  const { setResumes, setPage, search, setSearch } = useResumeContext();
+  const {
+    setResumes,
+    setPage,
+    search,
+    setSearch,
+  }: {
+    setResumes: (arg0: Resume[]) => void;
+    setPage: (arg0: number) => void;
+    search: string;
+    setSearch: (arg0: string) => void;
+  } = useResumeContext();
 
   const searchForm = useForm({
     defaultValues: {
       search: search,
     },
     onSubmit: async ({ value }) => {
-      console.log("검색:", value);
-      console.log(value.search);
-
       try {
         const data = await getResumeList({ page: 1, search: value.search });
-        console.log(data);
 
         setResumes(data);
         setSearch(value.search);

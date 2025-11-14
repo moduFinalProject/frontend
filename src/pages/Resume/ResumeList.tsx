@@ -1,13 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { resumeList } from "./ResumeList.css.ts";
 import ResumeItem from "./components/ResumeItem.tsx";
 import Search from "./components/form/Search.tsx";
 import { getResumeList } from "@/services/resumes.ts";
-import { useResumeContext } from "./ResumeContext.tsx";
+import { useResumeContext, type ResumeData } from "./ResumeContext.tsx";
 
 export default function ResumeList() {
-  const { resumes, setResumes, isLoading, setIsLoading, page, setPage } =
-    useResumeContext();
+  const {
+    resumes,
+    setResumes,
+    isLoading,
+    setIsLoading,
+    page,
+    setPage,
+  }: {
+    resumes: ResumeData;
+    setResumes: (arg0: boolean) => void;
+    isLoading: boolean;
+    setIsLoading: (arg0: boolean) => void;
+    page: number;
+    setPage: (arg0: number) => void;
+  } = useResumeContext();
 
   useEffect(() => {
     let isMounted = true;
@@ -44,13 +57,9 @@ export default function ResumeList() {
           {isLoading ? (
             <div>이력서 목록 로딩 중...</div>
           ) : resumes.length > 0 ? (
-            resumes.map((resumeItem) => {
-              console.log(resumeItem);
-
-              return (
-                <ResumeItem resume={resumeItem} key={resumeItem.resume_id} />
-              );
-            })
+            resumes.map((resumeItem) => (
+              <ResumeItem resume={resumeItem} key={resumeItem.resume_id} />
+            ))
           ) : (
             <li>등록된 이력서가 없습니다.</li>
           )}

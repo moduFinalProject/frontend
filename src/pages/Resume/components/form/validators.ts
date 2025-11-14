@@ -277,7 +277,6 @@ export const photoUrlStringSchema = z
     "올바른 이미지 URL 형식(data:image/ 또는 http)을 선택해주세요"
   );
 export const photoUrlFileSchema = z.instanceof(File).refine((file) => {
-  console.log(file.type);
   return file.type.startsWith("image/");
 }, "이미지 파일만 업로드할 수 있습니다.");
 

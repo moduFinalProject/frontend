@@ -2,14 +2,31 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components";
 import { headerText, subPage, btnsWrap, prevWrap } from "./ResumeTitle.css.ts";
 import { delResume } from "@/services/resumes.ts";
-import { useResumeContext } from "../ResumeContext.tsx";
+import { useResumeContext, type ResumeData } from "../ResumeContext.tsx";
 import { toast } from "react-toastify";
 
 export default function ResumeTitle({ title }: { title: string }) {
-  const { setResumes, resumeData, id, mode } = useResumeContext();
+  const {
+    setResumes,
+    resumeData,
+    id,
+    mode,
+  }: {
+    setResumes: (arg0: ResumeData) => void;
+    resumeData: ResumeData;
+    id: string;
+    mode: "list" | "view" | "create" | "edit" | "correction";
+  } = useResumeContext();
   const navigate = useNavigate();
 
-  const modeData = {
+  type titleData = { title: string; desc: string };
+  const modeData: {
+    list: titleData;
+    view: titleData;
+    create: titleData;
+    edit: titleData;
+    correction: titleData;
+  } = {
     list: {
       title: title,
       desc: "저장된 이력서를 관리하고 새로운 이력서를 작성하세요",
@@ -28,7 +45,7 @@ export default function ResumeTitle({ title }: { title: string }) {
     },
     correction: {
       title: resumeData?.title,
-      desc: `최근 수정: ${resumeData?.updated_at}`,
+      desc: `작성일: ${resumeData?.created_at}`,
     },
   };
 
@@ -102,8 +119,7 @@ export default function ResumeTitle({ title }: { title: string }) {
               widthStyle="fit"
               callback={async () => {
                 if (confirm("삭제하시겠습니까?")) {
-                  const result = await delResume(id);
-                  console.log(result);
+                  await delResume(id);
 
                   toast.success("삭제되었습니다.", {
                     className: "custom-success-toast",
