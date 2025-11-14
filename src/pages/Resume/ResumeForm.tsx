@@ -39,6 +39,7 @@ import {
   updateResume,
 } from "@/services/resumes.ts";
 import { useResumeContext } from "./ResumeContext.tsx";
+import { toast } from "react-toastify";
 
 type EducationItem = {
   organ: string;
@@ -209,110 +210,18 @@ export default function ResumeForm() {
 
         // 학력 날짜에 -01 붙이기
         flattenedData.educations = addDay(flattenedData.educations);
-        // if (Array.isArray(flattenedData.educations)) {
-        //   flattenedData.educations = flattenedData.educations.map((edu) => {
-        //     if (
-        //       edu.start_date &&
-        //       typeof edu.start_date === "string" &&
-        //       edu.start_date.length === 7
-        //     ) {
-        //       edu.start_date = edu.start_date + "-01";
-        //     }
-        //     if (
-        //       edu.end_date &&
-        //       typeof edu.end_date === "string" &&
-        //       edu.end_date.length === 7
-        //     ) {
-        //       edu.end_date = edu.end_date + "-01";
-        //     }
-        //     return edu;
-        //   });
-        // }
 
         // 경력 날짜에 -01 붙이기
         flattenedData.experiences = addDay(flattenedData.experiences);
-        // if (Array.isArray(flattenedData.experiences)) {
-        //   flattenedData.experiences = flattenedData.experiences.map((exp) => {
-        //     if (
-        //       exp.start_date &&
-        //       typeof exp.start_date === "string" &&
-        //       exp.start_date.length === 7
-        //     ) {
-        //       exp.start_date = exp.start_date + "-01";
-        //     }
-        //     if (
-        //       exp.end_date &&
-        //       typeof exp.end_date === "string" &&
-        //       exp.end_date.length === 7
-        //     ) {
-        //       exp.end_date = exp.end_date + "-01";
-        //     }
-        //     return exp;
-        //   });
-        // }
 
         // 프로젝트 날짜에 -01 붙이기
         flattenedData.projects = addDay(flattenedData.projects);
-        // if (Array.isArray(flattenedData.projects)) {
-        //   flattenedData.projects = flattenedData.projects.map((project) => {
-        //     if (
-        //       project.start_date &&
-        //       typeof project.start_date === "string" &&
-        //       project.start_date.length === 7
-        //     ) {
-        //       project.start_date = project.start_date + "-01";
-        //     }
-        //     if (
-        //       project.end_date &&
-        //       typeof project.end_date === "string" &&
-        //       project.end_date.length === 7
-        //     ) {
-        //       project.end_date = project.end_date + "-01";
-        //     }
-        //     return project;
-        //   });
-        // }
 
         // 활동 날짜에 -01 붙이기
         flattenedData.activities = addDay(flattenedData.activities);
-        // if (Array.isArray(flattenedData.activities)) {
-        //   flattenedData.activities = flattenedData.activities.map(
-        //     (activity) => {
-        //       if (
-        //         activity.start_date &&
-        //         typeof activity.start_date === "string" &&
-        //         activity.start_date.length === 7
-        //       ) {
-        //         activity.start_date = activity.start_date + "-01";
-        //       }
-        //       if (
-        //         activity.end_date &&
-        //         typeof activity.end_date === "string" &&
-        //         activity.end_date.length === 7
-        //       ) {
-        //         activity.end_date = activity.end_date + "-01";
-        //       }
-        //       return activity;
-        //     }
-        //   );
-        // }
 
         // 자격증/어학 날짜에 -01 붙이기
         flattenedData.qualifications = addDay(flattenedData.qualifications);
-        // if (Array.isArray(flattenedData.qualifications)) {
-        //   flattenedData.qualifications = flattenedData.qualifications.map(
-        //     (qua) => {
-        //       if (
-        //         qua.acquisition_date &&
-        //         typeof qua.acquisition_date === "string" &&
-        //         qua.acquisition_date.length === 7
-        //       ) {
-        //         qua.acquisition_date = qua.acquisition_date + "-01";
-        //       }
-        //       return qua;
-        //     }
-        //   );
-        // }
 
         // 스택 배열로 만들기
         if (typeof flattenedData.technology_stacks === "string") {
@@ -351,11 +260,21 @@ export default function ResumeForm() {
         }
 
         console.log("사용자 데이터:", result);
-        alert(`${!isEditMode ? "생성" : "수정"} 완료!`);
+        toast.success(`${!isEditMode ? "생성" : "수정"} 완료!`, {
+          className: "custom-success-toast",
+        });
+
         navigate(`/resume/${result.resume_id}`);
       } catch (error) {
         if (error instanceof z.ZodError) {
           console.error("검증 오류:", error.issues);
+          const message =
+            error instanceof Error
+              ? `저장에 실패했습니다: ${error.message}`
+              : "저장 처리 중 오류가 발생했습니다.";
+          toast.error(message, {
+            className: "custom-error-toast",
+          });
         }
       }
     },
@@ -364,14 +283,16 @@ export default function ResumeForm() {
       const firstInvalidElement = window.document.querySelector(selector);
 
       if (firstInvalidElement) {
-        // 2. DOM에서 찾은 요소에 포커스를 맞추고 스크롤 이동
+        // 스크롤 이동
         firstInvalidElement.focus();
         firstInvalidElement.scrollIntoView({
           behavior: "smooth",
           block: "center",
         });
 
-        // 이 방식은 requiredFieldOrder 없이 DOM 순서대로 첫 번째 필드를 찾습니다.
+        toast.error("필수 항목을 확인해주세요.", {
+          className: "custom-error-toast",
+        });
       }
     },
   });

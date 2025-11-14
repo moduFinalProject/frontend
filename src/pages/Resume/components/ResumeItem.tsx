@@ -13,6 +13,7 @@ import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { delResume } from "@/services/resumes.ts";
 import { useResumeContext } from "../ResumeContext.tsx";
+import { toast } from "react-toastify";
 
 type Resume = {
   resume_id: string;
@@ -48,7 +49,9 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
             const result = await delResume(resume.resume_id);
             console.log(result);
 
-            alert("삭제되었습니다");
+            toast.success("삭제되었습니다.", {
+              className: "custom-success-toast",
+            });
 
             setResumes((prev) =>
               prev.filter((item) => item.resume_id !== resume.resume_id)
