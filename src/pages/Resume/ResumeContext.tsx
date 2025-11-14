@@ -73,7 +73,7 @@ function transformDataForForm(serverData: any, emptyForm: any): any {
     ),
     experiences: serverData.experiences.map((item: any) => ({
       // ...item,
-      job_title: item.title,
+      job_title: item.job_title,
       department: item.department,
       position: item.position,
       start_date: formatMonthDate(item.start_date),
