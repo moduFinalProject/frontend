@@ -159,9 +159,12 @@ export const imgWrap = style({
   alignItems: "center",
   borderRadius: vars.borderRadius.sm,
   backgroundColor: vars.color.formBg,
+  overflow: "hidden",
 
   img: {
     width: "100%",
+    aspectRatio: 160 / 224,
+    objectFit: "contain",
   },
 });
 
