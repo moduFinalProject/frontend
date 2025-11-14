@@ -1,4 +1,5 @@
 import { Fragment } from "react/jsx-runtime";
+import type { ReactNode } from "react";
 import {
   row,
   widthStyle,
@@ -25,6 +26,7 @@ type rowData = {
   isLisence?: boolean;
   isUrl?: boolean;
   isPreWrap?: boolean;
+  input?: ReactNode;
   widthType: "half" | "full";
 };
 
@@ -38,6 +40,7 @@ export default function JobCardRow({
   isLisence = false,
   isUrl = false,
   isPreWrap = false,
+  input,
   widthType,
 }: rowData) {
   return (
@@ -62,6 +65,7 @@ export default function JobCardRow({
           {date && <p className={dateText}>{date}</p>}
         </div>
       )}
+      {input}
       {desc &&
         (isPreWrap ? (
           <p className={`${descText} ${preWrap}`}>{desc}</p>
