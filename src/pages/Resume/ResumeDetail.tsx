@@ -120,7 +120,10 @@ export default function ResumeDetail() {
         })}
       </ResumeCard>
       <ResumeCard title="자기소개">
-        <ResumeCardRow desc={resumeData.self_introduction} widthType="full" />
+        <ResumeCardRow
+          desc={resumeData.self_introduction || "작성된 자기소개가 없습니다."}
+          widthType="full"
+        />
       </ResumeCard>
       <ResumeCard title="경력">
         {resumeData.experiences.length <= 0 && (
