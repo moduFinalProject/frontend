@@ -3,7 +3,6 @@ import {
   header,
   headerWrapper,
   headerContainer,
-  logoContainer,
   logoImage,
   mainSection,
   mainContainer,
