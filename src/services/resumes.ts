@@ -26,8 +26,8 @@ export async function getResumeList({
   search,
 }: {
   page: number;
-  limit?: number;
-  search?: string;
+  limit?: number | undefined;
+  search?: string | undefined;
 }) {
   const limitParam = limit ? `&page_size=${limit}` : "";
   const searchParam = search ? `&title=${search}` : "";

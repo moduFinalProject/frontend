@@ -1,5 +1,96 @@
-import React, { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { useMatch, useParams } from "react-router-dom";
+export type EducationItem = {
+  organ: string;
+  department?: string;
+  degree_level?: "0" | "1" | "2" | "3" | "4" | "5";
+  score: string;
+  start_date: string;
+  end_date: string;
+};
+export type ExperienceItem = {
+  job_title: string;
+  department?: string;
+  position: string;
+  start_date: string;
+  end_date: string | null;
+  employment_status: boolean;
+  job_description: string;
+};
+export type ProjectItem = {
+  title: string;
+  start_date: string;
+  end_date: string;
+  description: string;
+};
+export type ActivityItem = {
+  title: string;
+  start_date: string;
+  end_date: string;
+  description: string;
+};
+export type QualificationItem = {
+  title: string;
+  organ: string;
+  acquisition_date: string;
+  score?: string;
+};
+export type ResumeServerData = {
+  resume_id: string;
+  resume_type?: string;
+  resume_type_detail?: string;
+  created_at?: string;
+  updated_at?: string;
+  url?: string;
+  image_url: string;
+  portfolio_url?: string;
+  title: string;
+  name: string;
+  birth_date: string;
+  email: string;
+  phone: string;
+  gender: "0" | "1" | "2";
+  gender_detail: string;
+  address: string;
+  military_service: "0" | "1" | "2" | "3" | "4" | "5" | "6";
+  military_service_detail?: string;
+  educations?: EducationItem[];
+  self_introduction: string;
+  experiences?: ExperienceItem[];
+  projects?: ProjectItem[];
+  activities?: ActivityItem[];
+  technology_stacks?: { title: string }[];
+  qualifications?: QualificationItem[];
+};
+export type ResumeData = {
+  resume_id?: string;
+  resume_type?: string;
+  resume_type_detail?: string;
+  created_at?: string;
+  updated_at?: string;
+  url?: string;
+  image_url: string;
+  portfolio_url?: string;
+  title: string;
+  user_info: {
+    name: string;
+    birth_date: string;
+    email: string;
+    phone: string;
+    gender: "0" | "1" | "2";
+    gender_detail: string;
+    address: string;
+    military_service: "0" | "1" | "2" | "3" | "4" | "5" | "6";
+    military_service_detail?: string;
+  };
+  educations?: EducationItem[];
+  self_introduction: string;
+  experiences?: ExperienceItem[];
+  projects?: ProjectItem[];
+  activities?: ActivityItem[];
+  technology_stacks?: string[];
+  qualifications?: QualificationItem[];
+};
 
 const ResumeContext = createContext(null);
 
@@ -32,10 +123,13 @@ const transformStacksFormServer = (
   // map을 사용하여 각 객체에서 title 값만 추출
   return stackArray.map((item) => item.title);
 };
-function transformDataForForm(serverData: any, emptyForm: any): any {
+function transformDataForForm(
+  serverData: ResumeServerData,
+  emptyForm: ResumeData
+): ResumeData {
   if (!serverData) return emptyForm;
 
-  const transformedData = {
+  const transformedData: ResumeData = {
     ...emptyForm,
     resume_type: serverData.resume_type || emptyForm.resume_type,
     resume_type_detail:
@@ -65,13 +159,13 @@ function transformDataForForm(serverData: any, emptyForm: any): any {
     },
     // 배열 필드 채우기
     educations: (serverData.educations || emptyForm.educations).map(
-      (item: any) => ({
+      (item: EducationItem) => ({
         ...item,
         start_date: formatMonthDate(item.start_date),
         end_date: formatMonthDate(item.end_date),
       })
     ),
-    experiences: serverData.experiences.map((item: any) => ({
+    experiences: serverData.experiences.map((item: ExperienceItem) => ({
       // ...item,
       job_title: item.job_title,
       department: item.department,
@@ -81,13 +175,15 @@ function transformDataForForm(serverData: any, emptyForm: any): any {
       end_date: formatMonthDate(item.end_date),
       job_description: item.job_description,
     })),
-    projects: (serverData.projects || emptyForm.projects).map((item: any) => ({
-      ...item,
-      start_date: formatMonthDate(item.start_date),
-      end_date: formatMonthDate(item.end_date),
-    })),
+    projects: (serverData.projects || emptyForm.projects).map(
+      (item: ProjectItem) => ({
+        ...item,
+        start_date: formatMonthDate(item.start_date),
+        end_date: formatMonthDate(item.end_date),
+      })
+    ),
     activities: (serverData.activities || emptyForm.activities).map(
-      (item: any) => ({
+      (item: ActivityItem) => ({
         ...item,
         start_date: formatMonthDate(item.start_date),
         end_date: formatMonthDate(item.end_date),
@@ -97,7 +193,7 @@ function transformDataForForm(serverData: any, emptyForm: any): any {
       serverData.technology_stacks || emptyForm.technology_stacks
     ),
     qualifications: (serverData.qualifications || emptyForm.qualifications).map(
-      (item: any) => ({
+      (item: QualificationItem) => ({
         title: item.title,
         organ: item.organ,
         acquisition_date: formatMonthDate(item.acquisition_date),
@@ -108,7 +204,7 @@ function transformDataForForm(serverData: any, emptyForm: any): any {
 
   return transformedData;
 }
-type Resume = {
+export type Resume = {
   resume_id: string;
   name: string;
   desc: string;
@@ -117,12 +213,18 @@ type Resume = {
   end_date?: string;
 };
 
-export const ResumeProvider = ({ children, initialResumeData }) => {
+export const ResumeProvider = ({
+  children,
+  initialResumeData,
+}: {
+  children: any;
+  initialResumeData: ResumeData;
+}) => {
   const { id } = useParams();
   const isEditMode = Boolean(id) && id !== "new";
   const [resumes, setResumes] = useState<Resume[]>([]);
-  const [resumeData, setResumeData] = useState(initialResumeData);
-  const [isLoading, setIsLoading] = useState(false);
+  const [resumeData, setResumeData] = useState<ResumeData>(initialResumeData);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
 
@@ -140,7 +242,7 @@ export const ResumeProvider = ({ children, initialResumeData }) => {
     ? "correction"
     : "list";
 
-  function setResume(data) {
+  function setResume(data: ResumeServerData): void {
     setResumeData(transformDataForForm(data, resumeData));
   }
 

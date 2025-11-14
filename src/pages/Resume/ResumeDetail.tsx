@@ -4,68 +4,26 @@ import { Fragment } from "react/jsx-runtime";
 import { useEffect } from "react";
 import { container, innerContainer } from "./index.css.ts";
 import { getResume } from "@/services/resumes.ts";
-import { useResumeContext } from "./ResumeContext.tsx";
-
-type ResumeData = {
-  resume_id: string;
-  resume_type?: string;
-  resume_type_detail?: string;
-  created_at?: string;
-  updated_at?: string;
-  url?: string;
-  image_url: string;
-  portfolio_url?: string;
-  title: string;
-  name: string;
-  email: string;
-  phone: string;
-  gender: string;
-  gender_detail: string;
-  address: string;
-  military_service: string;
-  military_service_detail?: string;
-  educations?: {
-    organ: string;
-    department: string;
-    degree_level: string;
-    score: string;
-    start_date: string;
-    end_date?: string;
-  }[];
-  self_introduction: string;
-  experiences?: {
-    job_title: string;
-    position: string;
-    department: string;
-    start_date: string;
-    end_date?: string;
-    employment_status: "Y" | "N";
-    job_description: string;
-  }[];
-  projects?: {
-    title: string;
-    start_date: string;
-    end_date: string;
-    description: string;
-  }[];
-  activities?: {
-    title: string;
-    start_date: string;
-    end_date: string;
-    description: string;
-  }[];
-  technology_stacks?: { title: string }[];
-  qualifications?: {
-    title: string;
-    organ: string;
-    acquisition_date: string;
-    score?: string;
-  }[];
-};
+import {
+  useResumeContext,
+  type ResumeData,
+  type ResumeServerData,
+} from "./ResumeContext.tsx";
 
 export default function ResumeDetail() {
-  const { resumeData, setResume, isLoading, setIsLoading, id } =
-    useResumeContext();
+  const {
+    resumeData,
+    setResume,
+    isLoading,
+    setIsLoading,
+    id,
+  }: {
+    resumeData: ResumeData;
+    setResume: (arg0: ResumeServerData) => void;
+    isLoading: boolean;
+    setIsLoading: (arg0: boolean) => void;
+    id: string;
+  } = useResumeContext();
 
   useEffect(() => {
     if (!id && isLoading) return;
