@@ -15,8 +15,7 @@ export const label = style({
 });
 
 export const inputBase = style({
-  // width: "100%",
-  // height: "36px",
+  width: "100%",
   flex: 1,
   padding: `${vars.spacing.xs} 12px`,
   fontSize: vars.typography.fontSize.sm,

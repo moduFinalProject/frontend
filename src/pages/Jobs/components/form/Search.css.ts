@@ -2,7 +2,7 @@ import { style, globalStyle } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
 
 export const form = style({
-  width: "30%",
+  width: "50%",
   display: "flex",
   gap: vars.spacing.sm,
   alignItems: "stretch",

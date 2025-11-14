@@ -12,14 +12,8 @@ import {
   descText,
   descTextLink,
   flexContainer,
-  imgWrap,
-  noImg,
-  imgRow,
+  preWrap,
 } from "./JobCardRow.css.ts";
-import { preWrap } from "./JobCardRow.css.ts";
-
-import type { ReactNode } from "react";
-import { ICONS } from "@/constants/icons.ts";
 
 type rowData = {
   value?: string;
@@ -28,12 +22,9 @@ type rowData = {
   subTile?: string;
   date?: string;
   desc?: string;
-  imgUrl?: string;
   isLisence?: boolean;
   isUrl?: boolean;
-  isPhoto?: boolean;
   isPreWrap?: boolean;
-  input?: ReactNode;
   widthType: "half" | "full";
 };
 
@@ -44,12 +35,9 @@ export default function JobCardRow({
   subTile,
   date,
   desc,
-  imgUrl,
   isLisence = false,
   isUrl = false,
-  isPhoto = false,
   isPreWrap = false,
-  input,
   widthType,
 }: rowData) {
   return (
@@ -93,21 +81,6 @@ export default function JobCardRow({
             ))}
           </div>
         ))}
-      <div className={imgRow}>
-        {isPhoto && (
-          <div id="imgWrap" className={imgWrap}>
-            {imgUrl ? (
-              <img src={imgUrl} alt="증명사진" />
-            ) : (
-              <div className={noImg}>
-                <img src={ICONS["IMG"]} alt="" />
-                <span>회사 로고</span>
-              </div>
-            )}
-          </div>
-        )}
-        {input && input}
-      </div>
       {Array.isArray(keyword) && (
         <div className={stackWrap}>
           {keyword.map((item) => (

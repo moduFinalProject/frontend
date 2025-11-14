@@ -81,47 +81,8 @@ export const flexContainer = style({
   gap: vars.spacing.sm,
   alignItems: "center",
 });
-export const imgWrap = style({
-  border: `1px solid ${vars.color.line}`,
-  width: 160,
-  aspectRatio: "160/224",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  borderRadius: vars.borderRadius.sm,
-  backgroundColor: vars.color.formBg,
-});
-
-export const imgRow = style({
-  display: "flex",
-  alignItems: "center",
-  gap: vars.spacing.sm,
-});
-export const noImg = style({
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: vars.spacing.lg,
-});
-
 globalStyle(`${row} h4`, {
   fontWeight: vars.typography.fontWeight.normal,
   fontSize: vars.typography.fontSize.sm,
   color: vars.color.subText,
-});
-
-globalStyle(`${imgWrap} img`, {
-  width: "100%",
-});
-
-globalStyle(`${noImg} img`, {
-  width: "48px",
-});
-
-globalStyle(`${noImg} span`, {
-  color: vars.color.subText,
-  fontSize: vars.typography.fontSize.sm,
 });
