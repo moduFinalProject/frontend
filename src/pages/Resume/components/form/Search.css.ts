@@ -13,4 +13,10 @@ export const form = style({
     borderRadius: vars.borderRadius.sm,
     flex: 1,
   },
+
+  "@media": {
+    "(max-width: 768px)": {
+      width: "100%",
+    },
+  },
 });

@@ -92,24 +92,14 @@ export default function ResumeTitle({ title }: { title: string }) {
           />
         )}
         {(mode === "create" || mode === "edit") && (
-          <>
-            <Button
-              text="AI 자동완성"
-              color="white"
-              widthStyle="fit"
-              callback={() => {
-                alert("개발중입니다");
-              }}
-            />
-            <Button
-              text="저장하기"
-              color="blue"
-              widthStyle="fit"
-              buttonType="submit"
-              form="resumeForm"
-              callback={() => {}}
-            />
-          </>
+          <Button
+            text="저장하기"
+            color="blue"
+            widthStyle="fit"
+            buttonType="submit"
+            form="resumeForm"
+            callback={() => {}}
+          />
         )}
         {mode === "view" && (
           <>

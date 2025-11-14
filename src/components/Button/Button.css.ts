@@ -33,6 +33,12 @@ export const baseButton = style({
       border: `1px solid ${vars.color.disabled}`,
     },
   },
+
+  "@media": {
+    "(max-width: 768px)": {
+      padding: vars.spacing.sm,
+    },
+  },
 });
 
 export const buttonColor = styleVariants({
@@ -89,5 +95,26 @@ export const buttonWidth = styleVariants({
   fit: {
     width: "fit-content",
     flexShrink: 0,
+  },
+});
+
+export const mobileHidden = style({
+  "@media": {
+    "(max-width: 768px)": {
+      img: {
+        height: "18.5px",
+      },
+      "img + span": {
+        position: "absolute",
+        width: "1px",
+        height: "1px",
+        padding: "0",
+        margin: "-1px",
+        overflow: "hidden",
+        clip: "rect(0, 0, 0, 0)",
+        whiteSpace: "nowrap",
+        borderWidth: "0",
+      },
+    },
   },
 });

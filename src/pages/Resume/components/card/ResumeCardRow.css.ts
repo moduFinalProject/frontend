@@ -11,6 +11,14 @@ export const row = style({
     fontSize: vars.typography.fontSize.sm,
     color: vars.color.subText,
   },
+
+  "@media": {
+    "(max-width: 768px)": {
+      h4: {
+        fontSize: vars.typography.fontSize.xs,
+      },
+    },
+  },
 });
 
 export const widthStyle = styleVariants({
@@ -20,6 +28,7 @@ export const widthStyle = styleVariants({
   full: {
     gridColumn: "span 2",
     minWidth: 0,
+
     "@media": {
       "(max-width: 1024px)": {
         gridColumn: "span 1",
@@ -42,6 +51,13 @@ export const innerGrid = styleVariants({
 
 export const topTitle = style({
   display: "flex",
+
+  "@media": {
+    "(max-width: 768px)": {
+      flexDirection: "column",
+      gap: vars.spacing.xs,
+    },
+  },
 });
 
 export const topTitleText = style({
@@ -50,16 +66,43 @@ export const topTitleText = style({
   flexDirection: "column",
   gap: vars.spacing.xs,
 });
+
 export const subText = style({
   color: vars.color.subText,
   fontSize: vars.typography.fontSize.sm,
+
+  "@media": {
+    "(max-width: 768px)": {
+      h4: {
+        fontSize: vars.typography.fontSize.xs,
+      },
+    },
+  },
 });
+
 export const dateText = style({
   color: vars.color.subText,
   fontSize: vars.typography.fontSize.sm,
+
+  "@media": {
+    "(max-width: 768px)": {
+      h4: {
+        fontSize: vars.typography.fontSize.xs,
+      },
+    },
+  },
 });
+
 export const descText = style({
   fontSize: vars.typography.fontSize.sm,
+
+  "@media": {
+    "(max-width: 768px)": {
+      h4: {
+        fontSize: vars.typography.fontSize.xs,
+      },
+    },
+  },
 });
 
 export const descTextLink = style({
@@ -70,11 +113,13 @@ export const descTextLink = style({
     color: vars.color.main,
   },
 });
+
 export const stack = style({
   backgroundColor: vars.color.formBg,
   padding: `${vars.spacing.xs} ${vars.spacing.sm}`,
   borderRadius: vars.borderRadius.sm,
 });
+
 export const lisenceType = styleVariants({
   lisence: {
     fontSize: vars.typography.fontSize.xs,
@@ -104,6 +149,7 @@ export const flexContainer = style({
   gap: vars.spacing.sm,
   alignItems: "center",
 });
+
 export const imgWrap = style({
   border: `1px solid ${vars.color.line}`,
   width: 160,
@@ -123,6 +169,12 @@ export const imgRow = style({
   display: "flex",
   alignItems: "center",
   gap: vars.spacing.sm,
+
+  "@media": {
+    "(max-width: 768px)": {
+      flexDirection: "column",
+    },
+  },
 });
 export const noImg = style({
   width: "100%",

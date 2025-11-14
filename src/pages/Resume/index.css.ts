@@ -17,6 +17,13 @@ export const container = style({
     color: vars.color.line,
     gridColumn: "span 2",
   },
+
+  "@media": {
+    "(max-width: 768px)": {
+      padding: vars.spacing.md,
+      gap: vars.spacing.md,
+    },
+  },
 });
 
 export const header = style({
@@ -35,4 +42,10 @@ export const header = style({
 
 export const innerContainer = style({
   padding: 0,
+
+  "@media": {
+    "(max-width: 768px)": {
+      padding: 0,
+    },
+  },
 });
