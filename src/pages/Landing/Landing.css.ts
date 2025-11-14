@@ -31,16 +31,9 @@ export const headerContainer = style({
   padding: "0 24px",
 });
 
-export const logoContainer = style({
+export const logoImage = style({
   width: "153px",
   height: "36px",
-  display: "flex",
-  alignItems: "center",
-});
-
-export const logoImage = style({
-  width: "100%",
-  height: "100%",
   objectFit: "contain",
 });
 

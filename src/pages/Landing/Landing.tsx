@@ -38,18 +38,13 @@ export default function Landing() {
     <div className={landingContainer}>
       <header className={header}>
         <div className={headerWrapper}>
-          <nav
-            className={headerContainer}
-            role="navigation"
-            aria-label="메인 네비게이션"
-          >
-            <div className={logoContainer}>
-              <img
-                src={logoImageSrc}
-                alt="개취 - AI 기반 취업 지원 플랫폼"
-                className={logoImage}
-              />
-            </div>
+          <nav className={headerContainer}>
+            <img
+              src={logoImageSrc}
+              alt="개취 - AI 기반 취업 지원 플랫폼"
+              className={logoImage}
+            />
+
             <Button
               widthStyle="fit"
               color="blue"
@@ -63,8 +58,8 @@ export default function Landing() {
 
       <main className={mainSection}>
         <div className={mainContainer}>
-          <section className={bannerContainer} aria-labelledby="hero-title">
-            <article className={bannerContent}>
+          <div className={bannerContainer}>
+            <div className={bannerContent}>
               <header className={bannerHeader}>
                 <span className={bannerTag}>AI 기반 취업 지원 플랫폼</span>
                 <h1 id="hero-title" className={bannerTitle}>
@@ -89,18 +84,18 @@ export default function Landing() {
                   className={bannerButton}
                 />
               </div>
-            </article>
-            <aside
+            </div>
+            <div
               className={bannerImageContainer}
               aria-label="서비스 소개 이미지"
             >
               <img
                 src={mainBannerImageSrc}
-                alt="개취 서비스 화면 - AI 기반 취업 지원 도구들"
+                alt="노트북을 사용하고 있는 사람의 모습과 이력서를 든 로봇"
                 className={bannerImage}
               />
-            </aside>
-          </section>
+            </div>
+          </div>
         </div>
       </main>
 
