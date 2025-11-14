@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -17,22 +17,28 @@
       crossorigin
     />
     <title>개취</title>
-    <script type="module" crossorigin src="/frontend/assets/index-Beu8R_JC.js"></script>
-    <link rel="stylesheet" crossorigin href="/frontend/assets/index-krs5v0FK.css">
+    <script type="module" crossorigin src="/frontend/assets/index-DvcNCnrb.js"></script>
+    <link rel="stylesheet" crossorigin href="/frontend/assets/index-D1HlbM3e.css">
   </head>
   <body>
-    <div id="root"></div>    
+    <div id="root"></div>
     <script type="text/javascript">
       (function (l) {
-        if (l.search[1] === '/') {
-          var decoded = l.search.slice(1).split('&').map(function (s) {
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            null,
             l.pathname.slice(0, -1) + decoded + l.hash
           );
         }
-      }(window.location))
-    </script>    
+      })(window.location);
+    </script>
   </body>
 </html>
