@@ -3,6 +3,7 @@ import { Button } from "@/components";
 import { headerText, subPage, btnsWrap, prevWrap } from "./ResumeTitle.css.ts";
 import { delResume } from "@/services/resumes.ts";
 import { useResumeContext } from "../ResumeContext.tsx";
+import { toast } from "react-toastify";
 
 export default function ResumeTitle({ title }: { title: string }) {
   const { setResumes, resumeData, id, mode } = useResumeContext();
@@ -104,7 +105,9 @@ export default function ResumeTitle({ title }: { title: string }) {
                   const result = await delResume(id);
                   console.log(result);
 
-                  alert("삭제되었습니다");
+                  toast.success("삭제되었습니다.", {
+                    className: "custom-success-toast",
+                  });
                   navigate("/resume");
 
                   // 새 배열로 상태 업데이트 (불변성 유지)
@@ -150,7 +153,9 @@ export default function ResumeTitle({ title }: { title: string }) {
               widthStyle="fit"
               callback={() => {
                 if (confirm("새 이력서로 생성하시겠습니까?"))
-                  alert("생성되었습니다");
+                  toast.success("생성되었습니다.", {
+                    className: "custom-success-toast",
+                  });
               }}
             />
           </>
