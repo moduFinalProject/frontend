@@ -1176,7 +1176,7 @@ export default function ResumeForm() {
       }}
     >
       <div className={`${container} ${innerContainer}`}>
-        <ResumeCard isMust={true}>
+        <ResumeCard title="필수 항목" isMust={true}>
           <ResumeCardRow
             value="표시는 필수 항목입니다. (이력서 제목, 증명사진, 기본정보,  학력)"
             widthType="full"
