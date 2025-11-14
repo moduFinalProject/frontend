@@ -52,7 +52,7 @@ export default function ResumeTitle({ title }: { title: string }) {
           >
             {modeData[mode].title}
           </h2>
-          {["list", "create"].includes(mode) && (
+          {!["list", "create"].includes(mode) && (
             <p className="title">{resumeData?.resume_type_detail}</p>
           )}
           <p className="desc">{modeData[mode].desc}</p>
