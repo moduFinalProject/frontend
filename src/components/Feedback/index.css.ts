@@ -4,6 +4,12 @@ import { vars } from "@/design-system";
 export const container = style({
   display: "flex",
   gap: vars.spacing.lg,
+
+  "@media": {
+    "(max-width: 768px)": {
+      flexDirection: "column",
+    },
+  },
 });
 
 export const flex1 = style({
@@ -14,6 +20,11 @@ export const resultWrap = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.lg,
+  order: -1,
+
+  "@media": {
+    "(min-width: 768px)": { order: 1 },
+  },
 });
 
 export const recorrection = style({
