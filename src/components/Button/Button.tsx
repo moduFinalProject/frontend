@@ -1,4 +1,9 @@
-import { baseButton, buttonColor, buttonWidth } from "./Button.css";
+import {
+  baseButton,
+  buttonColor,
+  buttonWidth,
+  mobileHidden,
+} from "./Button.css";
 import { ICONS } from "@/constants/icons";
 
 interface ButtonProps {
@@ -46,7 +51,7 @@ export default function Button({
   return (
     <button
       disabled={disabled}
-      className={classNames}
+      className={`${classNames} ${mobileHidden}`}
       type={buttonType}
       onClick={callback}
       form={form}
@@ -57,7 +62,7 @@ export default function Button({
       role={role}
     >
       {icon && <img src={ICONS[icon]} alt="" />}
-      {text}
+      {text && <span>{text}</span>}
     </button>
   );
 }
