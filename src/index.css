@@ -76,3 +76,7 @@ a {
 .custom-error-toast {
   background-color: #d4183d !important;
 }
+
+html {
+  overflow: hidden;
+}
