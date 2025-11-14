@@ -16,6 +16,19 @@ export const card = style({
     fontWeight: vars.typography.fontWeight.normal,
     flex: 1,
   },
+
+  "@media": {
+    "(max-width: 768px)": {
+      padding: vars.spacing.md,
+      gap: vars.spacing.md,
+
+      h3: {
+        fontSize: vars.typography.fontSize.sm,
+        fontWeight: vars.typography.fontWeight.normal,
+        flex: 1,
+      },
+    },
+  },
 });
 
 export const grid = style({
@@ -28,6 +41,9 @@ export const grid = style({
       gridTemplateColumns: "1fr",
       gap: `${vars.spacing.lg} 0`,
     },
+    "(max-width: 768px)": {
+      gap: vars.spacing.md,
+    },
   },
 });
 
@@ -36,7 +52,7 @@ export const innerGrid = style({
     "@media": {
       "(max-width: 768px)": {
         gridTemplateColumns: "1fr",
-        gap: `${vars.spacing.lg} 0`,
+        gap: `${vars.spacing.md} 0`,
       },
     },
   },

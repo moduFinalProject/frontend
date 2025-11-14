@@ -21,6 +21,20 @@ export const headerText = style({
     fontSize: vars.typography.fontSize.md,
     color: vars.color.subText,
   },
+
+  "@media": {
+    "(max-width: 768px)": {
+      gap: vars.spacing.xs,
+
+      h2: {
+        margin: 0,
+        fontSize: vars.typography.fontSize.lg,
+      },
+      ".desc": {
+        fontSize: vars.typography.fontSize.sm,
+      },
+    },
+  },
 });
 
 export const subPage = style({
@@ -42,6 +56,12 @@ export const prevWrap = style({
   flex: 1,
   display: "flex",
   gap: vars.spacing.sm,
+
+  "@media": {
+    "(max-width: 768px)": {
+      gap: vars.spacing.xs,
+    },
+  },
 });
 
 export const btnsWrap = style({

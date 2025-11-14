@@ -16,6 +16,13 @@ export const resumeItem = style({
   ":hover": {
     boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
   },
+
+  "@media": {
+    "(max-width: 768px)": {
+      padding: vars.spacing.md,
+      gap: vars.spacing.md,
+    },
+  },
 });
 export const title = style({
   display: "flex",

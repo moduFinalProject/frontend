@@ -8,4 +8,10 @@ export const resumeList = style({
 
   margin: 0,
   padding: 0,
+
+  "@media": {
+    "(max-width: 768px)": {
+      gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+    },
+  },
 });
