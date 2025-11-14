@@ -9,7 +9,8 @@ export const layoutContainer = style({
 export const layoutContent = style({
   display: "flex",
   flexDirection: "column",
-  flex: 1
+  flex: 1,
+  overflow: "hidden"
 });
 
 export const layoutMain = style({
