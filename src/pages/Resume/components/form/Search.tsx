@@ -63,7 +63,7 @@ export default function Search() {
                 onChange={field.handleChange}
                 onBlur={field.handleBlur}
                 error={field.state.meta.errors.join(", ")}
-                placeholder="이력서 이름 또는 설명으로 검색..."
+                placeholder="이력서 이름으로 검색..."
               />
               <Button
                 color="blue"
