@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { jobList, jobListModal, listSection } from "./JobList.css.ts";
 import JobItem from "./components/JobItem.tsx";
@@ -14,6 +14,7 @@ export default function JobList({
   isModal = false,
   onSelect,
 }: JobListProps = {}) {
+  const [searchValue, setSearchValue] = useState("");
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const PAGE_SIZE = 6;
 
@@ -25,9 +26,10 @@ export default function JobList({
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ["job-list"],
+    queryKey: ["job-list", searchValue],
     initialPageParam: 1,
-    queryFn: ({ pageParam }) => getAllJobPostings(pageParam, PAGE_SIZE),
+    queryFn: ({ pageParam }) =>
+      getAllJobPostings(pageParam, PAGE_SIZE, searchValue),
     getNextPageParam: (lastPage, allPages) => {
       if (!lastPage || lastPage.length < PAGE_SIZE) {
         return undefined;
@@ -64,7 +66,7 @@ export default function JobList({
     return () => {
       observer.disconnect();
     };
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage, searchValue]);
 
   const renderContent = () => {
     if (status === "pending") {
@@ -107,7 +109,12 @@ export default function JobList({
   return (
     <section className={listSection} aria-labelledby="job-list-heading">
       <header>
-        <Search isModal={isModal} />
+        <Search
+          isModal={isModal}
+          onSearch={(keyword) => {
+            setSearchValue(keyword);
+          }}
+        />
       </header>
 
       <h2 id="job-list-heading" className="a11y-hidden">
