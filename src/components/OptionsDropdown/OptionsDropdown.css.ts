@@ -20,4 +20,10 @@ export const dropdownMenu = style({
   boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
   zIndex: 100,
   minWidth: "80px",
+
+  "@media": {
+    "(max-width: 768px)": {
+      minWidth: "64px",
+    },
+  },
 });
