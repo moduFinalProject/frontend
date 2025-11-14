@@ -270,12 +270,12 @@ export default function ResumeForm() {
         form.reset({
           ...defaultValues,
           user_info: {
-            ...defaultValues.user_info,
             name: userInfo.name,
             birth_date: userInfo.birth_date,
             email: userInfo.email,
             gender: userInfo.gender,
             phone: userInfo.phone,
+            military_service: userInfo.military_service,
             address: userInfo.address,
           },
         });
