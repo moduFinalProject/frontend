@@ -15,12 +15,6 @@ export const overlay = style({
   pointerEvents: "auto",
 });
 
-export const spinnerContainer = style({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",    
-});
-
 export const spinnerImage = style({
   width: "60px",
   height: "60px",

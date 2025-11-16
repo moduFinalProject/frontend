@@ -2,7 +2,6 @@ import { topbar, topbarRight, userInfo, userDetails, userName, userEmail } from 
 import { Button } from "@/components/Button";
 import { useMemo, useState } from "react";
 import { Modal } from "@/components/Modal";
-import JobList from '@/pages/Jobs/JobList';
 
 export default function Topbar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,7 +40,7 @@ export default function Topbar() {
         </section>
       </aside>
 
-      {/* <Modal
+      <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="신규 알림"
@@ -50,23 +49,6 @@ export default function Topbar() {
         height={400}
       >
         <p>신규 알림창은 서비스 제공 예정입니다.</p>        
-      </Modal> */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="등록된 채용공고 선택"
-        subtitle="관리하고 있는 채용공고 중 하나를 선택하세요."
-        width={800}
-        height={600}
-      >
-        <JobList 
-          isModal={true}
-           onSelect={(job) => {
-            console.log("선택된 Job:", job);
-            // 선택된 job으로 뭔가 처리
-            setIsModalOpen(false);
-          }}
-        />
       </Modal>
     </>
   );
