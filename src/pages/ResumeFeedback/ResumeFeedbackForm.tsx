@@ -1,3 +1,256 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Select from "@/components/FormElem/text/Select";
+import Button from "@/components/Button/Button";
+import { Modal } from "@/components/Modal";
+import JobList from '@/pages/Jobs/JobList';
+import FeedbackTitle from "./components/FeedbackTitle";
+import { type JobPosting } from "@/services/jobs";
+import { getResumeList } from "@/services/resumes";
+import {
+  container,
+  headerWrapper,
+  formSection,
+  formGroup,
+  helperText,
+  stepSection,
+  stepSectionTitle,
+  stepSectionDesc,
+  stepItem,
+  stepNumber,
+  stepContent,
+  stepContentTitle,
+  stepContentDesc,
+  selectedJobCard,
+  selectedJobCardHeader,
+  selectedJobTitle,
+  selectedJobCompany,
+  formLabel,
+  errorMessage,
+  stepItemsContainer
+} from "./ResumeFeedbackForm.css";
+
+interface FormData {
+  jobId: string;
+  resumeId: string;
+}
+
+interface ResumeOption {
+  value: string;
+  label: string;
+}
+
 export default function ResumeFeedbackForm() {
-  return <div>ResumeFeedbackForm</div>;
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<FormData>({
+    jobId: "",
+    resumeId: "",
+  });
+  const [selectedJob, setSelectedJob] = useState<JobPosting | null>(null);
+  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [resumeOptions, setResumeOptions] = useState<ResumeOption[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadResumeOptions = async () => {
+      try {
+        const data = await getResumeList({ page: 1 });
+
+        if (isMounted && data && Array.isArray(data)) {
+          const options = data.map((resume: any) => ({
+            value: resume.resume_id,
+            label: resume.title,
+          }));
+          setResumeOptions(options);
+        }
+      } catch (error) {
+        console.error("이력서 목록 로드 중 에러:", error);
+        if (isMounted) {
+          setResumeOptions([]);
+        }
+      }
+    };
+
+    loadResumeOptions();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleJobSelect = (job: JobPosting) => {
+    setSelectedJob(job);
+    setFormData({ ...formData, jobId: job.posting_id.toString() });
+    if (errors.jobId) {
+      setErrors({ ...errors, jobId: undefined });
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteJob = () => {
+    setSelectedJob(null);
+    setFormData({ ...formData, jobId: "" });
+    setErrors({ ...errors, jobId: "공고를 선택해주세요" });
+  };
+
+  const handleResumeChange = (value: string) => {
+    setFormData({ ...formData, resumeId: value });
+    if (errors.resumeId) {
+      setErrors({ ...errors, resumeId: undefined });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: Partial<FormData> = {};
+
+    if (!formData.jobId) {
+      newErrors.jobId = "공고를 선택해주세요";
+    }
+
+    if (!formData.resumeId) {
+      newErrors.resumeId = "이력서를 선택해주세요";
+    }
+
+    return newErrors;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    console.log("Form submitted:", formData);
+    navigate("/resumeFeedback/1");
+  };
+
+  return (
+    <div className={container}>
+      <div className={headerWrapper}>
+        <FeedbackTitle
+          mode="none"
+          title="이력서"
+          desc="채용공고를 분석하여 맞춤형 이력서 첨삭을 받아보세요"
+        />
+      </div>
+
+      <form onSubmit={handleSubmit} id="feedbackForm">
+        <section className={formSection}>
+          <h2>첨삭 정보 입력</h2>
+
+          <div className={formGroup}>
+            <label className={formLabel}>
+              채용공고 *
+            </label>
+            {selectedJob ? (
+              <article className={selectedJobCard}>
+                <div className={selectedJobCardHeader}>
+                  <p className={selectedJobTitle}>{selectedJob.title}</p>
+                  <p className={selectedJobCompany}>{selectedJob.company}</p>
+                </div>
+                <Button
+                  text="삭제"
+                  color="white"
+                  widthStyle="fit"
+                  callback={handleDeleteJob}
+                />
+              </article>
+            ) : (
+              <Button
+                text="공고 선택"
+                color="white"
+                widthStyle="full"
+                callback={() => setIsModalOpen(true)}
+              />
+            )}
+            {errors.jobId && <p className={errorMessage}>{errors.jobId}</p>}
+            <p className={helperText}>
+              채용공고를 선택하세요. 선택한 채용공고의 정보를 바탕으로 이력서를 첨삭합니다.
+            </p>
+          </div>
+
+          <div className={formGroup}>
+            <Select
+              label="기준 이력서"
+              name="resumeId"
+              placeholder="이력서를 선택하세요"
+              value={formData.resumeId}
+              onChange={handleResumeChange}
+              error={errors.resumeId}
+              isMust
+              options={resumeOptions}
+              disabled={resumeOptions.length === 0}
+            />
+            {resumeOptions.length === 0 && (
+              <p className={errorMessage}>등록된 이력서가 없습니다.</p>
+            )}
+            <p className={helperText}>
+              분석 기준이 될 이력서를 선택하세요. 선택한 이력서와 채용공고를 비교하여 맞춤형 피드백을 받을 수 있습니다.
+            </p>
+          </div>
+
+          <Button
+            text="첨삭 신청하기"
+            color="blue"
+            widthStyle="full"
+            buttonType="submit"
+            form="feedbackForm"
+            callback={() => {}}
+          />
+        </section>
+      </form>
+
+      <section className={stepSection}>
+        <h2 className={stepSectionTitle}>이력서 첨삭 시작하기</h2>
+        <p className={stepSectionDesc}>
+          채용공고와 이력서를 선택하여 첨삭을 신청하면, AI가 해당 공고에서 요구하는 핵심 키워드와 경력을 분석하여 맞춤형 첨삭 결과를 제공합니다.
+        </p>
+
+        <div className={stepItemsContainer}>
+          <div className={stepItem}>
+            <div className={stepNumber}>1</div>
+            <div className={stepContent}>
+              <strong className={stepContentTitle}>채용공고 선택</strong>
+              <p className={stepContentDesc}>등록된 공고에서 선택하기</p>
+            </div>
+          </div>
+
+          <div className={stepItem}>
+            <div className={stepNumber}>2</div>
+            <div className={stepContent}>
+              <strong className={stepContentTitle}>이력서 선택</strong>
+              <p className={stepContentDesc}>첨삭할 이력서 선택하기</p>
+            </div>
+          </div>
+
+          <div className={stepItem}>
+            <div className={stepNumber}>3</div>
+            <div className={stepContent}>
+              <strong className={stepContentTitle}>AI 첨삭</strong>
+              <p className={stepContentDesc}>개선사항과 추천사항을 받아보세요</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="등록된 채용공고 선택"
+        subtitle="관리하고 있는 채용공고 중 하나를 선택하세요."
+        width={800}
+        height={600}
+      >
+        <JobList
+          isModal={true}
+          onSelect={handleJobSelect}
+        />
+      </Modal>
+    </div>
+  );
 }

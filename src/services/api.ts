@@ -2,6 +2,19 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "https://gaechwi.duckdns.org";
 
+// Loading state management
+let loadingStateCallback: ((isLoading: boolean) => void) | null = null;
+
+export function setLoadingStateCallback(callback: (isLoading: boolean) => void) {
+  loadingStateCallback = callback;
+}
+
+function setLoading(isLoading: boolean) {
+  if (loadingStateCallback) {
+    loadingStateCallback(isLoading);
+  }
+}
+
 // API Response Types
 export interface LoginResponse {
   access_token: string;
@@ -86,27 +99,87 @@ export async function signUpWithUserInfo(userInfo: {
   return data;
 }
 
+// Google OAuth Login
+export interface GoogleLoginResponse {
+  access_token: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    provider: string;
+    provider_id: string;
+  };
+  is_new_user: boolean;
+}
+
+export async function loginWithGoogle(
+  code: string,
+  isLocal: boolean = false
+): Promise<GoogleLoginResponse> {
+  setLoading(true);
+  try {
+    const googleLoginUrl = isLocal
+      ? "https://gaechwi.duckdns.org/auth/google/localhost"
+      : "https://gaechwi.duckdns.org/auth/google";
+
+    const response = await fetch(googleLoginUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ code }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Google 로그인에 실패했습니다.");
+    }
+
+    return data;
+  } finally {
+    setLoading(false);
+  }
+}
+
+// 진행 중인 요청 개수를 추적
+let activeRequests = 0;
+
 // Get authenticated request helper
 export async function fetchWithAuth(url: string, options: RequestInit = {}) {
-  const access_token = localStorage.getItem("access_token");
-
-  const headers = { ...options.headers } as Record<string, string>;
-
-  if (access_token) {
-    headers["Authorization"] = `Bearer ${access_token}`;
+  // 첫 요청 시작 시 로딩 상태 활성화
+  activeRequests++;
+  if (activeRequests === 1) {
+    setLoading(true);
   }
 
-  const response = await fetch(`${API_BASE_URL}${url}`, {
-    ...options,
-    headers,
-  });
+  try {
+    const access_token = localStorage.getItem("access_token");
 
-  // If unauthorized, clear token and redirect to login
-  if (response.status === 401) {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user");
-    window.location.href = "/login";
+    const headers = { ...options.headers } as Record<string, string>;
+
+    if (access_token) {
+      headers["Authorization"] = `Bearer ${access_token}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}${url}`, {
+      ...options,
+      headers,
+    });
+
+    // If unauthorized, clear token and redirect to login
+    if (response.status === 401) {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
+
+    return response;
+  } finally {
+    // 모든 요청이 끝나면 로딩 상태 비활성화
+    activeRequests--;
+    if (activeRequests === 0) {
+      setLoading(false);
+    }
   }
-
-  return response;
 }

@@ -10,7 +10,7 @@ import {
 // import { fetchFeedbackDetail } from "../api";
 
 interface FeedbackProps {
-  mode: "list" | "view" | "create" | "edit";
+  mode: "list" | "view" | "create" | "edit" | "none";
   title: string;
   desc: string;
   feedbackId?: string;
