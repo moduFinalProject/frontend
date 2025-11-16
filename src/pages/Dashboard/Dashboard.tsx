@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import {
   dashboardContainer,
   headerSection,
@@ -42,8 +43,26 @@ interface FeaturedItem {
   time: string;
 }
 
+interface User {
+  name: string;
+  email: string;
+  [key: string]: any;
+}
+
 export default function Dashboard() {
   const navigate = useNavigate();
+
+  const user = useMemo(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        return JSON.parse(userStr) as User;
+      } catch (e) {
+        console.error("Failed to parse user from localStorage:", e);
+      }
+    }
+    return null;
+  }, []);
 
   // Mock data
   const resumes: Resume[] = [
@@ -102,7 +121,7 @@ export default function Dashboard() {
     <div className={dashboardContainer}>
       {/* Header Section */}
       <header className={headerSection}>
-        <h1 className={headerTitle}>안녕하세요, 김취업님!</h1>
+        <h1 className={headerTitle}>안녕하세요, {user?.name || "사용자"} 개발자님!</h1>
         <p className={headerSubtitle}>오늘도 취업 준비 화이팅입니다!</p>
       </header>
 
@@ -124,7 +143,7 @@ export default function Dashboard() {
         </div>
         <div className={statCard}>
           <div className={statHeader}>
-            <p className={statLabel}>저장된 이력서</p>
+            <p className={statLabel}>저장된 채용공고</p>
             <span className={statBadge}>+2</span>
           </div>
           <p className={statValue}>4개</p>

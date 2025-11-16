@@ -1,9 +1,13 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
 
 import Layout from "@/components/Layout/Layout";
+import LoadingOverlay from "@/components/LoadingOverlay/LoadingOverlay";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLoading } from "@/contexts/LoadingContext";
+import { setLoadingStateCallback } from "@/services/api";
 
 import Landing from "@/pages/Landing";
 import NotFound from "@/pages/NotFound";
@@ -57,6 +61,12 @@ const TOAST_AUTO_CLOSE_DELAY = 3000;
 
 function App() {
   const { loginToken } = useAuth();
+  const { setIsLoading } = useLoading();
+
+  // API 로딩 상태 콜백 등록 (한 번만)
+  useEffect(() => {
+    setLoadingStateCallback(setIsLoading);
+  }, [setIsLoading]);
 
   return (
     <>
@@ -211,6 +221,7 @@ function App() {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <LoadingOverlay />
       <ToastContainer
         position="top-right"
         autoClose={TOAST_AUTO_CLOSE_DELAY}

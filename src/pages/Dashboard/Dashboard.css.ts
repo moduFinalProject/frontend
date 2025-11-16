@@ -34,11 +34,14 @@ export const statsSection = style({
   gridTemplateColumns: "repeat(3, 1fr)",
   gap: vars.spacing.lg,
   marginBottom: vars.spacing.xl,
-  // "@media": {
-  //   "(max-width: 768px)": {
-  //     gridTemplateColumns: "1fr",
-  //   },
-  // },
+  "@media": {
+    "(max-width: 1024px)": {
+      gridTemplateColumns: "repeat(2, 1fr)",
+    },
+    "(max-width: 768px)": {
+      gridTemplateColumns: "1fr",
+    },
+  },
 });
 
 export const statCard = style({
@@ -83,12 +86,12 @@ export const statValue = style({
 export const contentGrid = style({
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
-  gap: vars.spacing.lg,  
-  // "@media": {
-  //   "(max-width: 768px)": {
-  //     gridTemplateColumns: "1fr",
-  //   },
-  // },
+  gap: vars.spacing.lg,
+  "@media": {
+    "(max-width: 1024px)": {
+      gridTemplateColumns: "1fr",
+    },
+  },
 });
 
 // Section container
