@@ -5,7 +5,7 @@ import { Button } from "@/components/index.ts";
 import { form } from "./Search.css.ts";
 import { useEffect } from "react";
 import Text from "@/components/FormElem/text/Text.tsx";
-import { useResumeContext, type Resume } from "../../ResumeContext.tsx";
+import { useResumeListContext, type Resume } from "../../ResumeListContext.tsx";
 import { getResumeList } from "@/services/resumes.ts";
 
 export default function Search() {
@@ -19,7 +19,7 @@ export default function Search() {
     setPage: (arg0: number) => void;
     search: string;
     setSearch: (arg0: string) => void;
-  } = useResumeContext();
+  } = useResumeListContext();
 
   const searchForm = useForm({
     defaultValues: {
