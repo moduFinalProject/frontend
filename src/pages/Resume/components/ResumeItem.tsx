@@ -12,18 +12,8 @@ import {
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { delResume } from "@/services/resumes.ts";
-import { useResumeContext } from "../ResumeContext.tsx";
+import { useResumeContext, type Resume } from "../ResumeContext.tsx";
 import { toast } from "react-toastify";
-
-type Resume = {
-  resume_id: string;
-  title: string;
-  updated_at: string;
-  created_at?: string;
-  desc?: string;
-  url?: string;
-  end_date?: string;
-};
 
 interface ResumeItemProps {
   resume: Resume;

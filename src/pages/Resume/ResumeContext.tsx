@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import { useMatch, useParams } from "react-router-dom";
 export type EducationItem = {
   organ: string;
@@ -206,9 +206,10 @@ function transformDataForForm(
 }
 export type Resume = {
   resume_id: string;
-  name: string;
-  desc: string;
-  date: string;
+  title: string;
+  updated_at: string;
+  created_at?: string;
+  desc?: string;
   url?: string;
   end_date?: string;
 };
@@ -246,25 +247,26 @@ export const ResumeProvider = ({
     setResumeData(transformDataForForm(data, resumeData));
   }
 
-  const contextValue = {
-    resumes,
-    setResumes,
-    resumeData,
-    setResume,
-    isLoading,
-    setIsLoading,
-    id,
-    isEditMode,
-    mode,
-    page,
-    setPage,
-    search,
-    setSearch,
-  };
+  const value = useMemo(
+    () => ({
+      resumes,
+      setResumes,
+      resumeData,
+      setResume,
+      isLoading,
+      setIsLoading,
+      id,
+      isEditMode,
+      mode,
+      page,
+      setPage,
+      search,
+      setSearch,
+    }),
+    [resumes, mode, resumeData, id, isEditMode]
+  );
 
   return (
-    <ResumeContext.Provider value={contextValue}>
-      {children}
-    </ResumeContext.Provider>
+    <ResumeContext.Provider value={value}>{children}</ResumeContext.Provider>
   );
 };
