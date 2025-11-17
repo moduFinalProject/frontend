@@ -3,16 +3,20 @@ import { Button } from "@/components";
 import { headerText, subPage, btnsWrap, prevWrap } from "./ResumeTitle.css.ts";
 import { delResume } from "@/services/resumes.ts";
 import { useResumeContext, type ResumeData } from "../ResumeContext.tsx";
+import { useResumeListContext, type Resume } from "../ResumeListContext.tsx";
 import { toast } from "react-toastify";
 
 export default function ResumeTitle({ title }: { title: string }) {
   const {
     setResumes,
+  }: {
+    setResumes: (arg0: Resume[]) => void;
+  } = useResumeListContext();
+  const {
     resumeData,
     id,
     mode,
   }: {
-    setResumes: (arg0: ResumeData) => void;
     resumeData: ResumeData;
     id: string;
     mode: "list" | "view" | "create" | "edit" | "correction";
