@@ -63,7 +63,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
             <Link to={`./${resume.resume_id}`}>
               <h4>{resume.title}</h4>
             </Link>
-            {resume.resume_type === 2 && (
+            {resume.resume_type === "2" && (
               <span className={noDrag}>공고맞춤</span>
             )}
           </div>
@@ -81,7 +81,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
           <p className={descTitle}>작성일</p>
           <p>{date}</p>
         </div>
-        {resume.url && (
+        {resume.resume_type === "2" && (
           <>
             <div>
               <p className={descTitle}>맞춤 공고</p>
@@ -104,7 +104,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
           widthStyle="full"
         />
 
-        {resume.url && (
+        {resume.resume_type === "2" && (
           <Button
             text="채용공고"
             color="blue"
