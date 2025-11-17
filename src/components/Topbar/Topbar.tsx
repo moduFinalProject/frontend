@@ -20,7 +20,7 @@ export default function Topbar() {
 
   return (
     <>
-      <aside className={topbar}>
+      <aside className={topbar} aria-label="사용자 정보 및 알림">
         <section className={topbarRight}>
           <Button
             widthStyle="fit"
@@ -28,9 +28,10 @@ export default function Topbar() {
             text=""
             callback={() => setIsModalOpen(true)}
             icon="ALAM"
+            ariaLabel="새로운 알림 확인"
           ></Button>
           {user && (
-            <div className={userInfo}>
+            <div className={userInfo} aria-label={`로그인 사용자: ${user.name}, ${user.email}`}>
               <div className={userDetails}>
                 <p className={userName}>{user.name}</p>
                 <p className={userEmail}>{user.email}</p>

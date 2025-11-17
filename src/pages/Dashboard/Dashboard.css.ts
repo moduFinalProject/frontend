@@ -52,6 +52,18 @@ export const statCard = style({
   textAlign: "left",
   display: "flex",
   flexDirection: "column",
+  cursor: "pointer",
+  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+  transition: "all 0.3s ease",
+  ":hover": {
+    transform: "translateY(-4px)",
+    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.12)",
+    borderColor: vars.color.main,
+  },
+  ":focus-visible": {
+    outline: `2px solid ${vars.color.main}`,
+    outlineOffset: "2px",
+  },
 });
 
 export const statHeader = style({
@@ -100,6 +112,7 @@ export const resumeContainer = style({
   borderRadius: vars.borderRadius.lg,
   padding: vars.spacing.lg,
   border: `1px solid ${vars.color.line}`,
+  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
   display: "flex",
   flexDirection: "column",
 });
@@ -129,11 +142,19 @@ export const resumeItem = style({
   padding: vars.spacing.md,
   borderRadius: vars.borderRadius.lg,
   border: `1px solid ${vars.color.line}`,
+  backgroundColor: vars.color.white,
   cursor: "pointer",
-  transition: "all 0.2s ease",
+  transition: "all 0.3s ease",
+  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
   ":hover": {
     backgroundColor: vars.color.sub,
     borderColor: vars.color.main,
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    transform: "translateY(-2px)",
+  },
+  ":focus-visible": {
+    outline: `2px solid ${vars.color.main}`,
+    outlineOffset: "2px",
   },
 });
 
@@ -156,6 +177,7 @@ export const featuredSection = style({
   borderRadius: vars.borderRadius.lg,
   padding: vars.spacing.lg,
   border: `1px solid ${vars.color.line}`,
+  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
   display: "flex",
   flexDirection: "column",
 });
@@ -170,16 +192,23 @@ export const featuredItem = style({
   backgroundColor: vars.color.white,
   borderRadius: vars.borderRadius.lg,
   padding: vars.spacing.md,
-  border: `1px solid ${vars.color.line}`,  
+  border: `1px solid ${vars.color.line}`,
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
   gap: vars.spacing.xs,
   cursor: "pointer",
-  transition: "all 0.2s ease",
+  transition: "all 0.3s ease",
+  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
   ":hover": {
     backgroundColor: vars.color.sub,
     borderColor: vars.color.main,
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    transform: "translateY(-2px)",
+  },
+  ":focus-visible": {
+    outline: `2px solid ${vars.color.main}`,
+    outlineOffset: "2px",
   },
 });
 
