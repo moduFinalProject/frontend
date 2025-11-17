@@ -158,21 +158,6 @@ export const selectedJobCompany = style({
   margin: 0,
 });
 
-export const selectedJobDeleteBtn = style({
-  padding: `${vars.spacing.xs} ${vars.spacing.md}`,
-  backgroundColor: vars.color.formBg,
-  border: `1px solid ${vars.color.line}`,
-  borderRadius: vars.borderRadius.lg,
-  cursor: "pointer",
-  fontSize: vars.typography.fontSize.sm,
-  fontWeight: vars.typography.fontWeight.bold,
-  color: vars.color.defaultText,
-  transition: "all 0.2s ease",
-  ":hover": {
-    backgroundColor: vars.color.line,
-  },
-});
-
 export const formLabel = style({
   display: "flex",
   alignItems: "center",

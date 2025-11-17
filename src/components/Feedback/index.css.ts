@@ -4,10 +4,42 @@ import { vars } from "@/design-system";
 export const container = style({
   display: "flex",
   gap: vars.spacing.lg,
+  alignItems: "flex-start",
 
   "@media": {
     "(max-width: 768px)": {
       flexDirection: "column",
+      alignItems: "stretch",
+    },
+  },
+});
+
+export const resumeCardWrapper = style({
+  flex: "1.5 1 0",
+  minWidth: 0,
+
+  "@media": {
+    "(max-width: 1024px)": {
+      flex: "1.2 1 0",
+    },
+    "(max-width: 768px)": {
+      flex: "1 1 100%",
+      order: 2,
+    },
+  },
+});
+
+export const resultWrapperWrapper = style({
+  flex: "1 1 0",
+  minWidth: 0,
+
+  "@media": {
+    "(max-width: 1024px)": {
+      flex: "1 1 0",
+    },
+    "(max-width: 768px)": {
+      flex: "1 1 100%",
+      order: 1,
     },
   },
 });
@@ -141,6 +173,10 @@ export const resultPart = styleVariants({
     backgroundColor: "#EFF6FF",
     borderLeft: `3px solid ${vars.color.main}`,
   },
+  essential: {
+    backgroundColor: "#FEE2E2",
+    borderLeft: `3px solid ${vars.color.delete}`,
+  },
 });
 
 export const keywordMatching = style({
@@ -164,7 +200,7 @@ export const progressBg = style({
   borderRadius: vars.borderRadius.sm,
 });
 export const progressValue = style({
-  width: "78%",
+  width: "var(--progress-width, 78%)",
   height: "100%",
   display: "inline-block",
   backgroundColor: vars.color.main,

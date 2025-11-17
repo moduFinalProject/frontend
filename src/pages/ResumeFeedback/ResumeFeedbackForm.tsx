@@ -7,6 +7,7 @@ import JobList from '@/pages/Jobs/JobList';
 import FeedbackTitle from "./components/FeedbackTitle";
 import { type JobPosting } from "@/services/jobs";
 import { getResumeList } from "@/services/resumes";
+import { fetchWithAuth } from "@/services/api";
 import {
   container,
   headerWrapper,
@@ -30,6 +31,11 @@ import {
   stepItemsContainer
 } from "./ResumeFeedbackForm.css";
 
+interface Resume {
+  resume_id: string;
+  title: string;
+}
+
 interface FormData {
   jobId: string;
   resumeId: string;
@@ -50,16 +56,19 @@ export default function ResumeFeedbackForm() {
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [resumeOptions, setResumeOptions] = useState<ResumeOption[]>([]);
+  const [resumeLoadError, setResumeLoadError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
 
     const loadResumeOptions = async () => {
       try {
+        setResumeLoadError(null);
         const data = await getResumeList({ page: 1 });
 
         if (isMounted && data && Array.isArray(data)) {
-          const options = data.map((resume: any) => ({
+          const options = data.map((resume: Resume) => ({
             value: resume.resume_id,
             label: resume.title,
           }));
@@ -69,6 +78,7 @@ export default function ResumeFeedbackForm() {
         console.error("이력서 목록 로드 중 에러:", error);
         if (isMounted) {
           setResumeOptions([]);
+          setResumeLoadError("이력서를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.");
         }
       }
     };
@@ -116,7 +126,7 @@ export default function ResumeFeedbackForm() {
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const newErrors = validateForm();
@@ -125,8 +135,35 @@ export default function ResumeFeedbackForm() {
       return;
     }
 
-    console.log("Form submitted:", formData);
-    navigate("/resumeFeedback/1");
+    try {
+      setIsLoading(true);
+
+      // API 호출: POST /resumeFeedback/posting/{resume_id}/{posting_id}
+      const response = await fetchWithAuth(
+        `/resume_feedbacks/posting/${formData.resumeId}/${formData.jobId}`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.detail || "첨삭 신청에 실패했습니다.");
+      }
+
+      const feedback = await response.json();
+
+      // 첨삭 상세 페이지로 이동 (데이터와 함께 전달)
+      navigate(`/resumeFeedback/${feedback.feedback_id}`, {
+        state: { feedbackData: feedback }
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "첨삭 신청 중 오류가 발생했습니다.";
+      console.error("Feedback submission error:", error);
+      alert(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -188,9 +225,14 @@ export default function ResumeFeedbackForm() {
               error={errors.resumeId}
               isMust
               options={resumeOptions}
-              disabled={resumeOptions.length === 0}
+              disabled={resumeOptions.length === 0 || resumeLoadError !== null}
             />
-            {resumeOptions.length === 0 && (
+            {resumeLoadError && (
+              <p className={errorMessage} role="alert" aria-live="polite">
+                {resumeLoadError}
+              </p>
+            )}
+            {resumeOptions.length === 0 && !resumeLoadError && (
               <p className={errorMessage} role="alert" aria-live="polite">
                 등록된 이력서가 없습니다.
               </p>
@@ -201,12 +243,13 @@ export default function ResumeFeedbackForm() {
           </div>
 
           <Button
-            text="첨삭 신청하기"
+            text={isLoading ? "첨삭 신청 중..." : "첨삭 신청하기"}
             color="blue"
             widthStyle="full"
             buttonType="submit"
             form="feedbackForm"
             callback={() => {}}
+            disabled={isLoading}
           />
         </section>
       </form>
