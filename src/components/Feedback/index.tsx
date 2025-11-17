@@ -1,6 +1,11 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ResumeCard from "@/pages/Resume/components/card/ResumeCard";
+import { fetchWithAuth } from "@/services/api";
 import {
   container,
+  resumeCardWrapper,
+  resultWrapperWrapper,
   flex1,
   recorrection,
   resultWrap,
@@ -10,7 +15,6 @@ import {
   topLine,
   resume,
   infoLabel,
-  dateValue,
   desc,
   arrayList,
   arrayItem,
@@ -26,137 +30,249 @@ import {
 } from "@/components/Feedback/index.css";
 import { Button } from "../Button";
 
+// Feedback division 상수
+const FEEDBACK_DIVISIONS = {
+  GOOD: "1",
+  ESSENTIAL: "2",
+  IMPROVE: "3",
+  RECOMMEND: "4",
+} as const;
+
+const DIVISION_ORDER = [
+  FEEDBACK_DIVISIONS.GOOD,
+  FEEDBACK_DIVISIONS.ESSENTIAL,
+  FEEDBACK_DIVISIONS.IMPROVE,
+  FEEDBACK_DIVISIONS.RECOMMEND,
+] as const;
+
+interface FeedbackContent {
+  feedback_devision: string;
+  feedback_result: string;
+  feedback_devision_detail: string;
+}
+
+interface FeedbackData {
+  feedback_id: number;
+  parent_content: string;
+  matching_rate: number;
+  feedback_contents: FeedbackContent[];
+}
+
 type FeedbackProps = {
   type: string;
   isRecorrection: boolean;
+  data?: FeedbackData;
 };
 
-export default function Feedback({ type, isRecorrection }: FeedbackProps) {
+// 같은 feedback_devision끼리 그룹화하는 함수
+const groupFeedbackByDivision = (feedbackContents: FeedbackContent[]) => {
+  const grouped = new Map<string, FeedbackContent[]>();
+
+  feedbackContents.forEach((feedback) => {
+    const key = feedback.feedback_devision;
+    if (!grouped.has(key)) {
+      grouped.set(key, []);
+    }
+    grouped.get(key)!.push(feedback);
+  });
+
+  return grouped;
+};
+
+// Division별 스타일 매핑 함수
+const getDivisionClass = (division: string): string => {
+  switch (division) {
+    case FEEDBACK_DIVISIONS.GOOD:
+      return resultPart.good;
+    case FEEDBACK_DIVISIONS.ESSENTIAL:
+      return resultPart.essential;
+    case FEEDBACK_DIVISIONS.IMPROVE:
+      return resultPart.improve;
+    case FEEDBACK_DIVISIONS.RECOMMEND:
+      return resultPart.recommend;
+    default:
+      return resultPart.good;
+  }
+};
+
+// parent_content를 섹션별로 파싱하는 함수
+// 형식: ## 섹션명\n- 항목1\n- 항목2\n...
+const parseResumeContent = (content: string) => {
+  const sections: Record<string, string[]> = {};
+  const lines = content.split("\n");
+  let currentSection = "";
+
+  lines.forEach((line) => {
+    if (line.startsWith("## ")) {
+      currentSection = line.replace("## ", "").trim();
+      sections[currentSection] = [];
+    } else if (currentSection && line.trim()) {
+      // "- " 제거하고 ** 마크다운 제거해서 저장
+      const cleanedLine = line.replace(/^-\s*/, "").replace(/\*\*/g, "").trim();
+      if (cleanedLine) {
+        sections[currentSection].push(cleanedLine);
+      }
+    }
+  });
+
+  return sections;
+};
+
+export default function Feedback({ type, isRecorrection, data }: FeedbackProps) {
+  const navigate = useNavigate();
+  const [isApplying, setIsApplying] = useState(false);
+
+  const handleApplyFeedback = async () => {
+    if (!data?.feedback_id) {
+      alert("피드백 정보가 없습니다.");
+      return;
+    }
+
+    try {
+      setIsApplying(true);
+
+      const response = await fetchWithAuth(
+        `/resume_feedbacks/posting_resume/${data.feedback_id}`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "수정사항 적용에 실패했습니다.");
+      }
+
+      const result = await response.json();
+      alert("이력서가 생성되었습니다!");
+      // 생성된 이력서 페이지로 이동
+      navigate(`/resume/${result.resume_id}`);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "수정사항 적용 중 오류가 발생했습니다.";
+      console.error("Apply feedback error:", error);
+      alert(errorMessage);
+    } finally {
+      setIsApplying(false);
+    }
+  };
+
+  // parent_content 파싱
+  const resumeSections = data?.parent_content
+    ? parseResumeContent(data.parent_content)
+    : {};
+
+  // 섹션 렌더링 헬퍼 함수
+  const renderSection = (sectionName: string, items: string[], isFirst: boolean) => {
+    // 섹션이 비어있거나 "없음"으로 표시된 경우
+    if (items.length === 0 || items.some(item => item.includes("없음"))) {
+      return (
+        <div key={sectionName} className={`${resume} ${!isFirst ? topLine : ""}`}>
+          <h4>{sectionName}</h4>
+          <p className={desc}>정보가 없습니다.</p>
+        </div>
+      );
+    }
+
+    // 섹션별 렌더링 로직
+    if (sectionName === "개인 정보") {
+      return (
+        <div key={sectionName} className={resume}>
+          <h4>{sectionName}</h4>
+          <ul className={userInfo}>
+            {items.map((item, idx) => {
+              const [label, ...valueParts] = item.split(":").map(p => p.trim());
+              const value = valueParts.join(":").trim();
+              return (
+                <li key={idx}>
+                  <span className={infoLabel}>{label}: </span>
+                  {value}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      );
+    }
+
+    if (sectionName === "기술 스택") {
+      return (
+        <div key={sectionName} className={`${resume} ${!isFirst ? topLine : ""}`}>
+          <h4>{sectionName}</h4>
+          <ul className={skillList}>
+            {items.map((item, idx) => (
+              <li key={idx}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+
+    // 자기소개 (텍스트로 표시)
+    if (sectionName === "자기소개") {
+      return (
+        <div key={sectionName} className={`${resume} ${!isFirst ? topLine : ""}`}>
+          <h4>{sectionName}</h4>
+          <p>{items.join("\n")}</p>
+        </div>
+      );
+    }
+
+    // 기타 섹션 (경력, 학력, 프로젝트, 활동 등) - arrayList 형식
+    return (
+      <div key={sectionName} className={`${resume} ${!isFirst ? topLine : ""}`}>
+        <h4>{sectionName}</h4>
+        <ul className={arrayList}>
+          {items.map((item, idx) => (
+            <li key={idx} className={arrayItem}>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
   return (
     <div className={container}>
-      <ResumeCard title="이력서 내용">
-        <div className={resume}>
-          <h4>기본 정보</h4>
-          <ul className={userInfo}>
-            <li>
-              <span className={infoLabel}>이름: </span>김취업
-            </li>
-            <li>
-              <span className={infoLabel}>이메일: </span>kim@example.com{" "}
-            </li>
-            <li>
-              <span className={infoLabel}>연락처: </span>010-1234-5678
-            </li>
-            <li>
-              <span className={infoLabel}>성별: </span>남
-            </li>
-            <li>
-              <span className={infoLabel}>주소: </span>서울시 강남구
-            </li>
-            <li>
-              <span className={infoLabel}>병역구분: </span>현역
-            </li>
-          </ul>
-        </div>
-        <div className={`${resume} ${topLine}`}>
-          <h4>학력</h4>
-          <ul className={arrayList}>
-            <li className={arrayItem}>
-              <p>한국대학교</p>
-              <span className={dateValue}>2016-03 ~ 2020-02</span>
-              <div>
-                <p>컴퓨터공학 · 학사</p>
-                <p>학점: 3.8 / 4.5</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div className={`${resume} ${topLine}`}>
-          <h4>자기소개</h4>
-          <p>
-            3년차 프론트엔드 개발자로, React와 TypeScript를 활용한 웹
-            애플리케이션 개발에 열정을 가지고 있습니다.
-          </p>
-        </div>
-        <div className={`${resume} ${topLine}`}>
-          <h4>경력</h4>
-          <ul className={arrayList}>
-            <li className={arrayItem}>
-              <p>스타트업 A - 프론트엔드 개발자</p>
-              <span className={dateValue}>2022.03 - 현재</span>
-              <p>
-                - React 기반 SaaS 제품 개발\n - TypeScript, Redux를 활용한
-                상태관리\n - 성능 최적화로 로딩 속도 40% 개선
-              </p>
-            </li>
-            <li className={arrayItem}>
-              <p>스타트업 B - 주니어 개발자</p>
-              <span className={dateValue}>2021.01 - 2022.02</span>
-              <p>
-                - Vue.js 기반 관리자 ��이지 개발\n- RESTful API 연동\n- 반응형
-                웹 디자인 구현
-              </p>
-            </li>
-          </ul>
-        </div>
-        <div className={`${resume} ${topLine}`}>
-          <h4>프로젝트</h4>
-          <ul className={arrayList}>
-            <li className={arrayItem}>
-              <p>전자상거래 플랫폼 구축</p>
-              <span className={dateValue}>2023.06 ~ 2024.01</span>
-              <p>
-                - React와 Next.js를 활용한 SSR 기반 전자상거래 플랫폼 개발 -
-                상품 검색, 장바구니, 결제 시스템 등 핵심 기능 구현 - 5인
-                개발팀에서 프론트엔드 파트 리딩 - 페이지 로딩 속도 최적화로
-                Lighthouse 성능 점수 85점 이상 달성
-              </p>
-            </li>
-          </ul>
-        </div>
-        <div className={`${resume} ${topLine}`}>
-          <h4>경험/활동</h4>
-          <ul className={arrayList}>
-            <li className={arrayItem}>
-              <p>오픈소스 프로젝트 기여</p>
-              <span className={dateValue}>2023.01 ~ 현재</span>
-              <p>
-                - React 관련 오픈소스 라이브러리에 버그 수정 및 기능 개선 PR
-                제출 - 총 15개의 PR이 메인 브랜치에 머지됨 - 프로젝트 문서화
-                작업에 참여
-              </p>
-            </li>
-          </ul>
-        </div>
-        <div className={`${resume} ${topLine}`}>
-          <h4>기술 스택</h4>
-          <ul className={skillList}>
-            <li>React</li>
-            <li>TypeScript</li>
-            <li>JavaScript</li>
-            <li>HTML/CSS</li>
-            <li>Redux</li>
-            <li>Next.js</li>
-            <li>Git</li>
-            <li>REST API</li>
-            <li>Responsive Design</li>
-          </ul>
-        </div>
-        <div className={`${resume} ${topLine}`}>
-          <h4>자격증/어학</h4>
-          <ul className={arrayList}>
-            <li className={arrayItem}>
-              <p>[자격증] 정보처리기사</p>
-              <span className={dateValue}>한국산업인력공단 · 2020-08</span>
-            </li>
-            <li className={arrayItem}>
-              <p>[어학] TOEIC</p>
-              <span className={dateValue}>ETS · 2024-05 · 850점</span>
-            </li>
-          </ul>
-        </div>
+      <div className={resumeCardWrapper}>
+        <ResumeCard title="이력서 내용">
+        {Object.entries(resumeSections).length > 0 ? (
+          Object.entries(resumeSections).map(([sectionName, items], index) =>
+            renderSection(sectionName, items, index === 0)
+          )
+        ) : (
+          <>
+            <div className={resume}>
+              <h4>개인 정보</h4>
+              <p className={desc}>정보가 없습니다.</p>
+            </div>
+            <div className={`${resume} ${topLine}`}>
+              <h4>자기소개</h4>
+              <p className={desc}>정보가 없습니다.</p>
+            </div>
+            <div className={`${resume} ${topLine}`}>
+              <h4>학력</h4>
+              <p className={desc}>정보가 없습니다.</p>
+            </div>
+            <div className={`${resume} ${topLine}`}>
+              <h4>경력</h4>
+              <p className={desc}>정보가 없습니다.</p>
+            </div>
+            <div className={`${resume} ${topLine}`}>
+              <h4>프로젝트</h4>
+              <p className={desc}>정보가 없습니다.</p>
+            </div>
+            <div className={`${resume} ${topLine}`}>
+              <h4>기술 스택</h4>
+              <p className={desc}>정보가 없습니다.</p>
+            </div>
+          </>
+        )}
       </ResumeCard>
-      <section className={resultWrap}>
+      </div>
+      <div className={resultWrapperWrapper}>
+        <section className={resultWrap}>
         {isRecorrection && (
           <section className={`${recorrection} ${flex1}`}>
             <div>
@@ -174,61 +290,72 @@ export default function Feedback({ type, isRecorrection }: FeedbackProps) {
           </section>
         )}
         <ResumeCard title={`${type === "feedback" && "공고 맞춤 "}첨삭 결과`}>
-          {type === "feedback" && (
+          {type === "feedback" && data && (
             <div className={keywordMatching}>
               <p className={progressTitle}>키워드 매칭률</p>
               <div className={progressWrap}>
                 <div className={progressBg}>
-                  <span className={progressValue}></span>
+                  <span
+                    className={progressValue}
+                    style={{ "--progress-width": `${data.matching_rate}%` } as React.CSSProperties}
+                  ></span>
                 </div>
                 <p className={progressText}>
-                  <data value="78">78</data>%
+                  <data value={String(data.matching_rate)}>{data.matching_rate}</data>%
                 </p>
               </div>
             </div>
           )}
           <ul className={resultList}>
-            <li className={`${resultPartCommon} ${resultPart.good}`}>
-              <p>잘된 부분</p>
-              <p className={desc}>
-                기술 스택이 명확하게 정리되어 있고, 경력 기술에 구체적인 성과가
-                포함되어 있습니다.
-              </p>
-            </li>
-            <li className={`${resultPartCommon} ${resultPart.improve}`}>
-              <p>개선 제안</p>
-              <p className={desc}>
-                요약 부분에 핵심 강점을 더 부각시키면 좋습니다.
-                <span>
-                  "3년차 프론트엔드 개발자로, React 생태계에 정통하며 성능
-                  최적화를 통해 실질적인 비즈니스 가치를 창출한 경험이
-                  있습니다."
-                </span>
-              </p>
-            </li>
-            <li className={`${resultPartCommon} ${resultPart.recommend}`}>
-              <p>추가 권장사항</p>
-              <p className={desc}>
-                • 프로젝트 규모와 팀 구성을 명시하면 좋습니다\n • 사용한 도구와
-                라이브러리를 구체적으로 작성하세요\n • 성과는 가능한 정량적으로
-                표현하세요
-              </p>
-            </li>
+            {data && data.feedback_contents && data.feedback_contents.length > 0 ? (
+              (() => {
+                const grouped = groupFeedbackByDivision(data.feedback_contents);
+                const items = [];
+
+                for (const division of DIVISION_ORDER) {
+                  const feedbacks = grouped.get(division);
+                  if (!feedbacks) continue;
+
+                  const resultClass = getDivisionClass(division);
+
+                  // 같은 division의 모든 피드백을 합치기
+                  const combinedResults = feedbacks.map((f) => f.feedback_result).join("\n\n");
+                  // 라벨은 첫 번째 항목의 feedback_devision_detail 사용
+                  const label = feedbacks[0].feedback_devision_detail;
+
+                  items.push(
+                    <li key={division} className={`${resultPartCommon} ${resultClass}`}>
+                      <p>{label}</p>
+                      <p className={desc}>{combinedResults}</p>
+                    </li>
+                  );
+                }
+
+                return items;
+              })()
+            ) : (
+              <li className={`${resultPartCommon}`}>
+                <p>분석된 첨삭이 없습니다.</p>
+                <p className={desc}>
+                  첨삭을 신청하면 AI가 분석한 결과를 여기에 표시됩니다.
+                </p>
+              </li>
+            )}
           </ul>
           {type === "feedback" && (
             <div className={btnWrap}>
               <Button
-                callback={() => {
-                  alert("새 이력서로 생성");
-                }}
+                callback={handleApplyFeedback}
                 color="blue"
-                text="수정사항 적용하기"
+                text={isApplying ? "생성 중..." : "수정사항 적용하기"}
                 widthStyle="full"
+                disabled={isApplying}
               />
             </div>
           )}
         </ResumeCard>
       </section>
+      </div>
     </div>
   );
 }
