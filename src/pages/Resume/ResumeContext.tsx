@@ -204,15 +204,6 @@ function transformDataForForm(
 
   return transformedData;
 }
-export type Resume = {
-  resume_id: string;
-  title: string;
-  updated_at: string;
-  created_at?: string;
-  desc?: string;
-  url?: string;
-  end_date?: string;
-};
 
 export const ResumeProvider = ({
   children,
@@ -223,7 +214,6 @@ export const ResumeProvider = ({
 }) => {
   const { id } = useParams();
   const isEditMode = Boolean(id) && id !== "new";
-  const [resumes, setResumes] = useState<Resume[]>([]);
   const [resumeData, setResumeData] = useState<ResumeData>(initialResumeData);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
@@ -249,8 +239,6 @@ export const ResumeProvider = ({
 
   const value = useMemo(
     () => ({
-      resumes,
-      setResumes,
       resumeData,
       setResume,
       isLoading,
@@ -263,7 +251,7 @@ export const ResumeProvider = ({
       search,
       setSearch,
     }),
-    [resumes, mode, resumeData, id, isEditMode]
+    [mode, resumeData, id, isEditMode]
   );
 
   return (
