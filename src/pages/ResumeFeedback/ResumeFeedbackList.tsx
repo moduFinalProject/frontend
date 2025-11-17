@@ -190,7 +190,7 @@ export default function ResumeFeedbackList() {
                   <header className={cardTop}>
                     <div className={companyBlock}>
                       <div className={companyRow}>
-                        <h3 id={`resume-feedback-${job.feedback_id}}-title`}>
+                        <h3 id={`resume-feedback-${job.feedback_id}-title`}>
                           {job.company}
                         </h3>
                       </div>
