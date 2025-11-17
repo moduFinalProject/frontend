@@ -1,0 +1,10 @@
+# 모든 검색봇 허용
+User-agent: *
+Allow: /
+Disallow: /admin
+
+# 크롤링 속도 조절
+Crawl-delay: 0
+
+# Sitemap 위치
+Sitemap: https://moduFinalProject.github.io/frontend/sitemap.xml
