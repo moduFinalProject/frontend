@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import Select from "@/components/FormElem/text/Select";
 import Button from "@/components/Button/Button";
@@ -132,10 +131,6 @@ export default function ResumeFeedbackForm() {
 
   return (
     <div className={container}>
-      <Helmet>
-        <title>이력서 첨삭 신청 - 개취 | AI 기반 취업 지원 플랫폼</title>
-        <meta name="description" content="채용공고와 이력서를 선택하여 AI 기반 맞춤형 첨삭을 받으세요. 핵심 키워드 분석과 개선사항 추천을 제공합니다." />
-      </Helmet>
       <div className={headerWrapper}>
         <FeedbackTitle
           mode="none"
