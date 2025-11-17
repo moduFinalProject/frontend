@@ -783,10 +783,16 @@ export default function ResumeForm() {
                                     "학위를 선택하세요."
                                   ),
                                   score: z
-                                    .string()
-                                    .trim()
-                                    .regex(/^.+점/, "00점 형식으로 입력하세요.")
-                                    .nullable()
+                                    .union([
+                                      z.literal(""), // 빈 문자열을 허용
+                                      z
+                                        .string()
+                                        .trim()
+                                        .regex(
+                                          /^.+점$/,
+                                          "00점 형식으로 입력하세요."
+                                        ),
+                                    ])
                                     .optional(),
                                   start_date: z
                                     .string()
@@ -1076,12 +1082,7 @@ export default function ResumeForm() {
                                             : QUALIFICATIONS_LABELS[k]
                                                 ?.placeholder
                                         }
-                                        isMust={
-                                          !(
-                                            key === "qualifications" &&
-                                            ["score"].includes(k)
-                                          )
-                                        }
+                                        isMust={!["score"].includes(k)}
                                         type={
                                           k.includes("date") ? "month" : "text"
                                         }
