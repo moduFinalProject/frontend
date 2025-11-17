@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import Select from "@/components/FormElem/text/Select";
 import Button from "@/components/Button/Button";
@@ -131,6 +132,10 @@ export default function ResumeFeedbackForm() {
 
   return (
     <div className={container}>
+      <Helmet>
+        <title>이력서 첨삭 신청 - 개취 | AI 기반 취업 지원 플랫폼</title>
+        <meta name="description" content="채용공고와 이력서를 선택하여 AI 기반 맞춤형 첨삭을 받으세요. 핵심 키워드 분석과 개선사항 추천을 제공합니다." />
+      </Helmet>
       <div className={headerWrapper}>
         <FeedbackTitle
           mode="none"
@@ -168,7 +173,11 @@ export default function ResumeFeedbackForm() {
                 callback={() => setIsModalOpen(true)}
               />
             )}
-            {errors.jobId && <p className={errorMessage}>{errors.jobId}</p>}
+            {errors.jobId && (
+              <p className={errorMessage} role="alert" aria-live="polite">
+                {errors.jobId}
+              </p>
+            )}
             <p className={helperText}>
               채용공고를 선택하세요. 선택한 채용공고의 정보를 바탕으로 이력서를 첨삭합니다.
             </p>
@@ -187,7 +196,9 @@ export default function ResumeFeedbackForm() {
               disabled={resumeOptions.length === 0}
             />
             {resumeOptions.length === 0 && (
-              <p className={errorMessage}>등록된 이력서가 없습니다.</p>
+              <p className={errorMessage} role="alert" aria-live="polite">
+                등록된 이력서가 없습니다.
+              </p>
             )}
             <p className={helperText}>
               분석 기준이 될 이력서를 선택하세요. 선택한 이력서와 채용공고를 비교하여 맞춤형 피드백을 받을 수 있습니다.
@@ -212,24 +223,24 @@ export default function ResumeFeedbackForm() {
         </p>
 
         <div className={stepItemsContainer}>
-          <div className={stepItem}>
-            <div className={stepNumber}>1</div>
+          <div className={stepItem} aria-label="1단계: 채용공고 선택, 등록된 공고에서 선택하기">
+            <div className={stepNumber} aria-hidden="true">1</div>
             <div className={stepContent}>
               <strong className={stepContentTitle}>채용공고 선택</strong>
               <p className={stepContentDesc}>등록된 공고에서 선택하기</p>
             </div>
           </div>
 
-          <div className={stepItem}>
-            <div className={stepNumber}>2</div>
+          <div className={stepItem} aria-label="2단계: 이력서 선택, 첨삭할 이력서 선택하기">
+            <div className={stepNumber} aria-hidden="true">2</div>
             <div className={stepContent}>
               <strong className={stepContentTitle}>이력서 선택</strong>
               <p className={stepContentDesc}>첨삭할 이력서 선택하기</p>
             </div>
           </div>
 
-          <div className={stepItem}>
-            <div className={stepNumber}>3</div>
+          <div className={stepItem} aria-label="3단계: AI 첨삭, 개선사항과 추천사항을 받아보세요">
+            <div className={stepNumber} aria-hidden="true">3</div>
             <div className={stepContent}>
               <strong className={stepContentTitle}>AI 첨삭</strong>
               <p className={stepContentDesc}>개선사항과 추천사항을 받아보세요</p>

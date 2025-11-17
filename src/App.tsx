@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
@@ -69,7 +70,7 @@ function App() {
   }, [setIsLoading]);
 
   return (
-    <>
+    <HelmetProvider>
       <Routes>
         <Route
           path="/landing"
@@ -233,7 +234,7 @@ function App() {
         pauseOnHover
         theme="colored"
       />
-    </>
+    </HelmetProvider>
   );
 }
 

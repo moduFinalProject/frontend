@@ -27,6 +27,7 @@ export const formSection = style({
   backgroundColor: vars.color.mainBg,
   border: `1px solid ${vars.color.line}`,
   borderRadius: vars.borderRadius.lg,
+  transition: "all 0.3s ease",
 });
 
 export const formGroup = style({
@@ -51,6 +52,7 @@ export const stepSection = style({
   backgroundColor: vars.color.mainBg,
   borderRadius: vars.borderRadius.lg,
   border: `1px solid ${vars.color.line}`,
+  transition: "all 0.3s ease",
 });
 
 export const stepSectionTitle = style({
@@ -77,6 +79,13 @@ export const stepItem = style({
   backgroundColor: vars.color.white,
   borderRadius: vars.borderRadius.lg,
   border: `1px solid ${vars.color.line}`,
+  transition: "all 0.3s ease",
+  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)",
+
+  ":hover": {
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.12)",
+    transform: "translateY(-2px)",
+  },
 });
 
 export const stepNumber = style({
@@ -119,10 +128,16 @@ export const selectedJobCard = style({
   padding: `${vars.spacing.md} ${vars.spacing.lg}`,
   border: `1px solid ${vars.color.line}`,
   borderRadius: vars.borderRadius.lg,
-  backgroundColor: vars.color.white,  
+  backgroundColor: vars.color.white,
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "flex-start",  
+  alignItems: "flex-start",
+  transition: "all 0.3s ease",
+  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+
+  ":hover": {
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+  },
 });
 
 export const selectedJobCardHeader = style({
@@ -169,6 +184,8 @@ export const formLabel = style({
 export const errorMessage = style({
   color: vars.color.delete,
   fontSize: vars.typography.fontSize.sm,
+  margin: `${vars.spacing.sm} 0 0 0`,
+  padding: `0 0 0 ${vars.spacing.sm}`,
 });
 
 export const stepItemsContainer = style({

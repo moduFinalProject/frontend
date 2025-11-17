@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   header,
   headerLogo,
@@ -65,6 +65,7 @@ function MenuItemComponent({ item, onNavigate }: MenuItemComponentProps) {
         className={`${menuLink} ${isLogout ? logoutLink : ""} ${
           isActive ? menuItemActive : ""
         }`}
+        aria-current={isActive ? "page" : undefined}
       >
         {item.menuIcon && (
           <img src={ICONS[item.menuIcon]} alt={item.menuName} />
@@ -151,14 +152,28 @@ export default function Header() {
       setIsClosing(false);
     }, ANIMATION_DURATION_MS);
   };
-  
+
+  // Escape 키로 모바일 메뉴 닫기
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isMobileMenuOpen && !isClosing) {
+        closeMobileMenu();
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [isMobileMenuOpen, isClosing]);
+
   return (
     <>
       {/* 데스크톱 헤더 */}
       <nav className={header}>
         <img
           src={logo}
-          alt="개취 로고"
+          alt="개취 - 취업 준비 플랫폼 홈"
           className={headerLogo}
           onClick={handleLogoClick}
         />
@@ -195,6 +210,7 @@ export default function Header() {
         <div
           className={isClosing ? mobileMenuOverlayClosing : mobileMenuOverlay}
           onClick={closeMobileMenu}
+          aria-hidden="true"
         />
       )}
 
@@ -203,7 +219,7 @@ export default function Header() {
         <nav className={isClosing ? mobileMenuPanelClosing : mobileMenuPanel}>
           <img
             src={logo}
-            alt="개취 로고"
+            alt="개취 - 취업 준비 플랫폼 홈"
             className={headerLogo}
             onClick={() => {
               handleLogoClick();

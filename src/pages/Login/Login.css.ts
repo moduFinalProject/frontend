@@ -86,11 +86,18 @@ export const formInput = style({
   borderRadius: vars.borderRadius.sm,
   fontSize: vars.typography.fontSize.sm,
   boxSizing: "border-box",
+  transition: "all 0.3s ease",
 
   ":focus": {
     outline: "none",
     borderColor: vars.color.line,
     boxShadow: "0 0 0 2px rgba(0, 102, 255, 0.1)",
+  },
+
+  ":focus-visible": {
+    outline: `2px solid ${vars.color.main}`,
+    outlineOffset: "2px",
+    boxShadow: "0 0 0 4px rgba(0, 102, 255, 0.1)",
   },
 });
 
@@ -105,11 +112,37 @@ export const linkSection = style({
 export const linkSignup = style({
   textDecoration: "none",
   color: "#2E6FF2",
+  transition: "color 0.3s ease",
+  borderRadius: "4px",
+  padding: "2px 4px",
+
+  ":hover": {
+    color: "#1e4ba3",
+    textDecoration: "underline",
+  },
+
+  ":focus-visible": {
+    outline: `2px solid ${vars.color.main}`,
+    outlineOffset: "2px",
+  },
 });
 
 export const linkForgot = style({
   textDecoration: "none",
   color: vars.color.disabled,
+  transition: "color 0.3s ease",
+  borderRadius: "4px",
+  padding: "2px 4px",
+
+  ":hover": {
+    color: vars.color.defaultText,
+    textDecoration: "underline",
+  },
+
+  ":focus-visible": {
+    outline: `2px solid ${vars.color.main}`,
+    outlineOffset: "2px",
+  },
 });
 
 export const dividerSection = style({
@@ -146,4 +179,14 @@ export const socialSection = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.sm,
+});
+
+export const errorAlert = style({
+  color: vars.color.delete,
+  marginBottom: vars.spacing.md,
+  fontSize: vars.typography.fontSize.sm,
+  textAlign: "center",
+  padding: vars.spacing.md,
+  backgroundColor: "#fee2e2",
+  borderRadius: vars.borderRadius.sm,
 });

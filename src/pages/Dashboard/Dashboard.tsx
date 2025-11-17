@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { useMemo } from "react";
 import {
   dashboardContainer,
@@ -119,6 +120,10 @@ export default function Dashboard() {
 
   return (
     <div className={dashboardContainer}>
+      <Helmet>
+        <title>대시보드 - 개취 | AI 기반 취업 지원 플랫폼</title>
+        <meta name="description" content="개취 대시보드에서 이력서, 채용공고, AI 첨삭 현황을 한눈에 확인하세요." />
+      </Helmet>
       {/* Header Section */}
       <header className={headerSection}>
         <h1 className={headerTitle}>안녕하세요, {user?.name || "사용자"} 개발자님!</h1>
@@ -127,21 +132,21 @@ export default function Dashboard() {
 
       {/* Stats Section */}
       <section className={statsSection}>
-        <div className={statCard}>
+        <div className={statCard} aria-label="저장된 이력서 통계">
           <div className={statHeader}>
             <p className={statLabel}>저장된 이력서</p>
             <span className={statBadge}>+2</span>
           </div>
           <p className={statValue}>3개</p>
         </div>
-        <div className={statCard}>
+        <div className={statCard} aria-label="AI 첨삭 이용 통계">
           <div className={statHeader}>
             <p className={statLabel}>AI 첨삭 이용</p>
             <span className={statBadge}>이번 주</span>
           </div>
           <p className={statValue}>12개</p>
         </div>
-        <div className={statCard}>
+        <div className={statCard} aria-label="저장된 채용공고 통계">
           <div className={statHeader}>
             <p className={statLabel}>저장된 채용공고</p>
             <span className={statBadge}>+2</span>
@@ -155,7 +160,7 @@ export default function Dashboard() {
         {/* Resume Section */}
         <section className={resumeContainer}>
           <div className={sectionHeader}>
-            <h2 className={sectionTitle}>내 이력서</h2>
+            <h2 className={sectionTitle} aria-label="내 이력서 목록">내 이력서</h2>
             <Button
               widthStyle="fit"
               color="white"
@@ -171,6 +176,14 @@ export default function Dashboard() {
                     key={resume.id}
                     className={resumeItem}
                     onClick={() => handleResumeClick(resume.id)}
+                    tabIndex={0}
+                    role="button"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleResumeClick(resume.id);
+                      }
+                    }}
                   >
                     <h3 className={resumeItemTitle}>{resume.title}</h3>
                     <p className={resumeItemDate}>{resume.date}</p>
@@ -200,7 +213,7 @@ export default function Dashboard() {
         {/* Featured Section */}
         <section className={featuredSection}>
           <div className={sectionHeader}>
-            <h2 className={sectionTitle}>최근 활동</h2>
+            <h2 className={sectionTitle} aria-label="최근 활동 목록">최근 활동</h2>
           </div>
           {featuredItems.length > 0 ? (
             <div className={featuredGrid}>
@@ -209,6 +222,14 @@ export default function Dashboard() {
                   key={item.id}
                   className={featuredItem}
                   onClick={() => handleFeaturedClick(item.id)}
+                  tabIndex={0}
+                  role="button"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleFeaturedClick(item.id);
+                    }
+                  }}
                 >
                   <div className={featuredCategory}>{item.category}</div>
                   <div>
