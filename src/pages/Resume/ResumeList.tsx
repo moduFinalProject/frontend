@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { resumeList } from "./ResumeList.css.ts";
 import ResumeItem from "./components/ResumeItem.tsx";
 import Search from "./components/form/Search.tsx";
 import { getResumeList } from "@/services/resumes.ts";
-import { useResumeContext, type Resume } from "./ResumeContext.tsx";
 import { Button } from "@/components/index.ts";
+import { useResumeListContext, type Resume } from "./ResumeListContext.tsx";
 
 export default function ResumeList() {
   const {
@@ -15,6 +15,8 @@ export default function ResumeList() {
     page,
     setPage,
     search,
+    hasMore,
+    setHasMore,
   }: {
     resumes: Resume[];
     setResumes: (arg0: Resume[] | ((prev: Resume[]) => Resume[])) => void;
@@ -23,8 +25,9 @@ export default function ResumeList() {
     page: number;
     setPage: (arg0: number) => void;
     search: string;
-  } = useResumeContext();
-  const [hasMore, setHasMore] = useState(true);
+    hasMore: boolean;
+    setHasMore: (arg0: boolean) => void;
+  } = useResumeListContext();
 
   const loadResumesData = useCallback(async () => {
     if (isLoading || !hasMore) return;
