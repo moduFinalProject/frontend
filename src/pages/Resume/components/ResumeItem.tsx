@@ -12,7 +12,7 @@ import {
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { delResume } from "@/services/resumes.ts";
-import { useResumeContext, type Resume } from "../ResumeContext.tsx";
+import { useResumeListContext, type Resume } from "../ResumeListContext.tsx";
 import { toast } from "react-toastify";
 
 interface ResumeItemProps {
@@ -21,7 +21,7 @@ interface ResumeItemProps {
 
 export default function ResumeItem({ resume }: ResumeItemProps) {
   const { setResumes }: { setResumes: (arg0: Resume[]) => void } =
-    useResumeContext();
+    useResumeListContext();
   const navigate = useNavigate();
 
   const dropdownItems = useMemo(
