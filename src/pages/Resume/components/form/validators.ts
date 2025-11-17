@@ -24,9 +24,13 @@ export const educationItemSchema = z
       .regex(/^.+과/, "oo과 형식으로 입력하세요."),
     degree_level: z.enum(["1", "2", "3", "4", "5"], "학위를 선택하세요."),
     score: z
-      .string()
-      .trim()
-      .regex(/^.+점/, "00점 형식으로 입력하세요.")
+      .union([
+        z.literal(""), // 빈 문자열을 허용
+        z
+          .string()
+          .trim()
+          .regex(/^.+점$/, "00점 형식으로 입력하세요."),
+      ])
       .optional(),
     start_date: z
       .string()
