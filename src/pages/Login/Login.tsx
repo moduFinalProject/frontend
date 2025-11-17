@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { useState } from "react";
@@ -123,10 +122,6 @@ export default function Login() {
 
   return (
     <div className={loginContainer}>
-      <Helmet>
-        <title>로그인 - 개취 | AI 기반 취업 지원 플랫폼</title>
-        <meta name="description" content="개취에 로그인하여 AI 기반 이력서 첨삭, 채용공고 분석, 면접 준비 서비스를 이용하세요." />
-      </Helmet>
       <div className={formWrapper}>
         <div className={logoSection}>
           <img src={logo} alt="개취 로고" />

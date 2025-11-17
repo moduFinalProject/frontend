@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import { useMemo } from "react";
 import {
   dashboardContainer,
@@ -120,10 +119,6 @@ export default function Dashboard() {
 
   return (
     <div className={dashboardContainer}>
-      <Helmet>
-        <title>대시보드 - 개취 | AI 기반 취업 지원 플랫폼</title>
-        <meta name="description" content="개취 대시보드에서 이력서, 채용공고, AI 첨삭 현황을 한눈에 확인하세요." />
-      </Helmet>
       {/* Header Section */}
       <header className={headerSection}>
         <h1 className={headerTitle}>안녕하세요, {user?.name || "사용자"} 개발자님!</h1>

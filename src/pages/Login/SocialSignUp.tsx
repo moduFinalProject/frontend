@@ -1,5 +1,4 @@
 import { useForm } from "@tanstack/react-form";
-import { Helmet } from "react-helmet-async";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -140,10 +139,6 @@ export default function SocialSignIn() {
 
   return (
     <div className={profileContainer}>
-      <Helmet>
-        <title>회원정보 설정 - 개취 | AI 기반 취업 지원 플랫폼</title>
-        <meta name="description" content="소셜 로그인으로 개취에 가입하고 회원 기본정보를 설정하세요." />
-      </Helmet>
       <div className={profileContent}>
         {/* 헤더 */}
         <div className={profileHeader}>
