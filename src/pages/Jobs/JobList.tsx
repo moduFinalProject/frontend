@@ -66,7 +66,7 @@ export default function JobList({
     return () => {
       observer.disconnect();
     };
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage, searchValue]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const renderContent = () => {
     if (status === "pending") {
@@ -97,10 +97,21 @@ export default function JobList({
             />
           ))}
         </ul>
-        <div ref={loadMoreRef} aria-hidden="true" />
-        {isFetchingNextPage && <div>추가 공고를 불러오는 중입니다...</div>}
-        {!hasNextPage && jobs.length > 0 && (
-          <div>마지막 채용공고까지 모두 확인하셨습니다.</div>
+        <div
+          ref={loadMoreRef}
+          aria-live="polite"
+          aria-atomic="true"
+          style={{ height: "1px" }}
+        />
+        {isFetchingNextPage && (
+          <div role="status" aria-live="polite">
+            추가 공고를 불러오는 중입니다...
+          </div>
+        )}
+        {!hasNextPage && jobs.length >= PAGE_SIZE && (
+          <div role="status" aria-live="polite">
+            마지막 채용공고까지 모두 확인하셨습니다.
+          </div>
         )}
       </>
     );

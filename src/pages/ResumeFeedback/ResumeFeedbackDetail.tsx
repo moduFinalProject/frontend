@@ -1,7 +1,7 @@
 import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Feedback from "@/components/Feedback";
-import { fetchWithAuth } from "@/services/api";
+import { getResumeFeedback } from "@/services/resumeFeedback";
 
 interface FeedbackData {
   feedback_id: number;
@@ -38,14 +38,12 @@ export default function ResumeFeedbackDetail() {
         }
 
         // state가 없으면 API로 데이터 조회
-        const response = await fetchWithAuth(`/resumeFeedback/${id}`);
-
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.detail || "첨삭 데이터 조회에 실패했습니다.");
+        const feedbackId = Number(id);
+        if (isNaN(feedbackId)) {
+          throw new Error("유효하지 않은 첨삭 ID입니다.");
         }
 
-        const data = await response.json();
+        const data = await getResumeFeedback(feedbackId);
         setFeedbackData(data);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "데이터 조회 중 오류가 발생했습니다.";
