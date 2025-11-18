@@ -14,6 +14,7 @@ export const jobItem = style({
 
   ":hover": {
     boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
+    transform: "translateY(-4px)",
   },
 });
 
