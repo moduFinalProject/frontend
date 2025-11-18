@@ -56,6 +56,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
   );
 
   const date = resume.created_at?.slice(0, 10);
+  const end_date = resume.end_date?.slice(0, 10);
 
   return (
     <li className={resumeItem}>
@@ -65,9 +66,6 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
             <Link to={`./${resume.resume_id}`}>
               <h4>{resume.title}</h4>
             </Link>
-            {resume.resume_type === "2" && (
-              <span className={noDrag}>공고맞춤</span>
-            )}
           </div>
           <p>{resume.resume_type_detail}</p>
         </div>
@@ -91,7 +89,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
             </div>
             <div>
               <p className={descTitle}>마감일</p>
-              <p>~ {resume.end_date}</p>
+              <p>~ {end_date}</p>
             </div>
           </>
         )}
@@ -102,9 +100,8 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
           color="white"
           callback={async () => {
             try {
+              if (!confirm("이력서를 첨삭하시겠습니까?")) return;
 
-              if(!confirm("이력서를 첨삭하시겠습니까?")) return;
-              
               setIsLoading(true);
 
               // API 호출: POST /resume_feedbacks/stantard/{resume_id}
@@ -124,10 +121,13 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
 
               // ResumeCorrection 페이지로 이동 (데이터와 함께 전달)
               navigate(`/resume/${resume.resume_id}/correction`, {
-                state: { feedbackData: feedback }
+                state: { feedbackData: feedback },
               });
             } catch (error) {
-              const errorMessage = error instanceof Error ? error.message : "첨삭 신청 중 오류가 발생했습니다.";
+              const errorMessage =
+                error instanceof Error
+                  ? error.message
+                  : "첨삭 신청 중 오류가 발생했습니다.";
               console.error("Feedback submission error:", error);
               alert(errorMessage);
             } finally {

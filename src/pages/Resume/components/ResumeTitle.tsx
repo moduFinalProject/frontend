@@ -48,8 +48,8 @@ export default function ResumeTitle({ title }: { title: string }) {
       desc: "정보를 입력하여 이력서를 작성하세요",
     },
     correction: {
-      title: resumeData?.title,
-      desc: `작성일: ${resumeData?.created_at}`,
+      title: `${title} 첨삭 보기`,
+      desc: `첨삭 내용을 확인해보세요`,
     },
   };
 
@@ -69,16 +69,7 @@ export default function ResumeTitle({ title }: { title: string }) {
           />
         )}
         <div className={`${headerText} ${mode !== "list" && subPage}`}>
-          <h2
-            className={
-              !["list", "create", "edit"].includes(mode) ? "a11y-hidden" : ""
-            }
-          >
-            {modeData[mode].title}
-          </h2>
-          {!["list", "create", "edit"].includes(mode) && (
-            <p className="title">{resumeData?.resume_type_detail}</p>
-          )}
+          <h2>{modeData[mode].title}</h2>
           <p className="desc">{modeData[mode].desc}</p>
         </div>
       </div>
@@ -127,7 +118,7 @@ export default function ResumeTitle({ title }: { title: string }) {
                 }
               }}
             />
-            <Button
+            {/* <Button
               text="다운로드"
               color="white"
               widthStyle="fit"
@@ -135,37 +126,13 @@ export default function ResumeTitle({ title }: { title: string }) {
               callback={() => {
                 alert("다운로드 되었습니다");
               }}
-            />
+            /> */}
             <Button
               text="수정하기"
               color="blue"
               widthStyle="fit"
               callback={() => {
                 navigate(`./${id}/edit`);
-              }}
-            />
-          </>
-        )}
-        {mode === "correction" && (
-          <>
-            <Button
-              text="다운로드"
-              color="white"
-              widthStyle="fit"
-              icon="DOWN"
-              callback={() => {
-                alert("다운로드 되었습니다");
-              }}
-            />
-            <Button
-              text="저장"
-              color="blue"
-              widthStyle="fit"
-              callback={() => {
-                if (confirm("새 이력서로 생성하시겠습니까?"))
-                  toast.success("생성되었습니다.", {
-                    className: "custom-success-toast",
-                  });
               }}
             />
           </>
