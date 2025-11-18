@@ -1,9 +1,8 @@
-import { Outlet, useMatch, useNavigate } from "react-router-dom";
+import { Outlet, useMatch, useNavigate, useParams } from "react-router-dom";
 import { useMemo } from "react";
 
-import { Button } from "@/components";
-
-import { container, header, headerContent, headerAction } from "./index.css.ts";
+import { container, header } from "./index.css.ts";
+import FeedbackTitle from "./components/FeedbackTitle.tsx";
 
 const MODE_TEXT = {
   list: {
@@ -16,42 +15,38 @@ const MODE_TEXT = {
     description: "공고에 맞춘 맞춤 첨삭 정보를 입력하세요",
     actionLabel: null,
   },
+  view: {
+    title: "새 이력서 첨삭",
+    description: "공고에 맞춘 맞춤 첨삭 정보를 입력하세요",
+    actionLabel: null,
+  },
 } as const;
 
 type Mode = keyof typeof MODE_TEXT;
 
 export default function ResumeFeedbackLayout() {
-  const navigate = useNavigate();
+  const { id } = useParams();
   const isCreate = useMatch("/resumeFeedback/new");
+  const isView = useMatch("/resumeFeedback/:id");
 
-  const mode: Mode = useMemo(() => (isCreate ? "create" : "list"), [isCreate]);
-
-  const handleNewResumeFeedback = () => {
-    navigate("/resumeFeedback/new");
-  };
+  const mode: Mode = useMemo(
+    () => (isCreate ? "create" : isView ? "view" : "list"),
+    [isCreate, isView]
+  );
 
   const currentText = MODE_TEXT[mode];
 
   return (
-    <main className={container}>
+    <div className={container}>
       <header className={header}>
-        <div className={headerContent}>
-          <h1>{currentText.title}</h1>
-          <p>{currentText.description}</p>
-        </div>
-        {currentText.actionLabel ? (
-          <div className={headerAction}>
-            <Button
-              color="blue"
-              widthStyle="fit"
-              icon="PLUS"
-              text={currentText.actionLabel}
-              callback={handleNewResumeFeedback}
-            />
-          </div>
-        ) : null}
+        <FeedbackTitle
+          mode={mode}
+          title="공고별 첨삭"
+          desc={currentText.description}
+          feedbackId={id}
+        />
       </header>
       <Outlet />
-    </main>
+    </div>
   );
 }

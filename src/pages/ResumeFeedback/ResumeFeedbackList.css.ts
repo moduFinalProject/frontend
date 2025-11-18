@@ -159,11 +159,11 @@ export const card = style({
   gap: vars.spacing.sm,
   padding: vars.spacing.lg,
   borderRadius: vars.borderRadius.lg,
-  transition:
-    "border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease",
+  transition: "all 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease",
   selectors: {
     "&:hover": {
       boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
+      transform: "translateY(-4px)",
     },
   },
 });
@@ -171,7 +171,7 @@ export const card = style({
 export const cardVariant = styleVariants({
   default: {
     backgroundColor: vars.color.white,
-    border: `1px solid rgba(0, 0, 0, 0.1)`,
+    border: `1px solid ${vars.color.line}`,
   },
 });
 

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Select from "@/components/FormElem/text/Select";
 import Button from "@/components/Button/Button";
 import { Modal } from "@/components/Modal";
-import JobList from '@/pages/Jobs/JobList';
+import JobList from "@/pages/Jobs/JobList";
 import FeedbackTitle from "./components/FeedbackTitle";
 import { type JobPosting } from "@/services/jobs";
 import { getResumeList } from "@/services/resumes";
@@ -28,7 +28,7 @@ import {
   selectedJobCompany,
   formLabel,
   errorMessage,
-  stepItemsContainer
+  stepItemsContainer,
 } from "./ResumeFeedbackForm.css";
 
 interface Resume {
@@ -78,7 +78,9 @@ export default function ResumeFeedbackForm() {
         console.error("이력서 목록 로드 중 에러:", error);
         if (isMounted) {
           setResumeOptions([]);
-          setResumeLoadError("이력서를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.");
+          setResumeLoadError(
+            "이력서를 불러올 수 없습니다. 잠시 후 다시 시도해주세요."
+          );
         }
       }
     };
@@ -155,10 +157,13 @@ export default function ResumeFeedbackForm() {
 
       // 첨삭 상세 페이지로 이동 (데이터와 함께 전달)
       navigate(`/resumeFeedback/${feedback.feedback_id}`, {
-        state: { feedbackData: feedback }
+        state: { feedbackData: feedback },
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "첨삭 신청 중 오류가 발생했습니다.";
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "첨삭 신청 중 오류가 발생했습니다.";
       console.error("Feedback submission error:", error);
       alert(errorMessage);
     } finally {
@@ -167,23 +172,13 @@ export default function ResumeFeedbackForm() {
   };
 
   return (
-    <div className={container}>
-      <div className={headerWrapper}>
-        <FeedbackTitle
-          mode="none"
-          title="이력서"
-          desc="채용공고를 분석하여 맞춤형 이력서 첨삭을 받아보세요"
-        />
-      </div>
-
+    <>
       <form onSubmit={handleSubmit} id="feedbackForm">
         <section className={formSection}>
           <h2>첨삭 정보 입력</h2>
 
           <div className={formGroup}>
-            <label className={formLabel}>
-              채용공고 *
-            </label>
+            <label className={formLabel}>채용공고 *</label>
             {selectedJob ? (
               <article className={selectedJobCard}>
                 <div className={selectedJobCardHeader}>
@@ -211,7 +206,8 @@ export default function ResumeFeedbackForm() {
               </p>
             )}
             <p className={helperText}>
-              채용공고를 선택하세요. 선택한 채용공고의 정보를 바탕으로 이력서를 첨삭합니다.
+              채용공고를 선택하세요. 선택한 채용공고의 정보를 바탕으로 이력서를
+              첨삭합니다.
             </p>
           </div>
 
@@ -238,7 +234,8 @@ export default function ResumeFeedbackForm() {
               </p>
             )}
             <p className={helperText}>
-              분석 기준이 될 이력서를 선택하세요. 선택한 이력서와 채용공고를 비교하여 맞춤형 피드백을 받을 수 있습니다.
+              분석 기준이 될 이력서를 선택하세요. 선택한 이력서와 채용공고를
+              비교하여 맞춤형 피드백을 받을 수 있습니다.
             </p>
           </div>
 
@@ -257,31 +254,49 @@ export default function ResumeFeedbackForm() {
       <section className={stepSection}>
         <h2 className={stepSectionTitle}>이력서 첨삭 시작하기</h2>
         <p className={stepSectionDesc}>
-          채용공고와 이력서를 선택하여 첨삭을 신청하면, AI가 해당 공고에서 요구하는 핵심 키워드와 경력을 분석하여 맞춤형 첨삭 결과를 제공합니다.
+          채용공고와 이력서를 선택하여 첨삭을 신청하면, AI가 해당 공고에서
+          요구하는 핵심 키워드와 경력을 분석하여 맞춤형 첨삭 결과를 제공합니다.
         </p>
 
         <div className={stepItemsContainer}>
-          <div className={stepItem} aria-label="1단계: 채용공고 선택, 등록된 공고에서 선택하기">
-            <div className={stepNumber} aria-hidden="true">1</div>
+          <div
+            className={stepItem}
+            aria-label="1단계: 채용공고 선택, 등록된 공고에서 선택하기"
+          >
+            <div className={stepNumber} aria-hidden="true">
+              1
+            </div>
             <div className={stepContent}>
               <strong className={stepContentTitle}>채용공고 선택</strong>
               <p className={stepContentDesc}>등록된 공고에서 선택하기</p>
             </div>
           </div>
 
-          <div className={stepItem} aria-label="2단계: 이력서 선택, 첨삭할 이력서 선택하기">
-            <div className={stepNumber} aria-hidden="true">2</div>
+          <div
+            className={stepItem}
+            aria-label="2단계: 이력서 선택, 첨삭할 이력서 선택하기"
+          >
+            <div className={stepNumber} aria-hidden="true">
+              2
+            </div>
             <div className={stepContent}>
               <strong className={stepContentTitle}>이력서 선택</strong>
               <p className={stepContentDesc}>첨삭할 이력서 선택하기</p>
             </div>
           </div>
 
-          <div className={stepItem} aria-label="3단계: AI 첨삭, 개선사항과 추천사항을 받아보세요">
-            <div className={stepNumber} aria-hidden="true">3</div>
+          <div
+            className={stepItem}
+            aria-label="3단계: AI 첨삭, 개선사항과 추천사항을 받아보세요"
+          >
+            <div className={stepNumber} aria-hidden="true">
+              3
+            </div>
             <div className={stepContent}>
               <strong className={stepContentTitle}>AI 첨삭</strong>
-              <p className={stepContentDesc}>개선사항과 추천사항을 받아보세요</p>
+              <p className={stepContentDesc}>
+                개선사항과 추천사항을 받아보세요
+              </p>
             </div>
           </div>
         </div>
@@ -295,11 +310,8 @@ export default function ResumeFeedbackForm() {
         width={800}
         height={600}
       >
-        <JobList
-          isModal={true}
-          onSelect={handleJobSelect}
-        />
+        <JobList isModal={true} onSelect={handleJobSelect} />
       </Modal>
-    </div>
+    </>
   );
 }
