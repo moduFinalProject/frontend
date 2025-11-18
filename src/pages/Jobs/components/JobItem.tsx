@@ -82,23 +82,6 @@ export default function JobItem({
             }}
           >
             <h4>{job.title}</h4>
-            {!isModal && job.url && (
-              <div
-                onClick={(event) => {
-                  event.stopPropagation();
-                }}
-              >
-                <Button
-                  text="공고 보기"
-                  color="white"
-                  widthStyle="fit"
-                  icon="LINK_BLACK"
-                  callback={() => {
-                    window.open(job.url!, "_blank", "noopener,noreferrer");
-                  }}
-                />
-              </div>
-            )}
           </div>
           <p>{job.company}</p>
         </div>
