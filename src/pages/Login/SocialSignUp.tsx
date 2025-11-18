@@ -2,6 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import ResumeCard from "@/pages/Resume/components/card/ResumeCard";
 import ResumeCardRow from "@/pages/Resume/components/card/ResumeCardRow";
 import Text from "@/components/FormElem/text/Text";
@@ -124,12 +125,14 @@ export default function SocialSignIn() {
         // 회원가입 성공 시 토큰 저장
         saveAuthToken(response.access_token, response.user);
         setLoginToken(true);
+        toast.success("회원가입이 완료되었습니다.");
 
         // 대시보드로 이동
         navigate("/");
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "회원가입에 실패했습니다";
         setError(errorMessage);
+        toast.error(errorMessage);
         console.error("Sign up error:", err);
       } finally {
         setLoading(false);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import {
   header,
   headerLogo,
@@ -48,6 +49,7 @@ function MenuItemComponent({ item, onNavigate }: MenuItemComponentProps) {
     e.preventDefault();
     clearAuth();
     setLoginToken(false);
+    toast.success("로그아웃되었습니다.");
     // 랜딩 페이지로 이동
     navigate("/landing", { replace: true });
     onNavigate?.();

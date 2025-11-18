@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import ResumeCard from "@/pages/Resume/components/card/ResumeCard";
 import { fetchWithAuth } from "@/services/api";
 import {
@@ -135,7 +136,7 @@ export default function Feedback({ type, isRecorrection, data }: FeedbackProps) 
 
   const handleApplyFeedback = async () => {
     if (!data?.feedback_id) {
-      alert("피드백 정보가 없습니다.");
+      toast.error("피드백 정보가 없습니다.");
       return;
     }
 
@@ -157,14 +158,14 @@ export default function Feedback({ type, isRecorrection, data }: FeedbackProps) 
       }
 
       const result = await response.json();
-      alert("이력서가 생성되었습니다!");
+      toast.success("이력서가 생성되었습니다!");
       // 생성된 이력서 페이지로 이동
       navigate(`/resume/${result.resume_id}`);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "수정사항 적용 중 오류가 발생했습니다.";
       console.error("Apply feedback error:", error);
-      alert(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsApplying(false);
     }

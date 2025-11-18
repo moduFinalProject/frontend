@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { loginContainer, formWrapper, formContent, logoSection, titleSection, formSection, linkSection, linkSignup, linkForgot, dividerSection, dividerText, socialSection, heading, subHeading, fieldsetStyle, errorAlert } from "./Login.css";
 import Button from "@/components/Button/Button";
 import Text from "@/components/FormElem/text/Text";
@@ -32,12 +33,14 @@ async function loginProcess(formData: LoginForm, navigate: ReturnType<typeof use
     // 로그인 성공 시 토큰 저장
     saveAuthToken(response.access_token, response.user);
     setLoginToken(true);
+    toast.success("로그인 되었습니다.");
 
     // 대시보드로 이동
     navigate("/");
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "로그인에 실패했습니다";
     setError(errorMessage);
+    toast.error(errorMessage);
     console.error("Login error:", err);
   } finally {
     setLoading(false);

@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Select from "@/components/FormElem/text/Select";
 import Button from "@/components/Button/Button";
 import { Modal } from "@/components/Modal";
 import JobList from "@/pages/Jobs/JobList";
-import FeedbackTitle from "./components/FeedbackTitle";
 import { type JobPosting } from "@/services/jobs";
 import { getResumeList } from "@/services/resumes";
 import { fetchWithAuth } from "@/services/api";
 import {
-  container,
-  headerWrapper,
   formSection,
   formGroup,
   helperText,
@@ -78,9 +76,9 @@ export default function ResumeFeedbackForm() {
         console.error("이력서 목록 로드 중 에러:", error);
         if (isMounted) {
           setResumeOptions([]);
-          setResumeLoadError(
-            "이력서를 불러올 수 없습니다. 잠시 후 다시 시도해주세요."
-          );
+          const errorMsg = "이력서를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.";
+          setResumeLoadError(errorMsg);
+          toast.error(errorMsg);
         }
       }
     };
@@ -165,7 +163,7 @@ export default function ResumeFeedbackForm() {
           ? error.message
           : "첨삭 신청 중 오류가 발생했습니다.";
       console.error("Feedback submission error:", error);
-      alert(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

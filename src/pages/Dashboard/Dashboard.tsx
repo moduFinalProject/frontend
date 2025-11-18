@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { fetchWithAuth } from "@/services/api";
 import {
   dashboardContainer,
@@ -107,6 +108,7 @@ export default function Dashboard() {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "데이터 조회 중 오류가 발생했습니다.";
         setError(errorMessage);
+        toast.error(errorMessage);
         console.error("Dashboard data fetch error:", err);
       } finally {
         setIsLoading(false);

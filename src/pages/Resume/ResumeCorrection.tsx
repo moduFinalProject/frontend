@@ -1,5 +1,6 @@
 import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import Feedback from "@/components/Feedback";
 import { getResumeFeedback } from "@/services/resumeFeedback";
 import { loadingContainer, errorContainer, emptyContainer } from "./ResumeCorrection.css";
@@ -49,6 +50,7 @@ export default function ResumeCorrection() {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "데이터 조회 중 오류가 발생했습니다.";
         setError(errorMessage);
+        toast.error(errorMessage);
         console.error("Standard feedback creation error:", err);
       } finally {
         setIsLoading(false);

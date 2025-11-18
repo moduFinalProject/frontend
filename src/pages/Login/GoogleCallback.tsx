@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { saveAuthToken, saveUserInfo, removeOAuthState, getOAuthState } from "@/services/auth";
 import { useAuth } from "@/contexts/AuthContext";
 import { loginWithGoogle, recoverDeletedUser } from "@/services/api";
@@ -81,9 +82,7 @@ export default function GoogleCallback() {
       } catch (err) {
         console.error("Error processing Google callback:", err);
         // 에러 발생 시 알림 후 로그인 페이지로 이동
-        alert(
-          "로그인 처리 중 문제가 발생했습니다.\n잠시 후 다시 시도해주세요.\n문제가 계속되면 고객 지원팀에 문의해주시기 바랍니다."
-        );
+        toast.error("로그인 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
         navigate("/login");
       }
     };
@@ -101,13 +100,11 @@ export default function GoogleCallback() {
       // 복구 성공
       saveAuthToken(result.access_token, result.user);
       setLoginToken(true);
-      alert("회원 정보가 복구되었습니다. 환영합니다!");
+      toast.success("회원 정보가 복구되었습니다. 환영합니다!");
       navigate("/dashboard", { replace: true });
     } catch (err) {
       console.error("User recovery error:", err);
-      alert(
-        "회원 정보 복구에 실패했습니다.\n다시 시도해주시기 바랍니다."
-      );
+      toast.error("회원 정보 복구에 실패했습니다. 다시 시도해주시기 바랍니다.");
       navigate("/login");
     } finally {
       setIsRecovering(false);
