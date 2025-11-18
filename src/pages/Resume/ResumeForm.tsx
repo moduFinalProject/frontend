@@ -305,10 +305,6 @@ export default function ResumeForm() {
     }
   }, [id]);
 
-  if (isLoading) {
-    return <div>이력서 데이터를 불러오는 중입니다...</div>;
-  }
-
   // 필드 렌더 해오기
   function renderFieldByType(
     form: any,
