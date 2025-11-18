@@ -49,7 +49,6 @@ import {
 } from "./ResumeContext.tsx";
 import { toast } from "react-toastify";
 import { Button } from "@/components/index.ts";
-import { btnsWrap } from "./components/ResumeTitle.css.ts";
 
 // 항목 추가를 위한 빈 템플릿
 const emptyEducationItem: EducationItem = {
