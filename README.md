@@ -108,7 +108,7 @@ GAECHWI
 │ ├── Login (/login)
 │ ├── GoogleCallback (/googleCallback)
 │ ├── SocialSignUp (/SocialSignUp)
-│ └── NotFound (\*)
+│ └── NotFound (*)
 │
 ├── 로그인 후 영역
 │ ├── Dashboard (/dashboard)
