@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css";
+import { style, keyframes } from "@vanilla-extract/css";
 import { vars } from "@/design-system";
 
 // Main container
@@ -248,4 +248,74 @@ export const emptyStateMessage = style({
   fontWeight: vars.typography.fontWeight.normal,
   color: vars.color.subText,
   marginBottom: vars.spacing.lg,
+});
+
+// Modal animations
+const fadeInScale = keyframes({
+  "0%": {
+    opacity: 0,
+    transform: "scale(0.95)",
+  },
+  "100%": {
+    opacity: 1,
+    transform: "scale(1)",
+  },
+});
+
+const slideUp = keyframes({
+  "0%": {
+    opacity: 0,
+    transform: "translateY(20px)",
+  },
+  "100%": {
+    opacity: 1,
+    transform: "translateY(0)",
+  },
+});
+
+const bounce = keyframes({
+  "0%, 100%": {
+    transform: "translateY(0)",
+  },
+  "50%": {
+    transform: "translateY(-10px)",
+  },
+});
+
+// Modal content
+export const emptyModalContent = style({
+  padding: vars.spacing.xl,
+  textAlign: "center",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100%",
+  animation: `${fadeInScale} 0.4s ease-out`,
+});
+
+export const emptyModalIcon = style({
+  fontSize: "48px",
+  marginBottom: vars.spacing.lg,
+  animation: `${bounce} 1s ease-in-out infinite`,
+});
+
+export const emptyModalMessage = style({
+  marginBottom: vars.spacing.xl,
+  color: vars.color.defaultText,
+  fontSize: vars.typography.fontSize.md,
+  fontWeight: vars.typography.fontWeight.bold,
+  lineHeight: "1.6",
+  animation: `${slideUp} 0.5s ease-out 0.1s both`,
+});
+
+export const emptyModalSubMessage = style({
+  marginBottom: vars.spacing.xl,
+  color: vars.color.subText,
+  fontSize: vars.typography.fontSize.sm,
+  animation: `${slideUp} 0.5s ease-out 0.2s both`,
+});
+
+export const emptyModalButton = style({
+  animation: `${slideUp} 0.5s ease-out 0.3s both`,
 });

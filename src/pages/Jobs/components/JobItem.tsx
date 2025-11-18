@@ -76,7 +76,9 @@ export default function JobItem({
           <div
             className={titleRow}
             onClick={() => {
-              navigate(`./${job.posting_id}`);
+              if (!isModal) {
+                navigate(`./${job.posting_id}`);
+              }
             }}
           >
             <h4>{job.title}</h4>

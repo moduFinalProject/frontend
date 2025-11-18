@@ -28,8 +28,14 @@ import {
   featuredTime,
   emptyState,
   emptyStateMessage,
+  emptyModalContent,
+  emptyModalMessage,
+  emptyModalIcon,
+  emptyModalSubMessage,
+  emptyModalButton,
 } from "./Dashboard.css";
 import Button from "@/components/Button/Button";
+import Modal from "@/components/Modal/Modal";
 
 interface Resume {
   resume_id: string;
@@ -64,6 +70,7 @@ export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showEmptyModal, setShowEmptyModal] = useState(false);
 
   const user = useMemo(() => {
     const userStr = localStorage.getItem("user");
@@ -92,6 +99,11 @@ export default function Dashboard() {
 
         const data = await response.json();
         setDashboardData(data);
+
+        // 이력서가 없으면 모달 표시
+        if (!data.recent_resumes || data.recent_resumes.length === 0) {
+          setShowEmptyModal(true);
+        }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "데이터 조회 중 오류가 발생했습니다.";
         setError(errorMessage);
@@ -147,8 +159,41 @@ export default function Dashboard() {
     console.log("Featured item clicked:", id);
   };
 
+  const handleCloseEmptyModal = () => {
+    setShowEmptyModal(false);
+  };
+
   return (
-    <div className={dashboardContainer}>
+    <>
+      <Modal
+        isOpen={showEmptyModal}
+        onClose={handleCloseEmptyModal}
+        title=""
+        width={420}
+        height={380}
+      >
+        <div className={emptyModalContent}>
+          <div className={emptyModalIcon}>📝</div>
+          <h3 className={emptyModalMessage}>
+            이런.. 아직 활동이 없으시네요
+          </h3>
+          <p className={emptyModalSubMessage}>
+            이력서를 작성하고 AI 첨삭을 받아보세요!
+          </p>
+          <div className={emptyModalButton}>
+            <Button
+              widthStyle="full"
+              color="blue"
+              text="이력서 작성하고 AI첨삭 받기"
+              callback={()=>{
+                setShowEmptyModal(false);
+                handleCreateResume();
+              }}
+            />
+          </div>
+        </div>
+      </Modal>
+      <div className={dashboardContainer}>
       {/* Header Section */}
       <header className={headerSection}>
         <h1 className={headerTitle}>안녕하세요, {user?.name || "사용자"} 개발자님!</h1>
@@ -272,5 +317,6 @@ export default function Dashboard() {
         </section>
       </div>
     </div>
+    </>
   );
 }

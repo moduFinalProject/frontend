@@ -85,7 +85,7 @@ export default function Header() {
       id: "dashboard",
       menuName: "대시보드",
       menuIcon: "DASHBOARD",
-      menuURL: "/",
+      menuURL: "/dashboard",
     },
     {
       id: "resume",
@@ -105,18 +105,18 @@ export default function Header() {
       menuIcon: "CHECK",
       menuURL: "/resumeFeedback",
     },
-    {
-      id: "interview",
-      menuName: "AI 모의면접",
-      menuIcon: "CHAT",
-      menuURL: "/interview",
-    },
-    {
-      id: "studyGuide",
-      menuName: "학습 가이드",
-      menuIcon: "STUDY",
-      menuURL: "/studyGuide",
-    },
+    // {
+    //   id: "interview",
+    //   menuName: "AI 모의면접",
+    //   menuIcon: "CHAT",
+    //   menuURL: "/interview",
+    // },
+    // {
+    //   id: "studyGuide",
+    //   menuName: "학습 가이드",
+    //   menuIcon: "STUDY",
+    //   menuURL: "/studyGuide",
+    // },
   ];
 
   const menuListBottom: MenuItem[] = [
