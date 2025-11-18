@@ -35,6 +35,10 @@ export default function ResumeList() {
     setIsLoading(true);
 
     try {
+      if (page === 1) {
+        setResumes([]);
+      }
+
       const data = await getResumeList({ page, limit: 6, search });
 
       if (data && data.length > 0) {

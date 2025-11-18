@@ -48,6 +48,8 @@ import {
   type ResumeData,
 } from "./ResumeContext.tsx";
 import { toast } from "react-toastify";
+import { Button } from "@/components/index.ts";
+import { useResumeListContext } from "./ResumeListContext.tsx";
 
 // 항목 추가를 위한 빈 템플릿
 const emptyEducationItem: EducationItem = {
@@ -114,6 +116,7 @@ export default function ResumeForm() {
     isEditMode: boolean;
     id: string;
   } = useResumeContext();
+  const { setPage } = useResumeListContext();
   const navigate = useNavigate();
 
   const defaultValues = isEditMode
@@ -229,6 +232,7 @@ export default function ResumeForm() {
           className: "custom-success-toast",
         });
 
+        setPage(1); // 목록 페이지 1페이지로 초기화
         navigate(`/resume/${result.resume_id}`);
       } catch (error) {
         if (error instanceof z.ZodError) {
@@ -300,10 +304,6 @@ export default function ResumeForm() {
       loadAndSetData();
     }
   }, [id]);
-
-  if (isLoading) {
-    return <div>이력서 데이터를 불러오는 중입니다...</div>;
-  }
 
   // 필드 렌더 해오기
   function renderFieldByType(
@@ -1189,6 +1189,14 @@ export default function ResumeForm() {
             if (key !== "resume_id")
               return renderFieldByType(form, key, value, isEditMode);
           })}
+
+        <Button
+          widthStyle="full"
+          text="저장"
+          color="blue"
+          buttonType="submit"
+          callback={() => {}}
+        />
       </div>
     </form>
   );
