@@ -7,7 +7,6 @@ import {
   btnsWrap,
   prevWrap,
 } from "./FeedbackTitle.css.ts";
-// import { fetchFeedbackDetail } from "../api";
 
 interface FeedbackProps {
   mode: "list" | "view" | "create" | "edit" | "none";
@@ -46,16 +45,6 @@ export default function FeedbackTitle({
     }
 
     setIsFetchingUrl(true);
-    // fetchFeedbackDetail(currentFeedbackId)
-    //   .then((detail) => {
-    //     setFeedbackUrl(detail.url ?? null);
-    //   })
-    //   .catch(() => {
-    //     setFeedbackUrl(null);
-    //   })
-    //   .finally(() => {
-    //     setIsFetchingUrl(false);
-    //   });
   }, [currentFeedbackId, mode]);
 
   return (
@@ -74,7 +63,7 @@ export default function FeedbackTitle({
         )}
         <div className={`${headerText} ${mode !== "list" && subPage}`}>
           <h2 className={mode !== "list" ? "a11y-hidden" : ""}>{titleText}</h2>
-          {mode !== "list" && <p className="title">기준 이력서</p>}
+          {mode !== "list" && <p className="title">{titleText}</p>}
           <p className="desc">{desc}</p>
         </div>
       </div>
@@ -82,7 +71,7 @@ export default function FeedbackTitle({
       <div className={btnsWrap}>
         {mode === "list" && (
           <Button
-            text="새 채용 공고별 첨삭 생성"
+            text="공고별 첨삭"
             color="blue"
             widthStyle="fit"
             icon="PLUS"
@@ -91,7 +80,7 @@ export default function FeedbackTitle({
             }}
           />
         )}
-        {(mode === "create" || mode === "edit") && (
+        {mode === "edit" && (
           <>
             <Button
               text="취소"
@@ -123,13 +112,6 @@ export default function FeedbackTitle({
               text="저장"
               color="white"
               widthStyle="fit"
-              callback={() => {}}
-            />
-            <Button
-              text="다운로드"
-              color="white"
-              widthStyle="fit"
-              icon="DOWN"
               callback={() => {}}
             />
           </>
