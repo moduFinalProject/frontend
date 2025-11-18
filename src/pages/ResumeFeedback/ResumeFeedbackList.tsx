@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useRef } from "react";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -44,18 +48,36 @@ const matchingIcons: Record<MatchingLevel, string> = {
 };
 
 export default function ResumeFeedbackList() {
-  const [page] = useState(1);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const PAGE_SIZE = 6;
 
   const {
-    data: feedbackList = [],
+    data,
     status,
     error,
-  } = useQuery<ResumeFeedback[]>({
-    queryKey: ["resume-feedback-list", page],
-    queryFn: () => getResumeFeedbackList(page),
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["resume-feedback-list"],
+    initialPageParam: 1,
+    queryFn: ({ pageParam }: { pageParam: number }) =>
+      getResumeFeedbackList(pageParam),
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage || lastPage.length < PAGE_SIZE) {
+        return undefined;
+      }
+      return allPages.length + 1;
+    },
   });
+
+  const feedbackList = useMemo(
+    () =>
+      data?.pages ? data.pages.flatMap((page: ResumeFeedback[]) => page) : [],
+    [data]
+  );
 
   const deleteMutation = useMutation({
     mutationFn: deleteResumeFeedback,
@@ -74,17 +96,39 @@ export default function ResumeFeedbackList() {
     },
   });
 
-  const handleDelete = (feedbackId: string) => {
+  const handleDelete = (feedbackId: number) => {
     if (confirm("삭제하시겠습니까?")) {
       deleteMutation.mutate(feedbackId);
     }
   };
 
-  const handleCardClick = (feedbackId: string | undefined) => {
-    if (feedbackId) {
-      navigate(`./${feedbackId}`);
-    }
+  const handleCardClick = (feedbackId: number) => {
+    navigate(`/resumeFeedback/${feedbackId}`);
   };
+
+  useEffect(() => {
+    const node = loadMoreRef.current;
+    if (!node) return;
+    if (!hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const firstEntry = entries[0];
+        if (firstEntry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        rootMargin: "200px",
+      }
+    );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const renderContent = () => {
     if (status === "pending") {
@@ -131,39 +175,37 @@ export default function ResumeFeedbackList() {
     }
 
     return (
-      <ul className={jobList} aria-live="polite" aria-atomic="false">
-        {feedbackList.map((job, index) => {
-          const jobId = job.id || String(index);
-          const matchingLevel = getMatchingLevel(job.matching_rate);
+      <>
+        <ul className={jobList} aria-live="polite" aria-atomic="false">
+          {feedbackList.map((job: ResumeFeedback) => {
+            const matchingLevel = getMatchingLevel(job.matching_rate);
 
-          return (
-            <li key={jobId}>
-              <article
-                className={`${card} ${cardVariant.default}`}
-                aria-labelledby={`resume-feedback-${jobId}-title`}
-                onClick={() => handleCardClick(job.id)}
-                style={{ cursor: job.id ? "pointer" : "default" }}
-              >
-                <header className={cardTop}>
-                  <div className={companyBlock}>
-                    <div className={companyRow}>
-                      <h3 id={`resume-feedback-${jobId}-title`}>
-                        {job.company}
-                      </h3>
+            return (
+              <li key={job.feedback_id}>
+                <article
+                  className={`${card} ${cardVariant.default}`}
+                  onClick={() => handleCardClick(job.feedback_id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <header className={cardTop}>
+                    <div className={companyBlock}>
+                      <div className={companyRow}>
+                        <h3 id={`resume-feedback-${job.feedback_id}}-title`}>
+                          {job.company}
+                        </h3>
+                      </div>
+                      <dl className={detailList}>
+                        <div className={detailItem}>
+                          <dt>기준 이력서:</dt>
+                          <dd>{job.resume_title}</dd>
+                        </div>
+                        <div className={detailItem}>
+                          <dt>개선사항</dt>
+                          <dd>{job.content_count}개</dd>
+                        </div>
+                      </dl>
                     </div>
-                    <dl className={detailList}>
-                      <div className={detailItem}>
-                        <dt>기준 이력서:</dt>
-                        <dd>{job.resume_title}</dd>
-                      </div>
-                      <div className={detailItem}>
-                        <dt>개선사항</dt>
-                        <dd>{job.content_count}개</dd>
-                      </div>
-                    </dl>
-                  </div>
 
-                  {job.id && (
                     <div onClick={(e) => e.stopPropagation()}>
                       <OptionsDropdown
                         ariaLabel={`${job.company} 옵션 보기`}
@@ -174,38 +216,64 @@ export default function ResumeFeedbackList() {
                           {
                             label: "삭제",
                             onSelect: () => {
-                              handleDelete(job.id!);
+                              handleDelete(job.feedback_id);
                             },
                           },
                         ]}
                       />
                     </div>
-                  )}
-                </header>
+                  </header>
 
-                <footer className={cardFooter}>
-                  <div className={matchingGroup}>
-                    <span
-                      className={`${matchingBadgeBase} ${matchingBadge[matchingLevel]}`}
-                      aria-label={`매칭률 ${job.matching_rate}%`}
-                    >
-                      <img
-                        src={matchingIcons[matchingLevel]}
-                        alt=""
-                        aria-hidden="true"
-                      />
-                      {job.matching_rate}%
-                    </span>
-                    <span className={matchingLabel} aria-hidden="true">
-                      매칭률
-                    </span>
-                  </div>
-                </footer>
-              </article>
-            </li>
-          );
-        })}
-      </ul>
+                  <footer className={cardFooter}>
+                    <div className={matchingGroup}>
+                      <span
+                        className={`${matchingBadgeBase} ${matchingBadge[matchingLevel]}`}
+                        aria-label={`매칭률 ${job.matching_rate}%`}
+                      >
+                        <img
+                          src={matchingIcons[matchingLevel]}
+                          alt=""
+                          aria-hidden="true"
+                        />
+                        {job.matching_rate}%
+                      </span>
+                      <span className={matchingLabel} aria-hidden="true">
+                        매칭률
+                      </span>
+                    </div>
+                  </footer>
+                </article>
+              </li>
+            );
+          })}
+        </ul>
+        <div
+          ref={loadMoreRef}
+          aria-live="polite"
+          aria-atomic="true"
+          style={{ height: "1px" }}
+        />
+        {isFetchingNextPage && (
+          <p
+            className={emptyState}
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            추가 첨삭 이력을 불러오는 중입니다...
+          </p>
+        )}
+        {!hasNextPage && feedbackList.length >= PAGE_SIZE && (
+          <p
+            className={emptyState}
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            마지막 첨삭 이력까지 모두 확인하셨습니다.
+          </p>
+        )}
+      </>
     );
   };
 

@@ -1,7 +1,7 @@
 import { fetchWithAuth } from "./api";
 
 export interface ResumeFeedback {
-  id?: string;
+  feedback_id: number;
   company: string;
   resume_title: string;
   content_count: number;
@@ -16,7 +16,9 @@ export function getMatchingLevel(matchingRate: number): MatchingLevel {
   return "warning";
 }
 
-export const getResumeFeedbackList = async (page: number) => {
+export const getResumeFeedbackList = async (
+  page: number
+): Promise<ResumeFeedback[]> => {
   const response = await fetchWithAuth(
     `/resume_feedbacks/?page=${page}&page_size=6`,
     {
@@ -33,8 +35,10 @@ export const getResumeFeedbackList = async (page: number) => {
   return response.json();
 };
 
-export const getResumeFeedback = async (feedback_id: string) => {
-  const response = await fetchWithAuth(`/resume_feedbacks/${feedback_id}`);
+export const getResumeFeedback = async (feedback_id: number) => {
+  const response = await fetchWithAuth(
+    `/resume_feedbacks/content/${feedback_id}`
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch resume feedback");
@@ -43,7 +47,7 @@ export const getResumeFeedback = async (feedback_id: string) => {
   return response.json();
 };
 
-export const deleteResumeFeedback = async (feedback_id: string) => {
+export const deleteResumeFeedback = async (feedback_id: number) => {
   const response = await fetchWithAuth(`/resume_feedbacks/${feedback_id}`, {
     method: "DELETE",
   });
