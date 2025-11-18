@@ -49,6 +49,7 @@ import {
 } from "./ResumeContext.tsx";
 import { toast } from "react-toastify";
 import { Button } from "@/components/index.ts";
+import { useResumeListContext } from "./ResumeListContext.tsx";
 
 // 항목 추가를 위한 빈 템플릿
 const emptyEducationItem: EducationItem = {
@@ -115,6 +116,7 @@ export default function ResumeForm() {
     isEditMode: boolean;
     id: string;
   } = useResumeContext();
+  const { setPage } = useResumeListContext();
   const navigate = useNavigate();
 
   const defaultValues = isEditMode
@@ -230,6 +232,7 @@ export default function ResumeForm() {
           className: "custom-success-toast",
         });
 
+        setPage(1); // 목록 페이지 1페이지로 초기화
         navigate(`/resume/${result.resume_id}`);
       } catch (error) {
         if (error instanceof z.ZodError) {
