@@ -69,7 +69,10 @@ export default function ResumeTitle({ title }: { title: string }) {
           />
         )}
         <div className={`${headerText} ${mode !== "list" && subPage}`}>
-          <h2>{modeData[mode].title}</h2>
+          <h2 className={mode !== "list" ? "a11y-hidden" : ""}>
+            {modeData[mode].title}
+          </h2>
+          {mode !== "list" && <p className="title">{modeData[mode].title}</p>}
           <p className="desc">{modeData[mode].desc}</p>
         </div>
       </div>
@@ -118,15 +121,6 @@ export default function ResumeTitle({ title }: { title: string }) {
                 }
               }}
             />
-            {/* <Button
-              text="다운로드"
-              color="white"
-              widthStyle="fit"
-              icon="DOWN"
-              callback={() => {
-                alert("다운로드 되었습니다");
-              }}
-            /> */}
             <Button
               text="수정하기"
               color="blue"
