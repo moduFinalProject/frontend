@@ -56,9 +56,8 @@ export const statCard = style({
   boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
   transition: "all 0.3s ease",
   ":hover": {
+    boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
     transform: "translateY(-4px)",
-    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.12)",
-    borderColor: vars.color.main,
   },
   ":focus-visible": {
     outline: `2px solid ${vars.color.main}`,
@@ -85,7 +84,7 @@ export const statBadge = style({
   backgroundColor: vars.color.formBg,
   padding: `${vars.spacing.xs} ${vars.spacing.sm}`,
   border: `1px solid ${vars.color.line}`,
-  borderRadius: vars.borderRadius.sm,  
+  borderRadius: vars.borderRadius.sm,
 });
 
 export const statValue = style({
@@ -147,10 +146,8 @@ export const resumeItem = style({
   transition: "all 0.3s ease",
   boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
   ":hover": {
-    backgroundColor: vars.color.sub,
-    borderColor: vars.color.main,
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-    transform: "translateY(-2px)",
+    boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2)`,
+    transform: "translateY(-4px)",
   },
   ":focus-visible": {
     outline: `2px solid ${vars.color.main}`,
@@ -218,7 +215,7 @@ export const featuredCategory = style({
   color: vars.color.defaultText,
   padding: `${vars.spacing.xs} ${vars.spacing.sm}`,
   border: `1px solid ${vars.color.line}`,
-  borderRadius: vars.borderRadius.sm,    
+  borderRadius: vars.borderRadius.sm,
 });
 
 export const featuredTitle = style({
