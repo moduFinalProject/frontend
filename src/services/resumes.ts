@@ -154,6 +154,13 @@ export function addDay(arrayData) {
     ) {
       item.end_date = item.end_date + "-01";
     }
+    if (
+      item.acquisition_date &&
+      typeof item.acquisition_date === "string" &&
+      item.acquisition_date.length === 7
+    ) {
+      item.acquisition_date = item.acquisition_date + "-01";
+    }
     return item;
   });
 
