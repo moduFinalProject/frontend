@@ -80,7 +80,8 @@
 
 ### **전체 구조**
 
-![스크린샷 2025-11-18 오후 3.35.44.png](attachment:807efc41-03ea-466c-b87b-33fc7f7b21a3:스크린샷_2025-11-18_오후_3.35.44.png)
+<img width="1998" height="1036" alt="image" src="https://github.com/user-attachments/assets/97524ffd-e4a3-4fad-a423-36225e6a5d5e" />
+
 
 프론트엔드 배포 자동화
 
@@ -170,20 +171,26 @@ GAECHWI
 
 - 회원관리
   - 소셜 회원가입/로그인
-    ![image.png](attachment:848a7c46-7e2e-4958-98c7-42947bf002f1:image.png)
+    <img width="916" height="509" alt="image" src="https://github.com/user-attachments/assets/4776f4b8-5c70-4df3-949d-3e96e0fd820d" />
+
   - 마이페이지
-    ![image.png](attachment:435b25dc-e089-4a22-b6b6-09c99797d1bd:image.png)
+    <img width="922" height="500" alt="image" src="https://github.com/user-attachments/assets/d5b8e9c5-53b4-4cf6-a2ea-f3d99395a270" />
+
 - 공고관리
   - 기업 채용공고 작성/수정/삭제
-    ![image.png](attachment:05c4b81e-2c90-485b-9498-ef02f851fd74:image.png)
+    <img width="933" height="509" alt="image" src="https://github.com/user-attachments/assets/c0c408d6-0dfc-4e6d-a39c-b69192d17c04" />
+
 - 이력서관리
   - 이력서 작성/수정/삭제
-    ![image.png](attachment:5b7b49e0-8522-46a6-9c99-e92b637ee6b2:image.png)
+    <img width="938" height="498" alt="image" src="https://github.com/user-attachments/assets/df01bee7-a503-44be-9bff-3eab838ab711" />
+
   - 이력서 기본 첨삭
-    ![image.png](attachment:d40d63ca-67d2-431b-8d1e-2d9eb128b2d0:image.png)
+    <img width="923" height="485" alt="image" src="https://github.com/user-attachments/assets/6c046929-8c5d-4834-b8fb-45816404aea4" />
+
 - 공고별 첨삭 관리
   - 기업 채용공고를 통한 자신의 이력서 첨삭
-    ![image.png](attachment:c28e88f3-30f9-4d97-bc18-bf3137be3efc:image.png)
+    <img width="927" height="499" alt="image" src="https://github.com/user-attachments/assets/6dee6953-8d60-4303-b336-16dbba2c9315" />
+
 
 ### 8. 시연
 
