@@ -1,3 +1,5 @@
+import { clearAuth } from "@/services/auth";
+
 // API Base URL
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "https://gaechwi.duckdns.org";
@@ -110,6 +112,7 @@ export interface GoogleLoginResponse {
     provider_id: string;
   };
   is_new_user: boolean;
+  is_active?: boolean;
 }
 
 export async function loginWithGoogle(
@@ -134,6 +137,30 @@ export async function loginWithGoogle(
 
     if (!response.ok) {
       throw new Error(data.message || "Google 로그인에 실패했습니다.");
+    }
+
+    return data;
+  } finally {
+    setLoading(false);
+  }
+}
+
+// 탈퇴유저 복구
+export async function recoverDeletedUser(userId: string): Promise<{ access_token: string; user: any }> {
+  setLoading(true);
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/activate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ user_id: userId }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "회원 정보 복구에 실패했습니다.");
     }
 
     return data;
@@ -169,9 +196,8 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
     // If unauthorized, clear token and redirect to login
     if (response.status === 401) {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("user");
-      alert("유효하지 않은 접근입니다. 다시 로그인해주세요.");
+      clearAuth();
+      alert("유효하지 않은 접근입니다. 다시 로그인해주세요.");      
       window.location.href = "/frontend/login";
     }
 

@@ -1,6 +1,7 @@
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 import { Button } from "@/components/Button";
 import {
@@ -21,6 +22,7 @@ import {
   warningText,
 } from "./Profile.css";
 
+import { clearAuth } from "@/services/auth";
 import Input from "@/components/FormElem/text/Input";
 import { getUser, updateUser, deleteUser } from "@/services/profile";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -82,6 +84,7 @@ const passwordSchema = z
 export default function Profile() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { setLoginToken } = useAuth();
 
   const { data: user, status } = useQuery({
     queryKey: ["user"],
@@ -104,10 +107,10 @@ export default function Profile() {
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("user");
+      clearAuth();
+      setLoginToken(false);
       toast.success("계정이 삭제되었습니다.");
-      navigate("/login");
+      navigate("/login", { replace: true });
     },
     onError: () => {
       toast.error("계정 삭제에 실패했습니다.");

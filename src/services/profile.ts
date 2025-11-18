@@ -28,9 +28,12 @@ export const updateUser = async (userData: User) => {
 };
 
 export const deleteUser = async () => {
-  const response = await fetchWithAuth("/user/account", {
+  const response = await fetchWithAuth("/user/me", {
     method: "DELETE",
   });
-  const data = await response.json();
-  return data;
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.message || "계정 삭제에 실패했습니다.");
+  }
 };
