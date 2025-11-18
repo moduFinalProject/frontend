@@ -3,18 +3,13 @@ import { useMemo } from "react";
 
 import { Button } from "@/components";
 
-import {
-  container,
-  header,
-  headerContent,
-  headerAction,
-} from "./index.css.ts";
+import { container, header, headerContent, headerAction } from "./index.css.ts";
 
 const MODE_TEXT = {
   list: {
     title: "첨삭 이력",
     description: "공고별로 첨삭한 이력서 결과를 확인하세요",
-    actionLabel: "새 이력서 첨삭" as const,
+    actionLabel: "공고별 첨삭" as const,
   },
   create: {
     title: "새 이력서 첨삭",
