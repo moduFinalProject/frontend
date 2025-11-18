@@ -96,17 +96,28 @@ const getDivisionClass = (division: string): string => {
 };
 
 // parent_content를 섹션별로 파싱하는 함수
-// 형식: ## 섹션명\n- 항목1\n- 항목2\n...
+// 형식: ## 섹션명\n### 서브섹션명\n- 항목1\n- 항목2\n...
 const parseResumeContent = (content: string) => {
   const sections: Record<string, string[]> = {};
   const lines = content.split("\n");
   let currentSection = "";
 
   lines.forEach((line) => {
+    // "## " 섹션 감지
     if (line.startsWith("## ")) {
       currentSection = line.replace("## ", "").trim();
       sections[currentSection] = [];
-    } else if (currentSection && line.trim()) {
+    }
+    // "### " 서브섹션 감지 (섹션 안의 항목으로 처리)
+    else if (line.startsWith("### ")) {
+      const subSectionName = line.replace("### ", "").trim();
+      // 서브섹션명을 항목으로 추가 (섹션 안에)
+      if (currentSection && subSectionName) {
+        sections[currentSection].push(`[${subSectionName}]`);
+      }
+    }
+    // 라인 항목 처리
+    else if (currentSection && line.trim()) {
       // "- " 제거하고 ** 마크다운 제거해서 저장
       const cleanedLine = line.replace(/^-\s*/, "").replace(/\*\*/g, "").trim();
       if (cleanedLine) {
@@ -131,12 +142,14 @@ export default function Feedback({ type, isRecorrection, data }: FeedbackProps) 
     try {
       setIsApplying(true);
 
-      const response = await fetchWithAuth(
-        `/resume_feedbacks/posting_resume/${data.feedback_id}`,
-        {
-          method: "POST",
-        }
-      );
+      // type에 따라 다른 API 엔드포인트 사용
+      const endpoint = type === "feedback"
+        ? `/resume_feedbacks/posting_resume/${data.feedback_id}`
+        : `/resume_feedbacks/standard_resume/${data.feedback_id}`;
+
+      const response = await fetchWithAuth(endpoint, {
+        method: "POST",
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -213,7 +226,9 @@ export default function Feedback({ type, isRecorrection, data }: FeedbackProps) 
       return (
         <div key={sectionName} className={`${resume} ${!isFirst ? topLine : ""}`}>
           <h4>{sectionName}</h4>
-          <p>{items.join("\n")}</p>
+          <div className={arrayItem} style={{ whiteSpace: "pre-wrap" }}>
+            {items.join("\n")}
+          </div>
         </div>
       );
     }
@@ -289,7 +304,7 @@ export default function Feedback({ type, isRecorrection, data }: FeedbackProps) 
             />
           </section>
         )}
-        <ResumeCard title={`${type === "feedback" && "공고 맞춤 "}첨삭 결과`}>
+        <ResumeCard title={`${type === "feedback" ? "공고 맞춤 " : ""}첨삭 결과`}>
           {type === "feedback" && data && (
             <div className={keywordMatching}>
               <p className={progressTitle}>키워드 매칭률</p>
@@ -342,12 +357,12 @@ export default function Feedback({ type, isRecorrection, data }: FeedbackProps) 
               </li>
             )}
           </ul>
-          {type === "feedback" && (
+          {(type === "feedback" || type === "standard") && (
             <div className={btnWrap}>
               <Button
                 callback={handleApplyFeedback}
                 color="blue"
-                text={isApplying ? "생성 중..." : "수정사항 적용하기"}
+                text={isApplying ? "생성 중..." : "생성하기"}
                 widthStyle="full"
                 disabled={isApplying}
               />

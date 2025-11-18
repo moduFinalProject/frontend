@@ -13,7 +13,7 @@ const queryClient = new QueryClient();
 document.documentElement.classList.add(themeClass);
 
 createRoot(document.getElementById("root")!).render(
-  // <StrictMode>
+  <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter basename="/frontend">
         <AuthProvider>
@@ -24,5 +24,5 @@ createRoot(document.getElementById("root")!).render(
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
-  // </StrictMode>
+  </StrictMode>
 );

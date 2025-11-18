@@ -9,11 +9,12 @@ import {
   dropdownTrigger,
   noDrag,
 } from "./ResumeItem.css.ts";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { delResume } from "@/services/resumes.ts";
 import { useResumeListContext, type Resume } from "../ResumeListContext.tsx";
 import { toast } from "react-toastify";
+import { fetchWithAuth } from "@/services/api";
 
 interface ResumeItemProps {
   resume: Resume;
@@ -23,6 +24,7 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
   const { setResumes }: { setResumes: (arg0: Resume[]) => void } =
     useResumeListContext();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const dropdownItems = useMemo(
     () => [
@@ -98,8 +100,39 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
         <Button
           text="첨삭"
           color="white"
-          callback={() => {
-            navigate(`./${resume.resume_id}/correction`);
+          callback={async () => {
+            try {
+
+              if(!confirm("이력서를 첨삭하시겠습니까?")) return;
+              
+              setIsLoading(true);
+
+              // API 호출: POST /resume_feedbacks/stantard/{resume_id}
+              const response = await fetchWithAuth(
+                `/resume_feedbacks/stantard/${resume.resume_id}`,
+                {
+                  method: "POST",
+                }
+              );
+
+              if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.detail || "첨삭 신청에 실패했습니다.");
+              }
+
+              const feedback = await response.json();
+
+              // ResumeCorrection 페이지로 이동 (데이터와 함께 전달)
+              navigate(`/resume/${resume.resume_id}/correction`, {
+                state: { feedbackData: feedback }
+              });
+            } catch (error) {
+              const errorMessage = error instanceof Error ? error.message : "첨삭 신청 중 오류가 발생했습니다.";
+              console.error("Feedback submission error:", error);
+              alert(errorMessage);
+            } finally {
+              setIsLoading(false);
+            }
           }}
           widthStyle="full"
         />

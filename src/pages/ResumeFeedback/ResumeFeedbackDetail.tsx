@@ -2,6 +2,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Feedback from "@/components/Feedback";
 import { getResumeFeedback } from "@/services/resumeFeedback";
+import { loadingContainer, errorContainer, emptyContainer } from "./ResumeFeedbackDetail.css";
 
 interface FeedbackData {
   feedback_id: number;
@@ -58,15 +59,15 @@ export default function ResumeFeedbackDetail() {
   }, [id, location]);
 
   if (isLoading) {
-    return <div style={{ padding: "20px", textAlign: "center" }}>로딩 중...</div>;
+    return <div className={loadingContainer}>로딩 중...</div>;
   }
 
   if (error) {
-    return <div style={{ padding: "20px", color: "red" }}>에러: {error}</div>;
+    return <div className={errorContainer}>에러: {error}</div>;
   }
 
   if (!feedbackData) {
-    return <div style={{ padding: "20px" }}>첨삭 데이터가 없습니다.</div>;
+    return <div className={emptyContainer}>첨삭 데이터가 없습니다.</div>;
   }
 
   return <Feedback type="feedback" isRecorrection={false} data={feedbackData} />;

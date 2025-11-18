@@ -171,7 +171,8 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
     if (response.status === 401) {
       localStorage.removeItem("access_token");
       localStorage.removeItem("user");
-      window.location.href = "/login";
+      alert("유효하지 않은 접근입니다. 다시 로그인해주세요.");
+      window.location.href = "/frontend/login";
     }
 
     return response;
