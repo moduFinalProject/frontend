@@ -111,7 +111,7 @@ export default function JobItem({
           <Button
             text="지원하기"
             color="blue"
-            icon="LINK_BLACK"
+            icon="LINK_WHITE"
             widthStyle="full"
             callback={() => {
               window.open(job.url!, "_blank", "noopener,noreferrer");
