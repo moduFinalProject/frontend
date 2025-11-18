@@ -102,37 +102,9 @@ flowchart TD
 
 - 사이트맵
 
-GAECHWI
-├── 비로그인 영역
-│ ├── Landing (/landing)
-│ ├── Login (/login)
-│ ├── GoogleCallback (/googleCallback)
-│ ├── SocialSignUp (/SocialSignUp)
-│ └── NotFound (*)
-│
-├── 로그인 후 영역
-│ ├── Dashboard (/dashboard)
-│ ├── Resume Management
-│ │ ├── Resume List (/resume)
-│ │ ├── Resume Create (/resume/new)
-│ │ ├── Resume Detail (/resume/:id)
-│ │ ├── Resume Edit (/resume/:id/edit)
-│ │ └── Resume Correction (/resume/:id/correction)
-│ ├── Job Posting Management
-│ │ ├── Job List (/jobs)
-│ │ ├── Job Create (/jobs/new)
-│ │ ├── Job Detail (/jobs/:id)
-│ │ └── Job Edit (/jobs/:id/edit)
-│ ├── Resume Feedback
-│ │ ├── Feedback List (/resumeFeedback)
-│ │ ├── Feedback Create (/resumeFeedback/new)
-│ │ └── Feedback Detail (/resumeFeedback/:id)
-│ └──Profile (/profile)
-│
-└── 공통 컴포넌트
-├── Header, Topbar, Footer
-├── Loading Overlay, Toast, Modals
-└── Form / UI Components
+<img width="566" height="750" alt="image" src="https://github.com/user-attachments/assets/0d682f12-56bd-455f-832d-a0d72965cf75" />
+
+
 
 - IA
 
